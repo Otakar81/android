@@ -5,6 +5,8 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.bobo.hackernewsreader.db.NewsDao;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,8 +28,19 @@ public class HackerNewsClient {
     public final static int TYPE_NEWS = 2;
     public final static int TYPE_BEST = 3;
 
-    public static ArrayList<String> getListNews(int type) throws ExecutionException, InterruptedException, JSONException {
-        ArrayList<String> result = new ArrayList<String>();
+    public static ArrayList<NewsDao> getListNewsStub(int type, boolean getAllNews) throws ExecutionException, InterruptedException, JSONException {
+        ArrayList<NewsDao> result = new ArrayList<NewsDao>();
+
+
+        result.add(new NewsDao("Titolo1", "http://www.news1.it"));
+        result.add(new NewsDao("Titolo2", "http://www.news2.it"));
+        result.add(new NewsDao("Titolo3", "http://www.news3.it"));
+
+        return result;
+    }
+
+    public static ArrayList<NewsDao> getListNews(int type, boolean getAllNews) throws ExecutionException, InterruptedException, JSONException {
+        ArrayList<NewsDao> result = new ArrayList<NewsDao>();
 
         //Recupero gli id delle notizie da recuperare
         ArrayList<String> elencoIds = getListIdNews(type);
@@ -37,7 +50,7 @@ public class HackerNewsClient {
         for (String idNotizia: elencoIds)
         {
             //Per le chiamate in tempo reale, prendo solo i primi MAX risultati
-            if(counter == MAX_NEWS_ONLINE)
+            if(!getAllNews && counter == MAX_NEWS_ONLINE)
                 break;
 
             //Recupero il dettaglio della notizia
@@ -45,8 +58,10 @@ public class HackerNewsClient {
 
             if(notizia != null)
             {
-                result.add(notizia.getString("title"));
-                //URL: campo "url"
+                String title = notizia.getString("title");
+                String url = notizia.getString("url");
+
+                result.add(new NewsDao(title, url));
             }
 
             counter++;
