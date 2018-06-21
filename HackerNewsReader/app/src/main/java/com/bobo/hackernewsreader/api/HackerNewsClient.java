@@ -11,7 +11,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 /***
@@ -25,21 +27,21 @@ public class HackerNewsClient {
 
     //Mappo i tipi di news che l'utente può chiedermi
     public final static int TYPE_TOP = 1;
-    public final static int TYPE_NEWS = 2;
+    public final static int TYPE_NEW = 2;
     public final static int TYPE_BEST = 3;
 
     public static ArrayList<NewsDao> getListNewsStub(int type, boolean getAllNews) throws ExecutionException, InterruptedException, JSONException {
         ArrayList<NewsDao> result = new ArrayList<NewsDao>();
 
 
-        result.add(new NewsDao("Titolo1", "http://www.news1.it"));
-        result.add(new NewsDao("Titolo2", "http://www.news2.it"));
-        result.add(new NewsDao("Titolo3", "http://www.news3.it"));
+        result.add(new NewsDao("Titolo1", "http://www.news1.it", "2018-03-12 12:40"));
+        result.add(new NewsDao("Titolo2", "http://www.news2.it", "2018-03-12 12:40"));
+        result.add(new NewsDao("Titolo3", "http://www.news3.it", "2018-03-12 12:40"));
 
         return result;
     }
 
-    public static ArrayList<NewsDao> getListNews(int type, boolean getAllNews) throws ExecutionException, InterruptedException, JSONException {
+    public static ArrayList<NewsDao> getListNews(int type, boolean getAllNews, boolean getOfflineData) throws ExecutionException, InterruptedException, JSONException {
         ArrayList<NewsDao> result = new ArrayList<NewsDao>();
 
         //Recupero gli id delle notizie da recuperare
@@ -58,10 +60,30 @@ public class HackerNewsClient {
 
             if(notizia != null)
             {
-                String title = notizia.getString("title");
-                String url = notizia.getString("url");
 
-                result.add(new NewsDao(title, url));
+                try {
+                    String title = notizia.getString("title");
+                    String url = notizia.getString("url");
+                    long timestamp = notizia.getLong("time");
+
+                    if(getOfflineData) //Devo recuperare anche l'html della notizia collegata
+                    {
+                        if(url != null)
+                        {
+                            DownloadTask task = new DownloadTask();
+                            String html = task.execute(url).get();
+
+                            result.add(new NewsDao(title, url, html, convertTimestampToDate(timestamp)));
+                        }
+
+                    }else{
+                        result.add(new NewsDao(title, url, convertTimestampToDate(timestamp)));
+                    }
+
+                }catch (JSONException e)
+                {
+                    Log.i("JSONException", e.getMessage());
+                }
             }
 
             counter++;
@@ -82,7 +104,7 @@ public class HackerNewsClient {
         {
             case TYPE_TOP:
                 apiCall = "topstories.json";
-            case TYPE_NEWS:
+            case TYPE_NEW:
                 apiCall = "newstories.json";
             case TYPE_BEST:
                 apiCall = "beststories.json";
@@ -135,6 +157,20 @@ public class HackerNewsClient {
         }
 
         return jsonObject;
+    }
+
+    /***
+     * Converte il timestamp proveniente dalle api in un formato stampabile
+     *
+     * @param unixTimestam
+     * @return
+     */
+    private static String convertTimestampToDate(long unixTimestam)
+    {
+        Date data = new Date(unixTimestam * 1000); //Vuole i millisecondi
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        return  sdf.format(data);
     }
 
 }
