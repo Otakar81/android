@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static SQLiteDatabase database;
     ListView listaNewsView;
+    ArrayList<NewsDao> currentOnlineNews;
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -42,42 +44,21 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
 
-        ArrayList<NewsDao> listaNews = new ArrayList<NewsDao>();
-
         switch (item.getItemId())
         {
             case R.id.refreshOfflineDataButton:
 
                 //Recupero tutte le top news dalle api
-                Toast.makeText(MainActivity.this, "Sto caricando i dati, prego attendere qualche minuto", Toast.LENGTH_LONG).show();
-
+                Toast.makeText(MainActivity.this, "Sto caricando i dati, prego attendere", Toast.LENGTH_LONG).show();
 
                 try {
 
-                    listaNews = HackerNewsClient.getListNews(HackerNewsClient.TYPE_TOP, false, true);
+                    currentOnlineNews = HackerNewsClient.getListNews(HackerNewsClient.TYPE_NEW, false, false);
+                    refreshListaNewsView(currentOnlineNews);
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Si è verificato un errore: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-
-                if(listaNews.size() > 0)
-                {
-                    Toast.makeText(getApplicationContext(),
-                            "Trovate " + listaNews.size() + " news. Procedo col salvataggio offline", Toast.LENGTH_LONG).show();
-
-                    //Svuoto il database
-                    DatabaseManager.deleteAllNews(database);
-
-                    //Procedo col salvataggio offline
-                    for (NewsDao notizia:listaNews)
-                    {
-                        DatabaseManager.insertNews(database, notizia);
-                    }
-
-                    Toast.makeText(getApplicationContext(),"Salvataggio offline completato", Toast.LENGTH_LONG).show();
-
-                    refreshListaNewsView(listaNews);
+                    Toast.makeText(MainActivity.this, "Si è verificato un errore: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
 
                 return true;
@@ -85,23 +66,13 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.showOnlineData:
 
-                listaNews = new ArrayList<NewsDao>();
-
-                try {
-
-                    listaNews = HackerNewsClient.getListNews(HackerNewsClient.TYPE_NEW, false, false);
-                    refreshListaNewsView(listaNews);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(MainActivity.this, "Si è verificato un errore: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                }
+                refreshListaNewsView(currentOnlineNews);
                 return true;
 
 
             case R.id.showOfflineData:
 
-                listaNews = new ArrayList<NewsDao>();
+                ArrayList<NewsDao> listaNews = new ArrayList<NewsDao>();
 
                 try {
 
@@ -132,35 +103,53 @@ public class MainActivity extends AppCompatActivity {
         //Se non esistono, creo le tabelle
         DatabaseManager.createTables(database);
 
-        //Lista news
-        final ArrayList<NewsDao> elencoNotizie;
-
         //Recupero la listView e la popolo con l'elenco nelle news
         listaNewsView = findViewById(R.id.listNews);
 
         try {
 
-            elencoNotizie = HackerNewsClient.getListNews(HackerNewsClient.TYPE_NEW, false, false);
+            //Inizializzo la lista delle news onllne
+            final ArrayList<NewsDao> elencoNews = HackerNewsClient.getListNews(HackerNewsClient.TYPE_NEW, false, false);
+            currentOnlineNews = elencoNews;
 
             //Creo e popolo l'adapter
-            listaNewsView.setAdapter(new ArrayAdapter<NewsDao>(this, android.R.layout.simple_list_item_1, elencoNotizie));
+            listaNewsView.setAdapter(new ArrayAdapter<NewsDao>(this, android.R.layout.simple_list_item_1, elencoNews));
 
             listaNewsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                    NewsDao notizia = elencoNotizie.get(i);
+                    NewsDao notizia = elencoNews.get(i); //TODO Funziona anche per quelle offline, o va gestito diversamente?
 
                     //Creo l'intent verso la activity di dettaglio
                     Intent intent = new Intent(MainActivity.this, DettaglioNewsActivity.class);
                     intent.putExtra("urlNotizia", notizia.getUrl());
                     intent.putExtra("idNotizia", notizia.getId());
+                    intent.putExtra("titoloNotizia", notizia.getTitle());
+                    intent.putExtra("timestampNotizia", notizia.getTimestamp());
+
                     startActivity(intent);
                 }
             });
 
+            listaNewsView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-            if(elencoNotizie.size() == 0)
+                    NewsDao notizia = elencoNews.get(i); //TODO Funziona anche per quelle offline, o va gestito diversamente?
+
+                    if(notizia.getId() == -1) //Solo per le notizie offline
+                    {
+                        //TODO Mostrare finestra di conferma
+                        DatabaseManager.deleteNews(database, notizia.getId());
+                    }
+
+                    return true;
+                }
+            });
+
+
+            if(currentOnlineNews.size() == 0)
                 Toast.makeText(MainActivity.this, "Non sono state trovate notizie online", Toast.LENGTH_LONG).show();
 
         } catch (Exception e) {

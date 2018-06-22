@@ -36,6 +36,11 @@ public class DatabaseManager {
         database.execSQL("DELETE FROM news");
     }
 
+    public static void deleteNews(SQLiteDatabase database, long idNews)
+    {
+        database.execSQL("DELETE FROM news where id = " + idNews);
+    }
+
     public static ArrayList<NewsDao> getAllNews(SQLiteDatabase database)
     {
         ArrayList<NewsDao> result = new ArrayList<NewsDao>();

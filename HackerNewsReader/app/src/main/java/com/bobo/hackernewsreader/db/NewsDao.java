@@ -51,6 +51,10 @@ public class NewsDao {
         return html;
     }
 
+    public void setHtml(String html) {
+        this.html = html;
+    }
+
     public String getTimestamp() {
         return timestamp;
     }
