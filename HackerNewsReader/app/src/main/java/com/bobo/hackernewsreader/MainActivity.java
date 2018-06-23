@@ -1,8 +1,11 @@
 package com.bobo.hackernewsreader;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,6 +23,7 @@ import com.bobo.hackernewsreader.db.NewsDao;
 
 import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -46,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId())
         {
-            case R.id.refreshOfflineDataButton:
+            case R.id.refreshOnlineDataButton:
 
                 //Recupero tutte le top news dalle api
                 Toast.makeText(MainActivity.this, "Sto caricando i dati, prego attendere", Toast.LENGTH_LONG).show();
@@ -67,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.showOnlineData:
 
                 refreshListaNewsView(currentOnlineNews);
+                Toast.makeText(MainActivity.this, "Mostro le ultime notizie", Toast.LENGTH_SHORT).show();
+
                 return true;
 
 
@@ -78,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
 
                     listaNews = DatabaseManager.getAllNews(database);
                     refreshListaNewsView(listaNews);
+
+                    Toast.makeText(MainActivity.this, "Mostro le notizie offline", Toast.LENGTH_SHORT).show();
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -106,11 +114,13 @@ public class MainActivity extends AppCompatActivity {
         //Recupero la listView e la popolo con l'elenco nelle news
         listaNewsView = findViewById(R.id.listNews);
 
+        Toast.makeText(MainActivity.this, "Sto caricando le ultime notizie", Toast.LENGTH_SHORT).show();
+
         try {
 
             //Inizializzo la lista delle news onllne
             final ArrayList<NewsDao> elencoNews = HackerNewsClient.getListNews(HackerNewsClient.TYPE_NEW, false, false);
-            currentOnlineNews = elencoNews;
+            currentOnlineNews = (ArrayList<NewsDao>) elencoNews.clone();
 
             //Creo e popolo l'adapter
             listaNewsView.setAdapter(new ArrayAdapter<NewsDao>(this, android.R.layout.simple_list_item_1, elencoNews));
@@ -134,14 +144,38 @@ public class MainActivity extends AppCompatActivity {
 
             listaNewsView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
-                public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
 
-                    NewsDao notizia = elencoNews.get(i); //TODO Funziona anche per quelle offline, o va gestito diversamente?
+                    final NewsDao notizia = elencoNews.get(position);
 
-                    if(notizia.getId() == -1) //Solo per le notizie offline
+                    if(notizia.getId() != -1) //Solo per le notizie offline
                     {
-                        //TODO Mostrare finestra di conferma
-                        DatabaseManager.deleteNews(database, notizia.getId());
+                        //Apro una dialog per confermare l'eliminazione
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setTitle("Eliminare la news?")
+                                .setMessage("Sei sicuro di voler eliminare la news?")
+                                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        try {
+                                                DatabaseManager.deleteNews(database, notizia.getId());
+
+                                                ArrayList<NewsDao> listaNews =  DatabaseManager.getAllNews(database);
+                                                refreshListaNewsView(listaNews);
+
+                                                Toast.makeText(MainActivity.this, "News eliminata", Toast.LENGTH_SHORT).show();
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                            Toast.makeText(MainActivity.this, "Si è verificato un errore: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                })
+                                .setNegativeButton("No", null)
+                                .show();
+
                     }
 
                     return true;

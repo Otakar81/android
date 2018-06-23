@@ -11,6 +11,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,7 +27,7 @@ public class HackerNewsClient {
 
     //Url radice per tutte le chiamate
     static final String API_URL = "https://hacker-news.firebaseio.com/v0/";
-    static final int MAX_NEWS_ONLINE = 50;
+    static final int MAX_NEWS_ONLINE = 40;
 
     //Mappo i tipi di news che l'utente può chiedermi
     public final static int TYPE_TOP = 1;

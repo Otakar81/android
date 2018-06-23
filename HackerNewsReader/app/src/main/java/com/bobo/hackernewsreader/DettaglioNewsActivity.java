@@ -3,6 +3,7 @@ package com.bobo.hackernewsreader;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,6 +29,12 @@ public class DettaglioNewsActivity extends AppCompatActivity {
         MenuInflater menuInflater = this.getMenuInflater();
         menuInflater.inflate(R.menu.menu_dettaglio, menu);
 
+        //Se la notizia da mostrare è stata già salvata per offiline, nascondo il relativo pulsante
+        if(notizia.getId() != -1)
+            menu.findItem(R.id.salvaOffiline).setVisible(false);
+        else
+            menu.findItem(R.id.salvaOffiline).setVisible(true);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -48,21 +55,31 @@ public class DettaglioNewsActivity extends AppCompatActivity {
 
                     if(urlNews != null)
                     {
+                        //Nascondo il pulsante di salvataggio offline
+                        item.setVisible(false);
+
+                        /*
+                            De Caro (2018-06-23)
+                            Il Download dell'html è lento.
+                            Per ora quindi mi limito a salvare il riferimento alla news senza il contenuto
+                            In questo modo accedendo alla lista delle news salvate mi rimane il riferimento a quelle che ho ritenuto
+                            interessanti per una vista futura, anche se poi il contenuto verrà cmq reperito online al momento della visualizzazione
+
                         DownloadTask task = new DownloadTask();
                         String html = task.execute(urlNews).get();
 
-                        notizia.setHtml(html);
+                        Log.i("Debug", "Caricato html");
 
-                        //Nascondo il pulsante di salvataggio offline
-                        ((MenuItem) findViewById(R.id.salvaOffiline)).setVisible(false); //TODO Da verificare
+                        notizia.setHtml(html);
+                        */
+
+                        DatabaseManager.insertNews(MainActivity.database, notizia);
+
+                        Log.i("Debug", "Salvato su DB");
 
                         //E stampo un messaggio felicioso
-                        Toast.makeText(getApplicationContext(), "Notizia salvata per offline", Toast.LENGTH_SHORT).show();
-
-
+                        Toast.makeText(getApplicationContext(), "Notizia salvata tra le preferite", Toast.LENGTH_SHORT).show();
                     }
-
-                    listaNews = HackerNewsClient.getListNews(HackerNewsClient.TYPE_TOP, false, true);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -90,7 +107,7 @@ public class DettaglioNewsActivity extends AppCompatActivity {
         String timestampNotizia = intent.getStringExtra("timestampNotizia");
 
         //Valorizzo l'oggetto NewsDao per la notizia correntemente mostrata
-        notizia = new NewsDao(titoloNotizia, urlNotizia, timestampNotizia);
+        notizia = new NewsDao(idNotizia, titoloNotizia, urlNotizia, "", timestampNotizia);
 
 
         //Inizializzo il webContent e mostro il contenuto della notizia a video
@@ -103,12 +120,12 @@ public class DettaglioNewsActivity extends AppCompatActivity {
             contentNotiziaView.loadUrl(urlNotizia); //Set url
         }else{
 
-            //Se la notizia da mostrare è stata già salvata per offiline, nascondo il relativo pulsante
-            ((MenuItem) findViewById(R.id.salvaOffiline)).setVisible(false); //TODO Da verificare
-
             NewsDao news = DatabaseManager.getNews(MainActivity.database, idNotizia);
 
-            contentNotiziaView.loadData(news.getHtml(), "text/html", "UTF-8"); //HTML offline da DB
+            if(news.getHtml() != null && !news.getHtml().trim().equals(""))
+                contentNotiziaView.loadData(news.getHtml(), "text/html", "UTF-8"); //HTML offline da DB
+            else
+                contentNotiziaView.loadUrl(urlNotizia); //Se ho salvato solo il riferimento, set url come per le online
         }
     }
 }
