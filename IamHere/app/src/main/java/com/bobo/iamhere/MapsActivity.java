@@ -1,6 +1,7 @@
 package com.bobo.iamhere;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -64,16 +65,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Avvio il tracking della posizione utente sulla mappa
         startListening();
 
+
         //E centro la mappa nell'ultima posizione nota
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-            if(lastKnowLocation != null)
+            //Se arrivo da un'altra activity, centro la mappa sulle coordinate che mi sono state passate
+            Intent intent = getIntent();
+            double latitudine = intent.getDoubleExtra("latitudine", -1);
+            double longitudine = intent.getDoubleExtra("longitudine", -1);
+
+            if(latitudine != -1 && longitudine != -1)
             {
-                LatLng posizioneUtente = new LatLng(lastKnowLocation.getLatitude(), lastKnowLocation.getLongitude());
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posizioneUtente, 15)); //Zoom della camera. Va da 1 (il mondo) a 20
-                mMap.setMyLocationEnabled(true);
+                LatLng posizioneCoordinate = new LatLng(latitudine, longitudine);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posizioneCoordinate, 15)); //Zoom della camera. Va da 1 (il mondo) a 20
+
+            }else{ //Altrimenti centro la posizione sull'utente
+
+                Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                if(lastKnowLocation != null)
+                {
+                    LatLng posizioneUtente = new LatLng(lastKnowLocation.getLatitude(), lastKnowLocation.getLongitude());
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posizioneUtente, 15)); //Zoom della camera. Va da 1 (il mondo) a 20
+                }
             }
+
+            mMap.setMyLocationEnabled(true);
         }
 
     }

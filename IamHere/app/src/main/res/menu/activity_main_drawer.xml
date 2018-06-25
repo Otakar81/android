@@ -5,19 +5,23 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Home" />
+        <item
             android:id="@+id/nav_maps"
             android:icon="@drawable/ic_menu_manage"
             android:title="Mappa" />
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_meteo"
             android:icon="@drawable/ic_menu_camera"
             android:title="Meteo" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_luoghi_memorabili"
             android:icon="@drawable/ic_menu_gallery"
             android:title="Luoghi memorabili" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_luoghi_interesse"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Luoghi di interesse" />
     </group>

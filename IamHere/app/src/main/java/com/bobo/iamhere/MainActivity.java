@@ -13,12 +13,9 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -31,8 +28,6 @@ import android.widget.Toast;
 
 import com.bobo.iamhere.db.DatabaseManager;
 import com.bobo.iamhere.db.LocationDao;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -76,6 +71,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -98,7 +94,6 @@ public class MainActivity extends AppCompatActivity
 
         //Se non esistono, creo le tabelle
         DatabaseManager.createTables(database);
-
     }
 
     @Override
@@ -175,16 +170,26 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_maps) {
+        if( id == R.id.nav_home)
+        {
+            //Sono già qui, non faccio nulla
+
+        } else if (id == R.id.nav_maps) {
 
             //Creo un intent e vado sulla activity corrispondente
             Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
             startActivity(intent);
 
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_meteo) {
             Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_luoghi_memorabili) {
+
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), LuoghiMemorabiliActivity.class);
+            startActivity(intent);
+
+        } else if (id == R.id.nav_luoghi_interesse) {
             Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_share) {
