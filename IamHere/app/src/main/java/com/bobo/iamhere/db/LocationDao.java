@@ -109,6 +109,11 @@ public class LocationDao {
 
     @Override
     public String toString() {
-        return comune + "(" + nazione + ") " + indirizzo;
+        String objToString = "(" + comune + ") " + indirizzo;
+
+        if(alias != null && !alias.trim().equals(""))
+            objToString = alias + "\n" + objToString;
+
+        return objToString;
     }
 }

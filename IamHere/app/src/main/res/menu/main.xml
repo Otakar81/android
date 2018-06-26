@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_salva_corrente"
+        android:icon="?android:attr/listChoiceIndicatorSingle"
+        android:title="@string/action_salva_corrente"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_salva_quick"
+        android:title="@string/action_salva_quick"
+        app:showAsAction="withText" />
+    <item
+        android:id="@+id/action_carica_quick"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/action_carica_quick"
         app:showAsAction="never" />
 </menu>

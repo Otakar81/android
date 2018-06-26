@@ -8,6 +8,9 @@ import java.util.ArrayList;
 
 public class DatabaseManager {
 
+    public static String NOME_LOCATION_VELOCE = "Luogo veloce";
+
+
     /***
      * Crea le tabelle utilizzate dall'applicazione
      * @param database
@@ -149,6 +152,51 @@ public class DatabaseManager {
 
         if (c.moveToNext())
         {
+            String alias = c.getString(aliasIndex);
+            double latitudine = Double.parseDouble(c.getString(latitudineIndex));
+            double longitudine = Double.parseDouble(c.getString(longitudineIndex));
+            String nazione = c.getString(nazioneIndex);
+            String regione = c.getString(regioneIndex);
+            String provincia = c.getString(provinciaIndex);
+            String comune = c.getString(comuneIndex);
+            String cap = c.getString(capIndex);
+            String indirizzo = c.getString(indirizzoIndex);
+
+            result = new LocationDao(id, alias, latitudine, longitudine, nazione, regione, provincia, comune, cap, indirizzo);
+        }
+
+        c.close();
+
+        return result;
+    }
+
+    /***
+     * Restituisce la location veloce<br>
+     * @param database
+     * @return
+     */
+    public static LocationDao getLocationVeloce(SQLiteDatabase database)
+    {
+        LocationDao result = null;
+
+        Cursor c = database.rawQuery("SELECT * FROM location where alias = '" + NOME_LOCATION_VELOCE + "'", null);
+
+
+        int idIndex = c.getColumnIndex("id");
+        int aliasIndex = c.getColumnIndex("alias");
+        int latitudineIndex = c.getColumnIndex("latitudine");
+        int longitudineIndex = c.getColumnIndex("longitudine");
+        int nazioneIndex = c.getColumnIndex("nazione");
+        int regioneIndex = c.getColumnIndex("regione");
+        int provinciaIndex = c.getColumnIndex("provincia");
+        int comuneIndex = c.getColumnIndex("comune");
+        int capIndex = c.getColumnIndex("cap");
+        int indirizzoIndex = c.getColumnIndex("indirizzo");
+
+
+        if (c.moveToNext())
+        {
+            long id = c.getLong(idIndex);
             String alias = c.getString(aliasIndex);
             double latitudine = Double.parseDouble(c.getString(latitudineIndex));
             double longitudine = Double.parseDouble(c.getString(longitudineIndex));

@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.bobo.iamhere.db.DatabaseManager;
 import com.bobo.iamhere.db.LocationDao;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -156,9 +157,42 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+        if (id == R.id.action_salva_corrente) {
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            {
+                Location lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                salvaLocation(lastKnowLocation, "");
+            }
+
             return true;
+
+        } else if (id == R.id.action_salva_quick) {
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            {
+                Location lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                salvaLocation(lastKnowLocation, DatabaseManager.NOME_LOCATION_VELOCE);
+            }
+
+            return true;
+
+        } else if (id == R.id.action_carica_quick) {
+
+            LocationDao locationDao = DatabaseManager.getLocationVeloce(database);
+
+            if(locationDao != null)
+            {
+                //Creo un intent e vado sulla mappa
+                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                intent.putExtra("latitudine", locationDao.getLatitudine());
+                intent.putExtra("longitudine", locationDao.getLongitudine());
+                startActivity(intent);
+
+            } else {
+                Toast.makeText(getApplicationContext(), "Non hai ancora salvato un 'luogo veloce'", Toast.LENGTH_SHORT).show();
+            }
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -378,6 +412,66 @@ public class MainActivity extends AppCompatActivity
         }catch (Exception e)
         {
 
+        }
+    }
+
+
+    /***
+     * Salva la location passata come argomento<br>
+     *
+     * @param location
+     * @param alias
+     */
+    private void salvaLocation(Location location, String alias)
+    {
+        if(location == null)
+            return;
+
+
+        //Se sto salvando la location "veloce", verifico che già non ci sia. In quel caso la elimino
+        if(alias != null && !alias.trim().equals("") && alias.equalsIgnoreCase(DatabaseManager.NOME_LOCATION_VELOCE))
+        {
+            LocationDao locationVeloce = DatabaseManager.getLocationVeloce(database);
+
+            if(locationVeloce != null)
+                DatabaseManager.deleteLocation(database, locationVeloce.getId());
+        }
+
+        //Utilizzo il Geocoder per ottenere info sugli indirizzi in zona
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
+        try {
+
+            List<Address> listaIndirizzi = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1); //Voglio un solo risultato
+
+            if(listaIndirizzi != null && listaIndirizzi.size() > 0)
+            {
+                Address indirizzo = listaIndirizzi.get(0);
+
+                //Recupero le info della zona
+                String country = indirizzo.getCountryName();
+                String locality = indirizzo.getLocality();
+                String adminArea = indirizzo.getAdminArea();
+                String subAdminArea = indirizzo.getSubAdminArea();
+                String postalCode = indirizzo.getPostalCode();
+                String indirizzoPostale = indirizzo.getThoroughfare();
+
+                //Salvo sul database il luogo selezionato
+                LocationDao locationDao = new LocationDao(location.getLatitude(), location.getLongitude(), country, adminArea, subAdminArea, locality, postalCode, indirizzoPostale);
+
+                if(alias != null)
+                    locationDao.setAlias(alias);
+
+                DatabaseManager.insertLocation(MainActivity.database, locationDao);
+
+                Toast.makeText(getApplicationContext(), "Luogo aggiunto", Toast.LENGTH_SHORT).show();
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 

@@ -1,10 +1,20 @@
 <resources>
     <string name="app_name">I am Here</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">G.Claudio</string>
     <string name="nav_header_subtitle">g.claudio.dc@gmail.com</string>
     <string name="nav_header_desc">Navigation header</string>
+
+    <string name="title_activity_main">I am here</string>
+    <string name="title_activity_maps">Mappa</string>
+    <string name="title_activity_luoghi_memorabili">Luoghi salvati</string>
+
     <string name="action_settings">Settings</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="action_salva_quick">Salva posizione veloce</string>
+    <string name="action_carica_quick">Carica posizione veloce</string>
+    <string name="action_salva_corrente">Salva posizione corrente</string>
+
+
 </resources>

@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -34,6 +33,10 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_luoghi_memorabili);
 
+        //Cambio il titolo all'activity
+        setTitle(getString(R.string.title_activity_luoghi_memorabili));
+
+        //Carico la toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

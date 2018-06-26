@@ -7,11 +7,11 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Home" />
+            android:title="@string/title_activity_main" />
         <item
             android:id="@+id/nav_maps"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Mappa" />
+            android:title="@string/title_activity_maps" />
         <item
             android:id="@+id/nav_meteo"
             android:icon="@drawable/ic_menu_camera"
@@ -19,7 +19,7 @@
         <item
             android:id="@+id/nav_luoghi_memorabili"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Luoghi memorabili" />
+            android:title="@string/title_activity_luoghi_memorabili" />
         <item
             android:id="@+id/nav_luoghi_interesse"
             android:icon="@drawable/ic_menu_slideshow"
