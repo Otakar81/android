@@ -1,7 +1,9 @@
 package com.bobo.iamhere;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
@@ -23,12 +25,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bobo.iamhere.db.DatabaseManager;
 import com.bobo.iamhere.db.LocationDao;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -159,11 +161,35 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_salva_corrente) {
 
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-            {
-                Location lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                salvaLocation(lastKnowLocation, "");
-            }
+            final EditText taskEditText = new EditText(this);
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle("Aggiunta luogo")
+                    .setMessage("Specificare un alias per il luogo (opzionale)")
+                    .setView(taskEditText)
+                    .setPositiveButton("Aggiungi", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            String alias = String.valueOf(taskEditText.getText());
+
+                            if(alias == null || alias.trim().equals(""))
+                                alias = "";
+
+                            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+                            {
+                                Location lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                salvaLocation(lastKnowLocation, alias);
+
+                                //Refresh dell'elenco dei luoghi
+                                valorizzaDatiVideo(lastKnowLocation);
+                            }
+
+                        }
+                    })
+                    .setNegativeButton("Cancella", null)
+                    .create();
+
+            dialog.show();
 
             return true;
 
@@ -173,6 +199,9 @@ public class MainActivity extends AppCompatActivity
             {
                 Location lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 salvaLocation(lastKnowLocation, DatabaseManager.NOME_LOCATION_VELOCE);
+
+                //Refresh dell'elenco dei luoghi
+                valorizzaDatiVideo(lastKnowLocation);
             }
 
             return true;
@@ -402,7 +431,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 //Stampo la riga di informazione
-                infoDistanze += "\n" + luogo.toString() + " - " + distanza + unitaDiMisura;
+                infoDistanze += "\n" + luogo.toStringShort() + " - " + distanza + unitaDiMisura;
             }
 
 

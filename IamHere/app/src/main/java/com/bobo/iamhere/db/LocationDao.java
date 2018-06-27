@@ -116,4 +116,18 @@ public class LocationDao {
 
         return objToString;
     }
+
+    /***
+     * Se il luogo ha un alias, restituisco solo quello.
+     * Altrimenti si comporta come il toString()
+     *
+     * @return
+     */
+    public String toStringShort()
+    {
+        if(alias != null && !alias.trim().equals(""))
+            return alias;
+        else
+            return toString();
+    }
 }
