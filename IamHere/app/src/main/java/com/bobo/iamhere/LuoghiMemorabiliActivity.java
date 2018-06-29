@@ -1,10 +1,15 @@
 package com.bobo.iamhere;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -130,7 +135,9 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_meteo) {
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), MeteoActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_luoghi_memorabili) {
 
@@ -140,10 +147,24 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
             Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_share) {
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
 
-        } else if (id == R.id.nav_send) {
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            {
+                Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                Double latitude = lastKnowLocation.getLatitude();
+                Double longitude = lastKnowLocation.getLongitude();
+
+                String uri = "https://www.google.com/maps/search/?api=1&query=" +latitude+","+longitude; //Apre la mappa e la centra sulle coordinate con un marker
+                //String uri = "https://maps.google.com/maps?daddr=" +latitude+","+longitude; //Apre direttamente il "calcola percorso" fino alle coordinate passate
+
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                String ShareSub = "Here is my location";
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, ShareSub);
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, uri);
+                startActivity(Intent.createChooser(sharingIntent, "Share via"));
+            }
 
         }
 

@@ -24,6 +24,12 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <meta-data
+            android:name="openweathermap.API_KEY"
+            android:value="fcb9f7b9adc7dc425cb5dc6b8e5b8236" />
+        <meta-data
+            android:name="openweathermap.URI_SERVICE_5DAYS"
+            android:value="http://api.openweathermap.org/data/2.5/forecast" />
 
         <activity
             android:name=".MainActivity"
@@ -35,15 +41,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
+        <activity
+            android:name=".LuoghiMemorabiliActivity"
+            android:theme="@style/AppTheme"></activity>
 
-        <activity android:name=".LuoghiMemorabiliActivity"
-            android:theme="@style/AppTheme">
-        </activity>
-
+        <activity
+            android:name=".MeteoActivity"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

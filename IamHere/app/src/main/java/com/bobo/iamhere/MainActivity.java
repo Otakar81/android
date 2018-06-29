@@ -244,7 +244,9 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_meteo) {
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), MeteoActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_luoghi_memorabili) {
 
@@ -256,11 +258,28 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_share) {
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
 
-        } else if (id == R.id.nav_send) {
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            {
+                Location lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
+                Double latitude = lastKnowLocation.getLatitude();
+                Double longitude = lastKnowLocation.getLongitude();
+
+                String uri = "https://www.google.com/maps/search/?api=1&query=" +latitude+","+longitude; //Apre la mappa e la centra sulle coordinate con un marker
+                //String uri = "https://maps.google.com/maps?daddr=" +latitude+","+longitude; //Apre direttamente il "calcola percorso" fino alle coordinate passate
+
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                String ShareSub = "Here is my location";
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, ShareSub);
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, uri);
+                startActivity(Intent.createChooser(sharingIntent, "Share via"));
+            }
+
+        } else if (id == R.id.nav_settings)
+        {
+            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

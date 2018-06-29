@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_salva_corrente"
-        android:icon="?android:attr/listChoiceIndicatorSingle"
+        android:icon="@drawable/action_save_location"
         android:title="@string/action_salva_corrente"
         app:showAsAction="ifRoom" />
     <item
