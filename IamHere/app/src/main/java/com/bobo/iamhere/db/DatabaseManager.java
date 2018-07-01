@@ -26,7 +26,7 @@ public class DatabaseManager {
         /* Tmp
         sql = "ALTER TABLE location ADD COLUMN is_preferito INTEGER(1)";
         database.execSQL(sql);
-        */
+*/
 
         //Creo la tabella delle note
         sql = "CREATE TABLE IF NOT EXISTS note (id INTEGER PRIMARY KEY, titolo VARCHAR, testo VARCHAR, id_location INTEGER)";
@@ -247,6 +247,127 @@ public class DatabaseManager {
         c.close();
 
         return result;
+    }
+
+
+    /*
+        NOTE
+     */
+
+
+    /**
+     * Restituisce tutte le note memorizzate
+     * @param database
+     * @return
+     */
+    public static ArrayList<NotaDao> getAllNote(SQLiteDatabase database)
+    {
+        ArrayList<NotaDao> result = new ArrayList<NotaDao>();
+
+        String sql = "SELECT id, titolo, testo, id_location FROM note";
+
+        Cursor c = database.rawQuery(sql, null);
+
+
+        int idIndex = c.getColumnIndex("id");
+        int titoloIndex = c.getColumnIndex("titolo");
+        int testoIndex = c.getColumnIndex("testo");
+        int id_locationIndex = c.getColumnIndex("id_location");
+
+        while (c.moveToNext())
+        {
+            long id = c.getLong(idIndex);
+            String titolo = c.getString(titoloIndex);
+            String testo = c.getString(testoIndex);
+            long idLocation = c.getInt(id_locationIndex);
+
+            NotaDao notaDao = new NotaDao(id, titolo, testo, idLocation);
+
+            result.add(notaDao);
+        }
+
+        c.close();
+
+        return result;
+    }
+
+    /**
+     * Restituisce la nota passata come argomento
+     * @param database
+     * @param idNota
+     * @return
+     */
+    public static NotaDao getNota(SQLiteDatabase database, long idNota)
+    {
+        NotaDao result = null;
+
+        String sql = "SELECT id, titolo, testo, id_location FROM note WHERE id = " + idNota;
+
+        Cursor c = database.rawQuery(sql, null);
+
+
+        int idIndex = c.getColumnIndex("id");
+        int titoloIndex = c.getColumnIndex("titolo");
+        int testoIndex = c.getColumnIndex("testo");
+        int id_locationIndex = c.getColumnIndex("id_location");
+
+        if (c.moveToNext())
+        {
+            long id = c.getLong(idIndex);
+            String titolo = c.getString(titoloIndex);
+            String testo = c.getString(testoIndex);
+            long idLocation = c.getInt(id_locationIndex);
+
+            result = new NotaDao(id, titolo, testo, idLocation);
+        }
+
+        c.close();
+
+        return result;
+    }
+
+    /**
+     * Cancella la nota passata come argomento
+     * @param database
+     * @param id
+     */
+    public static void deleteNota(SQLiteDatabase database, long id)
+    {
+        database.execSQL("DELETE FROM note where id = " + id);
+    }
+
+    /**
+     * Aggiunge una nuova nota
+     * @param database
+     * @param nota
+     */
+    public static void insertNota(SQLiteDatabase database, NotaDao nota)
+    {
+        String sql = "INSERT INTO note (titolo, testo, id_location)" +
+                " VALUES (?, ?, ?)";
+
+
+        SQLiteStatement stmt = database.compileStatement(sql);
+        stmt.bindString(1, nota.getTitolo());
+        stmt.bindString(2, nota.getTestoNota());
+        stmt.bindString(3, nota.getIdLocation() + "");
+        stmt.execute();
+    }
+
+    /***
+     * Update nota
+     *
+     * @param database
+     * @param nota
+     */
+    public static void updateNota(SQLiteDatabase database, NotaDao nota)
+    {
+        SQLiteStatement stmt = database.compileStatement("UPDATE location SET alias = ?, testo = ? WHERE id = ?");
+        stmt.bindString(1, nota.getTitolo());
+        stmt.bindString(2, nota.getTestoNota());
+        stmt.bindLong(3, nota.getId());
+
+        stmt.execute();
     }
 
 }

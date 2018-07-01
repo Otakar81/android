@@ -46,11 +46,14 @@
             android:label="@string/title_activity_maps" />
         <activity
             android:name=".LuoghiMemorabiliActivity"
-            android:theme="@style/AppTheme"></activity>
-
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".MeteoActivity"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".NoteActivity"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".Note_DettaglioActivity"></activity>
     </application>
 
 </manifest>
