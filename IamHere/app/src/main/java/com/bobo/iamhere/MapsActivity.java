@@ -20,6 +20,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -167,12 +168,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void addMarkersOnMap()
     {
         //Recupero la lista del luoghi salvati dal database
-        ArrayList<LocationDao> elencoLuoghi = DatabaseManager.getAllLocation(MainActivity.database);
+        ArrayList<LocationDao> elencoLuoghi = DatabaseManager.getAllLocation(MainActivity.database, false);
 
         for (LocationDao location:elencoLuoghi)
         {
             LatLng latLng = new LatLng(location.getLatitudine(), location.getLongitudine());
-            mMap.addMarker(new MarkerOptions().position(latLng).title(location.toString()));
+
+            if(location.getLuogoPreferito() == 1)
+                mMap.addMarker(new MarkerOptions().position(latLng).title(location.toString()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
+            else
+                mMap.addMarker(new MarkerOptions().position(latLng).title(location.toString()));
         }
     }
 }

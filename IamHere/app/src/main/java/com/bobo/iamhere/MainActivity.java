@@ -34,6 +34,7 @@ import com.bobo.iamhere.db.LocationDao;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -178,7 +179,7 @@ public class MainActivity extends AppCompatActivity
                             if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
                             {
                                 Location lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                                salvaLocation(lastKnowLocation, alias);
+                                salvaLocation(lastKnowLocation, alias, 0);
 
                                 //Refresh dell'elenco dei luoghi
                                 valorizzaDatiVideo(lastKnowLocation);
@@ -198,7 +199,7 @@ public class MainActivity extends AppCompatActivity
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             {
                 Location lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                salvaLocation(lastKnowLocation, DatabaseManager.NOME_LOCATION_VELOCE);
+                salvaLocation(lastKnowLocation, DatabaseManager.NOME_LOCATION_VELOCE, 1);
 
                 //Refresh dell'elenco dei luoghi
                 valorizzaDatiVideo(lastKnowLocation);
@@ -421,14 +422,15 @@ public class MainActivity extends AppCompatActivity
         //E stampo le distanze dai luoghi memorizzati
         try{
 
-            //Recupero la lista del luoghi salvati dal database
-            ArrayList<LocationDao> elencoLuoghi = DatabaseManager.getAllLocation(MainActivity.database);
+            //Recupero la lista del luoghi "preferiti" salvati sul database
+            ArrayList<LocationDao> elencoLuoghi = DatabaseManager.getAllLocation(MainActivity.database, false);
 
             String infoDistanze = "Distanze dai luoghi memorizzati: \n";
 
             if(elencoLuoghi.size() == 0)
                 infoDistanze += "\nNon ci sono luoghi memorizzati";
 
+            //Valorizzo le distanze
             for (LocationDao luogo:elencoLuoghi)
             {
                 Location indirizzoLuogo = new Location(luogo.toString());
@@ -437,6 +439,25 @@ public class MainActivity extends AppCompatActivity
 
                 //Calcolo la distanza
                 float distanza = location.distanceTo(indirizzoLuogo);
+
+                //E la setto
+                luogo.setDistanzaDaMe(distanza);
+            }
+
+            //Ordino la lista sulla base della distanza dal luogo in cui mi trovo
+            Collections.sort(elencoLuoghi);
+
+            //E stampo la lista ordinata a video
+            for (LocationDao luogo:elencoLuoghi)
+            {
+                /*
+                Location indirizzoLuogo = new Location(luogo.toString());
+                indirizzoLuogo.setLatitude(luogo.getLatitudine());
+                indirizzoLuogo.setLongitude(luogo.getLongitudine());
+                */
+
+                //Calcolo la distanza
+                float distanza = luogo.getDistanzaDaMe();
                 String unitaDiMisura = "m";
 
                 if(distanza > 1000) {
@@ -452,6 +473,7 @@ public class MainActivity extends AppCompatActivity
                 //Stampo la riga di informazione
                 infoDistanze += "\n" + luogo.toStringShort() + " - " + distanza + unitaDiMisura;
             }
+
 
 
             TextView distanzeText = findViewById(R.id.infoDistanzeText);
@@ -470,7 +492,7 @@ public class MainActivity extends AppCompatActivity
      * @param location
      * @param alias
      */
-    private void salvaLocation(Location location, String alias)
+    private void salvaLocation(Location location, String alias, int isLuogoPreferito)
     {
         if(location == null)
             return;
@@ -506,6 +528,7 @@ public class MainActivity extends AppCompatActivity
 
                 //Salvo sul database il luogo selezionato
                 LocationDao locationDao = new LocationDao(location.getLatitude(), location.getLongitude(), country, adminArea, subAdminArea, locality, postalCode, indirizzoPostale);
+                locationDao.setLuogoPreferito(isLuogoPreferito);
 
                 if(alias != null)
                     locationDao.setAlias(alias);

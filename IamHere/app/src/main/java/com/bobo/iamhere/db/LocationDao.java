@@ -1,6 +1,8 @@
 package com.bobo.iamhere.db;
 
-public class LocationDao {
+import android.support.annotation.NonNull;
+
+public class LocationDao implements Comparable {
 
     private long id;
     private double latitudine;
@@ -12,6 +14,9 @@ public class LocationDao {
     private String comune;
     private String cap;
     private String indirizzo;
+    private int luogoPreferito;
+
+    private float distanzaDaMe;
 
 
     public LocationDao(double latitudine, double longitudine, String nazione, String regione, String provincia, String comune, String cap, String indirizzo)
@@ -26,6 +31,9 @@ public class LocationDao {
         this.comune = comune;
         this.cap = cap;
         this.indirizzo = indirizzo;
+        this.luogoPreferito = 0;
+
+        this.distanzaDaMe = -1;
     }
 
     public LocationDao(long id, double latitudine, double longitudine, String nazione, String regione, String provincia, String comune, String cap, String indirizzo)
@@ -40,6 +48,9 @@ public class LocationDao {
         this.comune = comune;
         this.cap = cap;
         this.indirizzo = indirizzo;
+        this.luogoPreferito = 0;
+
+        this.distanzaDaMe = -1;
     }
 
     public LocationDao(long id, String alias, double latitudine, double longitudine, String nazione, String regione, String provincia, String comune, String cap, String indirizzo)
@@ -54,6 +65,9 @@ public class LocationDao {
         this.comune = comune;
         this.cap = cap;
         this.indirizzo = indirizzo;
+        this.luogoPreferito = 0;
+
+        this.distanzaDaMe = -1;
     }
     
     
@@ -64,6 +78,14 @@ public class LocationDao {
 
     public String getAlias() {
         return alias;
+    }
+
+    public void setDistanzaDaMe(float distanzaDaMe) {
+        this.distanzaDaMe = distanzaDaMe;
+    }
+
+    public float getDistanzaDaMe() {
+        return distanzaDaMe;
     }
 
     public void setId(long id) {
@@ -106,6 +128,13 @@ public class LocationDao {
         return indirizzo;
     }
 
+    public int getLuogoPreferito() {
+        return luogoPreferito;
+    }
+
+    public void setLuogoPreferito(int luogoPreferito) {
+        this.luogoPreferito = luogoPreferito;
+    }
 
     @Override
     public String toString() {
@@ -129,5 +158,18 @@ public class LocationDao {
             return alias;
         else
             return toString();
+    }
+
+    @Override
+    public int compareTo(@NonNull Object o) {
+
+        LocationDao luogo = (LocationDao)o;
+
+        if(this.distanzaDaMe > luogo.getDistanzaDaMe())
+            return 1;
+        else if(this.distanzaDaMe < luogo.getDistanzaDaMe())
+            return -1;
+        else
+            return 0;
     }
 }

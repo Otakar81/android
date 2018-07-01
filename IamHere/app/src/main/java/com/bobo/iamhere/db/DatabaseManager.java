@@ -17,10 +17,20 @@ public class DatabaseManager {
      */
     public static void createTables(SQLiteDatabase database)
     {
+        //Creo la tabella dei luoghi
         String sql = "CREATE TABLE IF NOT EXISTS location (id INTEGER PRIMARY KEY, alias VARCHAR, latitudine VARCHAR, longitudine VARCHAR, " +
-                "nazione VARCHAR, regione VARCHAR, provincia VARCHAR, comune VARCHAR, cap VARCHAR, indirizzo VARCHAR)";
+                "nazione VARCHAR, regione VARCHAR, provincia VARCHAR, comune VARCHAR, cap VARCHAR, indirizzo VARCHAR, is_preferito INTEGER(1))";
 
-        //Creo la tabella
+        database.execSQL(sql);
+
+        /* Tmp
+        sql = "ALTER TABLE location ADD COLUMN is_preferito INTEGER(1)";
+        database.execSQL(sql);
+        */
+
+        //Creo la tabella delle note
+        sql = "CREATE TABLE IF NOT EXISTS note (id INTEGER PRIMARY KEY, titolo VARCHAR, testo VARCHAR, id_location INTEGER)";
+
         database.execSQL(sql);
     }
 
@@ -33,8 +43,8 @@ public class DatabaseManager {
      */
     public static void insertLocation(SQLiteDatabase database, LocationDao location)
     {
-        String sql = "INSERT INTO location (alias, latitudine, longitudine, nazione, regione, provincia, comune, cap, indirizzo)" +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO location (alias, latitudine, longitudine, nazione, regione, provincia, comune, cap, indirizzo, is_preferito)" +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 
         SQLiteStatement stmt = database.compileStatement(sql);
@@ -47,6 +57,7 @@ public class DatabaseManager {
         stmt.bindString(7, location.getComune());
         stmt.bindString(8, location.getCap());
         stmt.bindString(9, location.getIndirizzo());
+        stmt.bindLong(10, location.getLuogoPreferito());
         stmt.execute();
     }
 
@@ -61,6 +72,15 @@ public class DatabaseManager {
     {
         SQLiteStatement stmt = database.compileStatement("UPDATE location SET alias = ? WHERE id = ?");
         stmt.bindString(1, alias);
+        stmt.bindLong(2, id);
+
+        stmt.execute();
+    }
+
+    public static void updateLuogoPreferito(SQLiteDatabase database, long id, int isLuogoPreferito)
+    {
+        SQLiteStatement stmt = database.compileStatement("UPDATE location SET is_preferito = ? WHERE id = ?");
+        stmt.bindLong(1, isLuogoPreferito);
         stmt.bindLong(2, id);
 
         stmt.execute();
@@ -83,11 +103,16 @@ public class DatabaseManager {
      * @param database
      * @return
      */
-    public static ArrayList<LocationDao> getAllLocation(SQLiteDatabase database)
+    public static ArrayList<LocationDao> getAllLocation(SQLiteDatabase database, boolean soloPreferite)
     {
         ArrayList<LocationDao> result = new ArrayList<LocationDao>();
 
-        Cursor c = database.rawQuery("SELECT id, alias, latitudine, longitudine, nazione, regione, provincia, comune, cap, indirizzo FROM location", null);
+        String sql = "SELECT id, alias, latitudine, longitudine, nazione, regione, provincia, comune, cap, indirizzo, is_preferito FROM location";
+
+        if(soloPreferite)
+            sql += " WHERE is_preferito = 1";
+
+        Cursor c = database.rawQuery(sql, null);
 
 
         int idIndex = c.getColumnIndex("id");
@@ -100,6 +125,7 @@ public class DatabaseManager {
         int comuneIndex = c.getColumnIndex("comune");
         int capIndex = c.getColumnIndex("cap");
         int indirizzoIndex = c.getColumnIndex("indirizzo");
+        int isLuogoPreferitoIndex = c.getColumnIndex("is_preferito");
 
 
         while (c.moveToNext())
@@ -114,8 +140,10 @@ public class DatabaseManager {
             String comune = c.getString(comuneIndex);
             String cap = c.getString(capIndex);
             String indirizzo = c.getString(indirizzoIndex);
+            int isLuogoPreferito = c.getInt(isLuogoPreferitoIndex);
 
             LocationDao locationDao = new LocationDao(id, alias, latitudine, longitudine, nazione, regione, provincia, comune, cap, indirizzo);
+            locationDao.setLuogoPreferito(isLuogoPreferito);
 
             result.add(locationDao);
         }
@@ -148,6 +176,7 @@ public class DatabaseManager {
         int comuneIndex = c.getColumnIndex("comune");
         int capIndex = c.getColumnIndex("cap");
         int indirizzoIndex = c.getColumnIndex("indirizzo");
+        int isLuogoPreferitoIndex = c.getColumnIndex("is_preferito");
 
 
         if (c.moveToNext())
@@ -161,8 +190,10 @@ public class DatabaseManager {
             String comune = c.getString(comuneIndex);
             String cap = c.getString(capIndex);
             String indirizzo = c.getString(indirizzoIndex);
+            int isLuogoPreferito = c.getInt(isLuogoPreferitoIndex);
 
             result = new LocationDao(id, alias, latitudine, longitudine, nazione, regione, provincia, comune, cap, indirizzo);
+            result.setLuogoPreferito(isLuogoPreferito);
         }
 
         c.close();
@@ -192,6 +223,7 @@ public class DatabaseManager {
         int comuneIndex = c.getColumnIndex("comune");
         int capIndex = c.getColumnIndex("cap");
         int indirizzoIndex = c.getColumnIndex("indirizzo");
+        int isLuogoPreferitoIndex = c.getColumnIndex("is_preferito");
 
 
         if (c.moveToNext())
@@ -206,8 +238,10 @@ public class DatabaseManager {
             String comune = c.getString(comuneIndex);
             String cap = c.getString(capIndex);
             String indirizzo = c.getString(indirizzoIndex);
+            int isLuogoPreferito = c.getInt(isLuogoPreferitoIndex);
 
             result = new LocationDao(id, alias, latitudine, longitudine, nazione, regione, provincia, comune, cap, indirizzo);
+            result.setLuogoPreferito(isLuogoPreferito);
         }
 
         c.close();

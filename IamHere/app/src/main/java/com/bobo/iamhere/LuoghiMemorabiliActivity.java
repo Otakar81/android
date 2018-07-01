@@ -58,7 +58,7 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
 
         //Inizializzo la ListView
         listaPostiView = findViewById(R.id.listaPostiView);
-        final ArrayList<LocationDao> elencoPostiMemorabili = DatabaseManager.getAllLocation(MainActivity.database);
+        final ArrayList<LocationDao> elencoPostiMemorabili = DatabaseManager.getAllLocation(MainActivity.database, false);
 
         //Popolo la lista delle località
         aggiornaLista(elencoPostiMemorabili);
@@ -93,7 +93,7 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
                                 DatabaseManager.deleteLocation(MainActivity.database, elencoPostiMemorabili.get(position).getId());
 
                                 //Avverto la lista che i dati sono cambiati
-                                aggiornaLista(DatabaseManager.getAllLocation(MainActivity.database));
+                                aggiornaLista(DatabaseManager.getAllLocation(MainActivity.database, false));
 
                                 //((BaseAdapter) listaPostiView.getAdapter()).notifyDataSetChanged(); TODO Verificare perchè non funziona
 
@@ -113,7 +113,7 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
         super.onResume();
 
         //Aggiorno la lista, necessario se sto tornando indietro dalla mappa ed ho aggiunto un luogo
-        aggiornaLista(DatabaseManager.getAllLocation(MainActivity.database));
+        aggiornaLista(DatabaseManager.getAllLocation(MainActivity.database, false));
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
