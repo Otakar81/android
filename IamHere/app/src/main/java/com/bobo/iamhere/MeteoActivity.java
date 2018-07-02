@@ -175,6 +175,12 @@ public class MeteoActivity extends AppCompatActivity
         } else if (id == R.id.nav_settings)
         {
             Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+
+        } else if (id == R.id.nav_note)
+        {
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
