@@ -236,7 +236,11 @@ public class MainActivity extends AppCompatActivity
 
         if( id == R.id.nav_home)
         {
-            //Sono già qui, non faccio nulla
+            /*Sono già qui, non faccio nulla
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            */
 
         } else if (id == R.id.nav_maps) {
 
@@ -256,7 +260,16 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_luoghi_interesse) {
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), GooglePlacesActivity.class);
+            startActivity(intent);
+
+        } else if (id == R.id.nav_note)
+        {
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_share) {
 
@@ -282,13 +295,7 @@ public class MainActivity extends AppCompatActivity
         {
             Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
 
-        } else if (id == R.id.nav_note)
-        {
-            //Creo un intent e vado sulla activity corrispondente
-            Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
-            startActivity(intent);
         }
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

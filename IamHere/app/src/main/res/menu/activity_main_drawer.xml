@@ -23,11 +23,11 @@
         <item
             android:id="@+id/nav_luoghi_interesse"
             android:icon="@drawable/nav_luoghi_interesse"
-            android:title="Luoghi di interesse" />
+            android:title="@string/title_activity_google_places" />
         <item
             android:id="@+id/nav_note"
             android:icon="@drawable/nav_appunti"
-            android:title="Appunti di viaggio" />
+            android:title="@string/title_activity_note" />
     </group>
 
     <item android:title="Communicate">

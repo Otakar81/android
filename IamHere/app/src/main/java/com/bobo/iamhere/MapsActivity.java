@@ -80,6 +80,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 LatLng posizioneCoordinate = new LatLng(latitudine, longitudine);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posizioneCoordinate, 15)); //Zoom della camera. Va da 1 (il mondo) a 20
 
+                //Se richiesto, metto anche un marker nella posizione corrente
+                if(intent.getBooleanExtra("inserisci_marker", false))
+                {
+                    String nomeLuogo = intent.getStringExtra("nome_luogo");
+
+                    LatLng latLng = new LatLng(latitudine, longitudine);
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(nomeLuogo).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                }
+
+
             }else{ //Altrimenti centro la posizione sull'utente
 
                 Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);

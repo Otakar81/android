@@ -4,12 +4,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
+import com.bobo.iamhere.GooglePlacesActivity;
+
 import java.util.ArrayList;
 
 public class DatabaseManager {
 
     public static String NOME_LOCATION_VELOCE = "Luogo veloce";
 
+//region SEZIONE COMUNE
 
     /***
      * Crea le tabelle utilizzate dall'applicazione
@@ -17,7 +20,9 @@ public class DatabaseManager {
      */
     public static void createTables(SQLiteDatabase database)
     {
-        //Creo la tabella dei luoghi
+        /*
+            Creo la tabella dei luoghi
+         */
         String sql = "CREATE TABLE IF NOT EXISTS location (id INTEGER PRIMARY KEY, alias VARCHAR, latitudine VARCHAR, longitudine VARCHAR, " +
                 "nazione VARCHAR, regione VARCHAR, provincia VARCHAR, comune VARCHAR, cap VARCHAR, indirizzo VARCHAR, is_preferito INTEGER(1))";
 
@@ -28,11 +33,69 @@ public class DatabaseManager {
         database.execSQL(sql);
 */
 
-        //Creo la tabella delle note
+        /*
+            Creo la tabella delle note
+         */
         sql = "CREATE TABLE IF NOT EXISTS note (id INTEGER PRIMARY KEY, titolo VARCHAR, testo VARCHAR, id_location INTEGER)";
 
         database.execSQL(sql);
+
+        /*
+            Creo la tabella delle tipologie di "place" (Google Places API)
+         */
+        sql = "CREATE TABLE IF NOT EXISTS google_places_type (id INTEGER PRIMARY KEY, chiave VARCHAR, gruppo VARCHAR, is_preferito INTEGER(1))";
+
+        database.execSQL(sql);
+
+
+        Cursor c = database.rawQuery("SELECT count(*) numero_tipi FROM google_places_type", null);
+
+
+        int countIndex = c.getColumnIndex("numero_tipi");
+
+        if (c.moveToNext())
+        {
+            int numeroTipi = c.getInt(countIndex);
+
+            if(numeroTipi == 0) //Valorizzo la tabella
+            {
+                sql = "INSERT INTO google_places_type (chiave, gruppo, is_preferito) VALUES " +
+                    "('accounting', '', 0), ('airport', '', 0), ('amusement_park', '', 0), ('aquarium', '', 0), " +
+                    "('art_gallery', '', 0), ('atm', '', 0), ('bakery', '', 0), ('bank', '', 0), " +
+                    "('bar', '', 0), ('beauty_salon', '', 0), ('bicycle_store', '', 0), ('book_store', '', 0), " +
+                    "('bowling_alley', '', 0), ('bus_station', '', 0), ('cafe', '', 0), ('campground', '', 0), " +
+                    "('car_dealer', '', 0), ('car_rental', '', 0), ('car_repair', '', 0), ('car_wash', '', 0), " +
+                    "('casino', '', 0), ('cemetery', '', 0), ('church', '', 0), ('city_hall', '', 0), " +
+                    "('clothing_store', '', 0), ('convenience_store', '', 0), ('courthouse', '', 0), ('dentist', '', 0), " +
+                    "('department_store', '', 0), ('doctor', '', 0), ('electrician', '', 0), ('electronics_store', '', 0), " +
+                    "('embassy', '', 0), ('fire_station', '', 0), ('florist', '', 0), ('funeral_home', '', 0), " +
+                    "('furniture_store', '', 0), ('gas_station', '', 0), ('gym', '', 0), ('hair_care', '', 0), " +
+                    "('hardware_store', '', 0), ('hindu_temple', '', 0), ('home_goods_store', '', 0), ('hospital', '', 0), " +
+                    "('insurance_agency', '', 0), ('jewelry_store', '', 0), ('laundry', '', 0), ('lawyer', '', 0), " +
+                    "('library', '', 0), ('liquor_store', '', 0), ('local_government_office', '', 0), ('locksmith', '', 0), " +
+                    "('lodging', '', 0), ('meal_delivery', '', 0), ('meal_takeaway', '', 0), ('mosque', '', 0), " +
+                    "('movie_rental', '', 0), ('movie_theater', '', 0), ('moving_company', '', 0), ('museum', '', 0), " +
+                    "('night_club', '', 0), ('painter', '', 0), ('park', '', 0), ('parking', '', 0), " +
+                    "('pet_store', '', 0), ('pharmacy', '', 0), ('physiotherapist', '', 0), ('plumber', '', 0), " +
+                    "('police', '', 0), ('post_office', '', 0), ('real_estate_agency', '', 0), ('restaurant', '', 0), " +
+                    "('roofing_contractor', '', 0), ('rv_park', '', 0), ('school', '', 0), ('shoe_store', '', 0), " +
+                    "('shopping_mall', '', 0), ('spa', '', 0), ('stadium', '', 0), ('storage', '', 0), " +
+                    "('store', '', 0), ('subway_station', '', 0), ('supermarket', '', 0), ('synagogue', '', 0), " +
+                    "('taxi_stand', '', 0), ('train_station', '', 0), ('transit_station', '', 0), ('travel_agency', '', 0), " +
+                    "('veterinary_care', '', 0), ('zoo', '', 0)";
+
+                database.execSQL(sql);
+            }
+        }
+        c.close();
+
+
     }
+
+//endregion
+
+
+//region SEZIONE LOCATION
 
 
     /***
@@ -249,10 +312,10 @@ public class DatabaseManager {
         return result;
     }
 
+//endregion
 
-    /*
-        NOTE
-     */
+
+//region SEZIONE NOTE
 
 
     /**
@@ -369,5 +432,81 @@ public class DatabaseManager {
 
         stmt.execute();
     }
+
+//endregion
+
+//region SEZIONE GOOGLE PLACE TYPE
+
+    /***
+     * Restituisce tutti i tipi memorizzati su DB
+     * @param database
+     * @return
+     */
+    public static ArrayList<GooglePlacesTypeDao> getAllPlaceTypes(SQLiteDatabase database)
+    {
+        ArrayList<GooglePlacesTypeDao> result = new ArrayList<GooglePlacesTypeDao>();
+
+        String sql = "SELECT id, chiave, gruppo, is_preferito FROM google_places_type";
+
+        Cursor c = database.rawQuery(sql, null);
+
+
+        int idIndex = c.getColumnIndex("id");
+        int chiaveIndex = c.getColumnIndex("chiave");
+        int gruppoIndex = c.getColumnIndex("gruppo");
+        int preferitoIndex = c.getColumnIndex("is_preferito");
+
+        while (c.moveToNext())
+        {
+            int id = c.getInt(idIndex);
+            String chiave = c.getString(chiaveIndex);
+            String gruppo = c.getString(gruppoIndex);
+            int isPreferito = c.getInt(preferitoIndex);
+
+            GooglePlacesTypeDao typeDao = new GooglePlacesTypeDao(id, chiave, gruppo, isPreferito);
+
+            result.add(typeDao);
+        }
+
+        c.close();
+
+        return result;
+    }
+
+    /***
+     * Restituisce il tipo richiesto
+     *
+     * @param database
+     * @param id
+     * @return
+     */
+    public static GooglePlacesTypeDao getPlaceType(SQLiteDatabase database, int id)
+    {
+        GooglePlacesTypeDao result = null;
+
+        String sql = "SELECT chiave, gruppo, is_preferito FROM google_places_type WHERE id = " + id;
+
+        Cursor c = database.rawQuery(sql, null);
+
+        int chiaveIndex = c.getColumnIndex("chiave");
+        int gruppoIndex = c.getColumnIndex("gruppo");
+        int preferitoIndex = c.getColumnIndex("is_preferito");
+
+        if (c.moveToNext())
+        {
+            String chiave = c.getString(chiaveIndex);
+            String gruppo = c.getString(gruppoIndex);
+            int isPreferito = c.getInt(preferitoIndex);
+
+            result = new GooglePlacesTypeDao(id, chiave, gruppo, isPreferito);
+        }
+
+        c.close();
+
+        return result;
+    }
+
+//endregion
+
 
 }

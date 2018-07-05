@@ -178,7 +178,10 @@ public class NoteActivity extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_luoghi_interesse) {
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), GooglePlacesActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_share) {
 

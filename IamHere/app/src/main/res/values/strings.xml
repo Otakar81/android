@@ -12,6 +12,7 @@
     <string name="title_activity_luoghi_memorabili">Luoghi salvati</string>
     <string name="title_activity_meteo">Meteo</string>
     <string name="title_activity_note">Appunti di viaggio</string>
+    <string name="title_activity_google_places">Luoghi di interesse</string>
 
     <string name="action_settings">Settings</string>
     <string name="action_salva_quick">Salva posizione veloce</string>
