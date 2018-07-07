@@ -71,6 +71,37 @@ public class PlaceDao implements Comparable {
         return isOpenNow;
     }
 
+    public String getIsOpenString()
+    {
+        //Formatto isOpen
+        String isOpen = "(Aperto)";
+
+        if(isOpenNow == 0)
+            isOpen = "(Chiuso)";
+        else if(isOpenNow == -1)
+            isOpen = "";
+
+        return isOpen;
+    }
+
+    public String getFormattedDistanzaDaMe()
+    {
+        float distanza = distanzaDaMe;
+        String unitaDiMisura = "m";
+
+        if(distanza > 1000) {
+            distanza = distanza / 1000;
+            unitaDiMisura = "km";
+
+            //Arrotondo ai due decimali
+            distanza = (float) (Math.round( distanza * Math.pow( 10, 2 ) )/Math.pow( 10, 2 ));
+        }else{
+            distanza = (float) (Math.round( distanza * Math.pow( 10, 1 ) )/Math.pow( 10, 1 ));
+        }
+
+        return distanza + unitaDiMisura;
+    }
+
     public float getDistanzaDaMe() {
         return distanzaDaMe;
     }

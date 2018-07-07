@@ -28,6 +28,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bobo.iamhere.adapters.GooglePlacesAdapter;
 import com.bobo.iamhere.db.DatabaseManager;
 import com.bobo.iamhere.db.GooglePlacesTypeDao;
 import com.bobo.iamhere.db.LocationDao;
@@ -466,7 +467,8 @@ public class GooglePlacesActivity extends AppCompatActivity
         //Ordino la lista
         Collections.sort(elencoPostiInteressanti);
 
-        ArrayAdapter<PlaceDao> adapter = new ArrayAdapter<PlaceDao>(this, android.R.layout.simple_list_item_1, elencoPostiInteressanti);
+        //ArrayAdapter<PlaceDao> adapter = new ArrayAdapter<PlaceDao>(this, android.R.layout.simple_list_item_1, elencoPostiInteressanti);
+        ArrayAdapter<PlaceDao> adapter = new GooglePlacesAdapter(elencoPostiInteressanti, this);
         listaLuoghiInteressantiView.setAdapter(adapter);
     }
 }
