@@ -13,7 +13,7 @@ public class PlaceDao implements Comparable {
     private String name;
     private String formattedAddress;
 
-    private String urlPhoto;
+    private String urlDettaglio;
 
     private float rating;
     private int priceLevel; //TODO
@@ -22,7 +22,7 @@ public class PlaceDao implements Comparable {
     private float distanzaDaMe;
 
 
-    public PlaceDao(String id, double latitudine, double longitudine, String icon, String name, String formattedAddress, String urlPhoto, float rating, int isOpenNow)
+    public PlaceDao(String id, double latitudine, double longitudine, String icon, String name, String formattedAddress, String urlDettaglio, float rating, int isOpenNow)
     {
         this.id = id;
         this.latitudine = latitudine;
@@ -30,7 +30,7 @@ public class PlaceDao implements Comparable {
         this.icon = icon;
         this.name = name;
         this.formattedAddress = formattedAddress;
-        this.urlPhoto = urlPhoto;
+        this.urlDettaglio = urlDettaglio;
         this.rating = rating;
         this.isOpenNow = isOpenNow;
     }
@@ -59,8 +59,8 @@ public class PlaceDao implements Comparable {
         return formattedAddress;
     }
 
-    public String getUrlPhoto() {
-        return urlPhoto;
+    public String getUrlDettaglio() {
+        return urlDettaglio;
     }
 
     public float getRating() {

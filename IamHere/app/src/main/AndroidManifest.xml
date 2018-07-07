@@ -47,29 +47,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
-
         <activity
             android:name=".LuoghiMemorabiliActivity"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".MeteoActivity"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".NoteActivity"
             android:theme="@style/AppTheme" />
-
         <activity android:name=".Note_DettaglioActivity" />
-
         <activity
             android:name=".GooglePlacesActivity"
             android:theme="@style/AppTheme" />
-
+        <activity android:name=".WebContentActivity"></activity>
     </application>
 
 </manifest>

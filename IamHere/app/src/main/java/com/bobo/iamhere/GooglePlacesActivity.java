@@ -1,9 +1,13 @@
 package com.bobo.iamhere;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.design.widget.NavigationView;
@@ -16,7 +20,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,8 +36,11 @@ import com.bobo.iamhere.ws.google.PlaceDao;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,7 +53,7 @@ public class GooglePlacesActivity extends AppCompatActivity
 
     //Variabili globali
     ListView listaLuoghiInteressantiView;
-    ArrayList<PlaceDao> elencoPostiInteressanti;
+    public static ArrayList<PlaceDao> elencoPostiInteressanti;
 
     String tipologiaSelezionata;
 
@@ -70,14 +76,71 @@ public class GooglePlacesActivity extends AppCompatActivity
                 PlaceDao placeDao = elencoPostiInteressanti.get(position);
 
                 //Creo un intent e vado sulla mappa
-                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-                intent.putExtra("latitudine", placeDao.getLatitudine());
-                intent.putExtra("longitudine", placeDao.getLongitudine());
-                intent.putExtra("inserisci_marker", true);
-                intent.putExtra("nome_luogo", placeDao.getName());
+                Intent intent = new Intent(getApplicationContext(), WebContentActivity.class);
+                intent.putExtra("url", placeDao.getUrlDettaglio());
                 startActivity(intent);
             };
         });
+
+        listaLuoghiInteressantiView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int position, long l) {
+
+                //Chiedo se l'utente vuole aggiungere il luogo a quelli preferiti
+                new AlertDialog.Builder(GooglePlacesActivity.this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Salva luogo")
+                        .setMessage("Vuoi salvare questo luogo?")
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                //Recupero il luogo selezionato
+                                PlaceDao placeDao = elencoPostiInteressanti.get(position);
+
+                                //E lo salvo tra quelli "preferiti"
+                                //Utilizzo il Geocoder per ottenere info sugli indirizzi in zona
+                                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
+                                try {
+
+                                    List<Address> listaIndirizzi = geocoder.getFromLocation(placeDao.getLatitudine(), placeDao.getLongitudine(), 1); //Voglio un solo risultato
+
+                                    if(listaIndirizzi != null && listaIndirizzi.size() > 0)
+                                    {
+                                        Address indirizzo = listaIndirizzi.get(0);
+
+                                        //Recupero le info della zona
+                                        String country = indirizzo.getCountryName();
+                                        String locality = indirizzo.getLocality();
+                                        String adminArea = indirizzo.getAdminArea();
+                                        String subAdminArea = indirizzo.getSubAdminArea();
+                                        String postalCode = indirizzo.getPostalCode();
+
+                                        //Salvo sul database il luogo selezionato
+                                        LocationDao locationDao = new LocationDao(placeDao.getLatitudine(), placeDao.getLongitudine(), country, adminArea, subAdminArea, locality, postalCode, placeDao.getFormattedAddress());
+                                        locationDao.setAlias(placeDao.getName());
+                                        DatabaseManager.insertLocation(MainActivity.database, locationDao);
+
+                                        Toast.makeText(getApplicationContext(), "Luogo salvato", Toast.LENGTH_SHORT).show();
+                                    }
+
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+
+                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+
+                return true;
+                }
+            });
+
+
 
         try {
 
@@ -124,11 +187,14 @@ public class GooglePlacesActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
+
         //Recupero le tipologie tra cui scegliere e popolo il menu
         ArrayList<GooglePlacesTypeDao> elencoTipi = DatabaseManager.getAllPlaceTypes(MainActivity.database);
 
         for (GooglePlacesTypeDao tipo:elencoTipi)
             menu.add(Menu.NONE, tipo.getId(), Menu.NONE, tipo.getCodice()).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        getMenuInflater().inflate(R.menu.places_action, menu);
 
         return super.onCreateOptionsMenu(menu);
 
@@ -145,17 +211,33 @@ public class GooglePlacesActivity extends AppCompatActivity
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            //Recupero il tipo selezionato
-            GooglePlacesTypeDao tipo = DatabaseManager.getPlaceType(MainActivity.database, id);
-            tipologiaSelezionata = tipo.getCodice();
+            if(id == R.id.showPlacesOnMap)
+            {
+                if(elencoPostiInteressanti != null && elencoPostiInteressanti.size() > 0)
+                {
+                    //Creo un intent e vado sulla mappa
+                    Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                    intent.putExtra("mostra_posti_interessanti", true);
+                    startActivity(intent);
 
-            //Valorizzo il titolo della lista, specificando quale è la tipologia dei luoghi che sto per mostrare
-            TextView googlePlacesListTitle = findViewById(R.id.googlePlacesListTitle);
-            googlePlacesListTitle.setText("Tipologia: " + tipologiaSelezionata);
+                }else{
+                    Toast.makeText(GooglePlacesActivity.this, "La lista dei luoghi di interesse è vuota. Effettuare una nuova ricerca", Toast.LENGTH_LONG).show();
+                }
 
-            //Valorizzo la lista a video
-            Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            callRestApi(lastKnowLocation);
+            }else
+            {
+                //Recupero il tipo selezionato
+                GooglePlacesTypeDao tipo = DatabaseManager.getPlaceType(MainActivity.database, id);
+                tipologiaSelezionata = tipo.getCodice();
+
+                //Valorizzo il titolo della lista, specificando quale è la tipologia dei luoghi che sto per mostrare
+                TextView googlePlacesListTitle = findViewById(R.id.googlePlacesListTitle);
+                googlePlacesListTitle.setText("Tipologia: " + tipologiaSelezionata);
+
+                //Valorizzo la lista a video
+                Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                callRestApi(lastKnowLocation);
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -288,8 +370,9 @@ public class GooglePlacesActivity extends AppCompatActivity
                         double latitudine = location.get("lat").getAsDouble();
                         double longitudine = location.get("lng").getAsDouble();
 
-                        //Url delle foto sulla mappa
-                        String urlPhoto = ""; //TODO? Ne vale la pena?
+                        //Url esterno del dettaglio del luogo
+                        String urlDettaglio = "https://www.google.com/maps/search/?api=1&query=Google&query_place_id=" + id;
+
                         //private int priceLevel; //TODO
                         int isOpenNow;
 
@@ -316,13 +399,25 @@ public class GooglePlacesActivity extends AppCompatActivity
                             isOpenNow = -1;
                         }
 
+                        /* TODO Per ora non le uso
+                        //Recupero le tipologie
+                        JsonArray listaTipologie = object.getAsJsonArray("types");
+                        String listaTipologieString = "";
+
+                        if(listaTipologie != null)
+                        {
+                            for(int j = 0; j < listaTipologie.size(); j++)
+                                listaTipologieString += listaTipologie.get(j).getAsString() + " ";
+                        }
+                        */
+
                         //Calcolo la distanza da me
                         Location indirizzoLuogo = new Location(name);
                         indirizzoLuogo.setLatitude(latitudine);
                         indirizzoLuogo.setLongitude(longitudine);
 
                         //Creo il Dao e lo aggiungo
-                        PlaceDao place = new PlaceDao(id, latitudine, longitudine, icon, name, formattedAddress, urlPhoto, rating, isOpenNow);
+                        PlaceDao place = new PlaceDao(id, latitudine, longitudine, icon, name, formattedAddress, urlDettaglio, rating, isOpenNow);
                         place.setDistanzaDaMe(lastKnowLocation.distanceTo(indirizzoLuogo));
 
                         luoghi.add(place);

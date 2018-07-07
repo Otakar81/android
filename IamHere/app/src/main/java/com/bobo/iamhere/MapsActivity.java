@@ -3,6 +3,8 @@ package com.bobo.iamhere;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import com.bobo.iamhere.db.DatabaseManager;
 import com.bobo.iamhere.db.LocationDao;
+import com.bobo.iamhere.ws.google.PlaceDao;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -25,6 +28,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -57,11 +63,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        //Recupero le informazioni eventualmente passate dalle altre activity, se sono arrivato qui dopo essere stato chiamato
+        Intent intent = getIntent();
+        double latitudine = intent.getDoubleExtra("latitudine", -1); //Se arrivo da un'altra activity, centro la mappa sulle coordinate che mi sono state passate
+        double longitudine = intent.getDoubleExtra("longitudine", -1);
+
+        boolean mostraPostiInteressanti = intent.getBooleanExtra("mostra_posti_interessanti", false); //Se true, mi aspetto che vengano aggiunti anche i marker relativi ai posti segnalati da google places
+        boolean inserisciMarker = intent.getBooleanExtra("inserisci_marker", false); //Chiedo di aggiungere un marker nella posizione corrente
+
         //Aggiungo i listener sugli eventi OnClick alla mappa
         addListenersOnMap();
 
         //Aggiungo i marker relativi ai luoghi "memorabili" precedentemente salvati
-        addMarkersOnMap();
+        addMarkersOnMap(mostraPostiInteressanti);
 
         //Avvio il tracking della posizione utente sulla mappa
         startListening();
@@ -70,10 +84,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //E centro la mappa nell'ultima posizione nota
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            //Se arrivo da un'altra activity, centro la mappa sulle coordinate che mi sono state passate
-            Intent intent = getIntent();
-            double latitudine = intent.getDoubleExtra("latitudine", -1);
-            double longitudine = intent.getDoubleExtra("longitudine", -1);
+
 
             if(latitudine != -1 && longitudine != -1)
             {
@@ -81,7 +92,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posizioneCoordinate, 15)); //Zoom della camera. Va da 1 (il mondo) a 20
 
                 //Se richiesto, metto anche un marker nella posizione corrente
-                if(intent.getBooleanExtra("inserisci_marker", false))
+                if(inserisciMarker)
                 {
                     String nomeLuogo = intent.getStringExtra("nome_luogo");
 
@@ -175,7 +186,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /***
      * Aggiunge i marker relativi ai luoghi memorabili salvati precedentemente su DB
      */
-    private void addMarkersOnMap()
+    private void addMarkersOnMap(boolean mostraPostiInteressanti)
     {
         //Recupero la lista del luoghi salvati dal database
         ArrayList<LocationDao> elencoLuoghi = DatabaseManager.getAllLocation(MainActivity.database, false);
@@ -189,5 +200,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             else
                 mMap.addMarker(new MarkerOptions().position(latLng).title(location.toString()));
         }
+
+        //Se richiesto, stampo anche i marker relativi ai posti segnalati da google places
+        if(mostraPostiInteressanti)
+        {
+            ArrayList<PlaceDao> elencoPostiInteressanti = GooglePlacesActivity.elencoPostiInteressanti;
+
+            if(elencoPostiInteressanti != null)
+            {
+                for (PlaceDao place: elencoPostiInteressanti)
+                {
+                    LatLng latLng = new LatLng(place.getLatitudine(), place.getLongitudine());
+                    String uriIcon = place.getIcon();
+                    Bitmap icon = null;// getBitmapFromURL(uriIcon); //TODO Verificare se si può prendere la bitmat dall'url, altrimenti scaricare delle icone
+
+                    if(icon != null)
+                        mMap.addMarker(new MarkerOptions().position(latLng).title(place.getName()).icon(BitmapDescriptorFactory.fromBitmap(icon)));
+                    else
+                        mMap.addMarker(new MarkerOptions().position(latLng).title(place.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                }
+            }
+        }
     }
+
+/*
+    private Bitmap getBitmapFromURL(String imageUrl) {
+        try {
+            URL url = new URL(imageUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    */
 }
