@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.design.widget.NavigationView;
@@ -24,18 +23,31 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bobo.iamhere.adapters.MeteoAdapter;
 import com.bobo.iamhere.meteo.DownloadTask;
-import com.bobo.iamhere.meteo.MeteoDao;
+import com.bobo.iamhere.ws.openweathermap.GiornataMeteoDao;
+import com.bobo.iamhere.ws.openweathermap.MeteoDao;
+import com.bobo.iamhere.ws.openweathermap.OpenWeatherMapService;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MeteoActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
+
+    ArrayList<GiornataMeteoDao> elencoPrevisioni;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +86,15 @@ public class MeteoActivity extends AppCompatActivity
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
+                //TODO TEST
+                callRestApi(lastKnowLocation.getLatitude(), lastKnowLocation.getLongitude(), API_KEY);
+
+                /*
                 String parametriRicerca = "?lat=" + lastKnowLocation.getLatitude() + "&lon=" + lastKnowLocation.getLongitude();
 
                 //Aggiungo la API_KEY
                 parametriRicerca += "&appid=" + API_KEY;
+
 
                 Log.i("Parametri ricerca", parametriRicerca);
 
@@ -100,6 +117,7 @@ public class MeteoActivity extends AppCompatActivity
                 }else{
                     Toast.makeText(this, "Errore nel reperimento dei dati.", Toast.LENGTH_LONG).show();
                 }
+                */
 
             }
 
@@ -198,7 +216,7 @@ public class MeteoActivity extends AppCompatActivity
      * @param jsonString
      * @return
      * @throws JSONException
-     */
+
     private ArrayAdapter<String> elaboraJsonForecast(String jsonString) throws JSONException {
 
         JSONObject jsonContent = new JSONObject(jsonString);
@@ -286,5 +304,127 @@ public class MeteoActivity extends AppCompatActivity
 
 
         return adapter;
+    }
+*/
+
+
+
+
+
+    /***
+     * Chiamata alle Api Rest
+     */
+    private void callRestApi(double latitudine, double longitudine, String apiKey)
+    {
+
+        //Creo il retrofit
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://api.openweathermap.org/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        final OpenWeatherMapService openWeatherMapService = retrofit.create(OpenWeatherMapService.class);
+
+        Call<JsonObject> call = openWeatherMapService.meteoForecast(latitudine, longitudine, apiKey);
+
+        call.enqueue(new Callback<JsonObject>() {
+
+            @Override
+
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                //ArrayList<PlaceDao> luoghi = new ArrayList<PlaceDao>();
+
+                JsonObject jsonContent = response.body();
+
+                JsonArray listaPrevisioni = jsonContent.get("list").getAsJsonArray();
+
+
+                //Memorizzo i giorni interessati
+                ArrayList<String> giorniInteressati = new ArrayList<String>();
+                ArrayList<MeteoDao> meteoPrevisto = new ArrayList<MeteoDao>();
+
+                for (int i = 0; i < listaPrevisioni.size(); i++)
+                {
+                    JsonObject meteoGiornoOra = listaPrevisioni.get(i).getAsJsonObject(); //Contiene le previsioni ogni tre ore
+
+                    //Recupero la data
+                    String dataOra = meteoGiornoOra.get("dt_txt").getAsString(); //Nel formato: 2018-06-08 03:00:00
+                    String dataGiorno = dataOra.substring(0, 10);
+                    String oraPrevisione = dataOra.substring(11, 16);
+
+                    //Recupero le info meteo
+                    JsonArray previsioneDelGiorno = meteoGiornoOra.get("weather").getAsJsonArray();
+                    JsonObject weather = previsioneDelGiorno.get(0).getAsJsonObject();
+                    String previsione = weather.get("main").getAsString();
+                    String previsioneDescription = weather.get("description").getAsString();
+                    String previsioneIcona = weather.get("icon").getAsString();
+
+                    //La temperatura
+                    JsonObject temperaturaJson = meteoGiornoOra.get("main").getAsJsonObject();
+                    int temperaturaCelsius = (int) (temperaturaJson.get("temp").getAsFloat() - 273.15f);
+
+                    //Ed il vento
+                    JsonObject ventoJson = meteoGiornoOra.get("wind").getAsJsonObject();
+                    String vento = ventoJson.get("speed").getAsString();
+
+
+                    //Valorizzo le liste
+                    if(!giorniInteressati.contains(dataGiorno))
+                        giorniInteressati.add(dataGiorno);
+
+                    MeteoDao previsioneMeteo = new MeteoDao(dataGiorno, oraPrevisione, previsione, previsioneDescription, temperaturaCelsius + "", vento, previsioneIcona);
+                    meteoPrevisto.add(previsioneMeteo);
+                }
+
+                //Adesso prepariamo la lista.
+                ArrayList<GiornataMeteoDao> previsioni = new ArrayList<GiornataMeteoDao>();
+
+                for(int i = 0; i < giorniInteressati.size(); i++)
+                {
+                    String giorno = giorniInteressati.get(i);
+
+                    GiornataMeteoDao giornataMeteo = new GiornataMeteoDao(giorno);
+
+                    for(int j = 0; j < meteoPrevisto.size(); j++)
+                    {
+                        MeteoDao meteo = meteoPrevisto.get(j);
+
+                        if(meteo.getData().equalsIgnoreCase(giorno))
+                            giornataMeteo.addPrevisione(meteo);
+                    }
+
+                    previsioni.add(giornataMeteo);
+                }
+
+                //elencoPrevisioni = previsioni;
+
+
+                if(previsioni != null && previsioni.size() > 0)
+                {
+                    //Creo l'adapter
+                    ArrayAdapter<GiornataMeteoDao> adapter = new MeteoAdapter(previsioni, MeteoActivity.this);
+
+                    //Popolo la lista con i risultati meteo
+                    ListView listView = findViewById(R.id.listMeteoResults);
+                    listView.setAdapter(adapter);
+
+                    //Mostro la lista
+                    findViewById(R.id.listMeteoResults).setVisibility(View.VISIBLE);
+
+
+                }
+
+
+                Log.d("GET RESULTS", "Numero di giorni recuperati: " + previsioni.size());
+            }
+
+            @Override
+
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
+
+                Log.e("Errore", throwable.toString());
+            }
+
+        });
     }
 }

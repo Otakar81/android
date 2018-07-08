@@ -155,7 +155,7 @@ public class LocationDao implements Comparable {
     public String toStringShort()
     {
         if(alias != null && !alias.trim().equals(""))
-            return alias;
+            return alias + " (" + comune + ")";
         else
             return toString();
     }

@@ -1,4 +1,4 @@
-package com.bobo.iamhere.meteo;
+package com.bobo.iamhere.ws.openweathermap;
 
 public class MeteoDao {
 

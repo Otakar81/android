@@ -1,7 +1,6 @@
 package com.bobo.iamhere.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,18 +9,19 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bobo.iamhere.R;
-import com.bobo.iamhere.ws.google.PlaceDao;
+import com.bobo.iamhere.db.LocationDao;
+
 
 import java.util.ArrayList;
 
 
-public class GooglePlacesAdapter extends ArrayAdapter {
+public class LocationAdapter extends ArrayAdapter {
 
-    private ArrayList<PlaceDao> dataSet;
+    private ArrayList<LocationDao> dataSet;
     Context mContext;
 
     //Costruttore
-    public GooglePlacesAdapter(ArrayList<PlaceDao> data, Context context) {
+    public LocationAdapter(ArrayList<LocationDao> data, Context context) {
         super(context, R.layout.row_google_places, data);
         this.dataSet = data;
         this.mContext=context;
@@ -31,7 +31,7 @@ public class GooglePlacesAdapter extends ArrayAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         // Get the data item for this position
-        PlaceDao placeDao = dataSet.get(position);
+        LocationDao placeDao = dataSet.get(position);
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View view = inflater.inflate(R.layout.row_google_places, null);
@@ -43,19 +43,13 @@ public class GooglePlacesAdapter extends ArrayAdapter {
         RatingBar rating = (RatingBar) view.findViewById(R.id.ratingGooglePlace);
 
         //Valorizzo i campi
-        nome.setText(placeDao.getName());
-        indirizzo.setText(placeDao.getFormattedAddress());
-        stato.setText(placeDao.getIsOpenString());
-        distanza.setText(placeDao.getFormattedDistanzaDaMe());
+        nome.setText(placeDao.getAlias());
+        indirizzo.setText(placeDao.getIndirizzo());
+        stato.setText(placeDao.getComune());
 
-        if(placeDao.getRating() > 0) //Ho un rating
-            rating.setRating(placeDao.getRating());
-        else
-            rating.setVisibility(View.INVISIBLE);
-
-        //Cambio colore allo stato
-        if(placeDao.isOpenNow() == 1)
-            stato.setTextColor(Color.parseColor("#ff669900"));
+        //E nascondo quelli che non uso
+        distanza.setVisibility(View.INVISIBLE);
+        rating.setVisibility(View.INVISIBLE);
 
         return view;
     }

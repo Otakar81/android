@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.bobo.iamhere.adapters.LocationAdapter;
 import com.bobo.iamhere.db.DatabaseManager;
 import com.bobo.iamhere.db.LocationDao;
 
@@ -191,7 +192,8 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
      */
     private void aggiornaLista(ArrayList<LocationDao> elencoPostiMemorabili)
     {
-        ArrayAdapter<LocationDao> adapter = new ArrayAdapter<LocationDao>(this, android.R.layout.simple_list_item_1, elencoPostiMemorabili);
+//        ArrayAdapter<LocationDao> adapter = new ArrayAdapter<LocationDao>(this, android.R.layout.simple_list_item_1, elencoPostiMemorabili);
+        ArrayAdapter<LocationDao> adapter = new LocationAdapter(elencoPostiMemorabili, this);
         listaPostiView.setAdapter(adapter);
     }
 }

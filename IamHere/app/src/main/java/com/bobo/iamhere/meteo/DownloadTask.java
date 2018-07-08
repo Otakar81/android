@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+//TODO -> Testare un po se vanno le Rest API, poi eliminare questa classe
 public class DownloadTask extends AsyncTask<String, Void, String> {
 
     @Override

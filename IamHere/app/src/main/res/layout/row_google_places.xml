@@ -8,7 +8,7 @@
     android:padding="10dp">
 
     <TextView
-        android:id="@+id/nameGooglePlace"
+        android:id="@+id/giornoMeteo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -21,14 +21,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/indirizzoGooglePlace"
+        android:id="@+id/oraPrevisione"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Indirizzo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameGooglePlace" />
+        app:layout_constraintTop_toBottomOf="@+id/giornoMeteo" />
 
     <TextView
         android:id="@+id/statoGooglePlace"
@@ -39,7 +39,7 @@
         android:text="Stato"
         android:textColor="@android:color/darker_gray"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/indirizzoGooglePlace" />
+        app:layout_constraintTop_toBottomOf="@+id/oraPrevisione" />
 
     <TextView
         android:id="@+id/distanzaGooglePlace"
@@ -49,7 +49,7 @@
         android:layout_marginTop="8dp"
         android:text="Distanza"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/indirizzoGooglePlace" />
+        app:layout_constraintTop_toBottomOf="@+id/oraPrevisione" />
 
     <RatingBar
         android:id="@+id/ratingGooglePlace"
@@ -63,6 +63,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/indirizzoGooglePlace" />
+        app:layout_constraintTop_toBottomOf="@+id/oraPrevisione" />
 
 </android.support.constraint.ConstraintLayout>
