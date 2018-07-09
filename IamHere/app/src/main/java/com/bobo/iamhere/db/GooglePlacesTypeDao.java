@@ -1,10 +1,13 @@
 package com.bobo.iamhere.db;
 
-public class GooglePlacesTypeDao {
+import android.support.annotation.NonNull;
+
+public class GooglePlacesTypeDao implements Comparable {
 
     private int id;
     private String codice;
     private String gruppo;
+    private String nomeDescrittivo;
     private int isTipoPreferito;
 
 
@@ -14,6 +17,8 @@ public class GooglePlacesTypeDao {
         this.codice = codice;
         this.gruppo = gruppo;
         this.isTipoPreferito = isTipoPreferito;
+
+        this.nomeDescrittivo = "";
     }
 
 
@@ -35,5 +40,21 @@ public class GooglePlacesTypeDao {
 
     public void setTipoPreferito(int tipoPreferito) {
         isTipoPreferito = tipoPreferito;
+    }
+
+    public void setNomeDescrittivo(String nomeDescrittivo) {
+        this.nomeDescrittivo = nomeDescrittivo;
+    }
+
+    public String getNomeDescrittivo() {
+        return nomeDescrittivo;
+    }
+
+    @Override
+    public int compareTo(@NonNull Object o) {
+
+        GooglePlacesTypeDao oggettoDaConfrontare = (GooglePlacesTypeDao) o;
+
+        return this.nomeDescrittivo.compareTo(oggettoDaConfrontare.getNomeDescrittivo());
     }
 }

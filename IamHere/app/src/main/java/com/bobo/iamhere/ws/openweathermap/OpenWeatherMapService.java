@@ -12,5 +12,5 @@ public interface OpenWeatherMapService {
 
     //Meteo dei prossimi 5 giorni
     @GET("data/2.5/forecast")
-    Call<JsonObject> meteoForecast(@Query("lat") double latitudine, @Query("lon") double longitudine, @Query("appid") String apiKey);
+    Call<JsonObject> meteoForecast(@Query("lat") double latitudine, @Query("lon") double longitudine, @Query("lang") String lingua, @Query("appid") String apiKey);
 }

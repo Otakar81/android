@@ -9,8 +9,10 @@ public class MeteoDao {
     private String temperatura;
     private String vento;
     private String icon;
+    private String nuvolosita;
+    private String umidita;
 
-    public MeteoDao(String data, String orario, String meteo, String meteoDescription, String temperatura, String vento, String icon)
+    public MeteoDao(String data, String orario, String meteo, String meteoDescription, String temperatura, String vento, String icon, String nuvolosita, String umidita)
     {
         this.data = data;
         this.orario = orario;
@@ -19,6 +21,8 @@ public class MeteoDao {
         this.temperatura = temperatura;
         this.vento = vento;
         this.icon = icon;
+        this.nuvolosita = nuvolosita;
+        this.umidita = umidita;
     }
 
 
@@ -48,6 +52,14 @@ public class MeteoDao {
 
     public String getIcon() {
         return icon;
+    }
+
+    public String getNuvolosita() {
+        return nuvolosita + "%";
+    }
+
+    public String getUmidita() {
+        return umidita + "%";
     }
 
     @Override

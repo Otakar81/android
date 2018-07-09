@@ -192,8 +192,28 @@ public class GooglePlacesActivity extends AppCompatActivity
         //Recupero le tipologie tra cui scegliere e popolo il menu
         ArrayList<GooglePlacesTypeDao> elencoTipi = DatabaseManager.getAllPlaceTypes(MainActivity.database);
 
-        for (GooglePlacesTypeDao tipo:elencoTipi)
-            menu.add(Menu.NONE, tipo.getId(), Menu.NONE, tipo.getCodice()).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        //Aggiungo la traduzione
+        for (GooglePlacesTypeDao tipo:elencoTipi) {
+            String nomeDescrittivo = tipo.getCodice();
+
+            try{
+                int resId = getResources().getIdentifier(tipo.getCodice(), "string", "com.bobo.iamhere");
+                nomeDescrittivo = getString(resId);
+            }catch (Exception e)
+            {
+                //Se non trovo la traduzione, stampo il codice
+            }
+
+            tipo.setNomeDescrittivo(nomeDescrittivo);
+        }
+
+        //Ordino l'insieme sulla base del nome descrittivo
+        Collections.sort(elencoTipi);
+
+        for (GooglePlacesTypeDao tipo:elencoTipi) {
+
+            menu.add(Menu.NONE, tipo.getId(), Menu.NONE, tipo.getNomeDescrittivo()).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        }
 
         getMenuInflater().inflate(R.menu.places_action, menu);
 
@@ -232,8 +252,19 @@ public class GooglePlacesActivity extends AppCompatActivity
                 tipologiaSelezionata = tipo.getCodice();
 
                 //Valorizzo il titolo della lista, specificando quale è la tipologia dei luoghi che sto per mostrare
+                String nomeDescrittivo = tipo.getCodice();
+
+                try{
+                    int resId = getResources().getIdentifier(tipo.getCodice(), "string", "com.bobo.iamhere");
+                    nomeDescrittivo = getString(resId);
+                }catch (Exception e)
+                {
+                    //Se non trovo la traduzione, stampo il codice
+                }
+
+
                 TextView googlePlacesListTitle = findViewById(R.id.googlePlacesListTitle);
-                googlePlacesListTitle.setText("Tipologia: " + tipologiaSelezionata);
+                googlePlacesListTitle.setText("Tipologia: " + nomeDescrittivo);
 
                 //Valorizzo la lista a video
                 Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -429,6 +460,13 @@ public class GooglePlacesActivity extends AppCompatActivity
                     aggiornaLista(luoghi);
 
                 }else{
+
+                    if(status.equalsIgnoreCase("ZERO_RESULTS"))
+                    {
+                        listaLuoghiInteressantiView.setAdapter(null);
+                        Toast.makeText(GooglePlacesActivity.this, "Nessun risultato trovato", Toast.LENGTH_SHORT).show();
+                    }
+
                     //TODO
                     /*
                     Status Codes

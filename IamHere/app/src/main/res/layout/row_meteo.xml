@@ -20,460 +20,479 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/previsione00"
+
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/giornoMeteo">
+        app:layout_constraintTop_toBottomOf="@+id/giornoMeteo"
+        android:stretchColumns="*" >
 
-        <ImageView
-            android:id="@+id/immagineMeteo00"
-            android:layout_width="30px"
-            android:layout_height="30px"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/nav_meteo"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="77dp" />
+        <TableRow
+            android:id="@+id/previsione00"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/oraPrevisione00"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="ora"
-            tools:layout_editor_absoluteX="60dp"
-            tools:layout_editor_absoluteY="129dp" />
+            <ImageView
+                android:id="@+id/immagineMeteo00"
+                android:layout_width="40px"
+                android:layout_height="40px"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/nav_meteo"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="77dp" />
 
-        <TextView
-            android:id="@+id/tempPrevisione00"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="t°"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
+            <TextView
+                android:id="@+id/oraPrevisione00"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ora"
+                tools:layout_editor_absoluteX="60dp"
+                tools:layout_editor_absoluteY="129dp" />
 
-        <TextView
-            android:id="@+id/ventoPrevisione00"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="w"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
+            <TextView
+                android:id="@+id/tempPrevisione00"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="t°"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
 
-        <TextView
-            android:id="@+id/textPrevisione00"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="w"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/umidityPrevisione00"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="H" />
 
-    <LinearLayout
-        android:id="@+id/previsione03"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/previsione00">
+            <TextView
+                android:id="@+id/ventoPrevisione00"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="w"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
 
-        <ImageView
-            android:id="@+id/immagineMeteo03"
-            android:layout_width="30px"
-            android:layout_height="30px"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/nav_meteo"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="77dp" />
+            <TextView
+                android:id="@+id/textPrevisione00"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="w"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
+        </TableRow>
 
-        <TextView
-            android:id="@+id/oraPrevisione03"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="ora"
-            tools:layout_editor_absoluteX="60dp"
-            tools:layout_editor_absoluteY="129dp" />
+        <TableRow
+            android:id="@+id/previsione03"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tempPrevisione03"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="t°"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
+            <ImageView
+                android:id="@+id/immagineMeteo03"
+                android:layout_width="40px"
+                android:layout_height="40px"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/nav_meteo"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="77dp" />
 
-        <TextView
-            android:id="@+id/ventoPrevisione03"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="w"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
+            <TextView
+                android:id="@+id/oraPrevisione03"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ora"
+                tools:layout_editor_absoluteX="60dp"
+                tools:layout_editor_absoluteY="129dp" />
 
-        <TextView
-            android:id="@+id/textPrevisione03"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="w"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tempPrevisione03"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="t°"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
 
-    <LinearLayout
-        android:id="@+id/previsione06"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/previsione03">
+            <TextView
+                android:id="@+id/umidityPrevisione03"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="H" />
 
-        <ImageView
-            android:id="@+id/immagineMeteo06"
-            android:layout_width="30px"
-            android:layout_height="30px"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/nav_meteo"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="77dp" />
+            <TextView
+                android:id="@+id/ventoPrevisione03"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="w"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
 
-        <TextView
-            android:id="@+id/oraPrevisione06"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="ora"
-            tools:layout_editor_absoluteX="60dp"
-            tools:layout_editor_absoluteY="129dp" />
+            <TextView
+                android:id="@+id/textPrevisione03"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="w"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
 
-        <TextView
-            android:id="@+id/tempPrevisione06"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="t°"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
+        </TableRow>
 
-        <TextView
-            android:id="@+id/ventoPrevisione06"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="w"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
+        <TableRow
+            android:id="@+id/previsione06"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textPrevisione06"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="w"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/immagineMeteo06"
+                android:layout_width="40px"
+                android:layout_height="40px"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/nav_meteo"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="77dp" />
 
-    <LinearLayout
-        android:id="@+id/previsione09"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/previsione06">
+            <TextView
+                android:id="@+id/oraPrevisione06"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ora"
+                tools:layout_editor_absoluteX="60dp"
+                tools:layout_editor_absoluteY="129dp" />
 
-        <ImageView
-            android:id="@+id/immagineMeteo09"
-            android:layout_width="30px"
-            android:layout_height="30px"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/nav_meteo"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="77dp" />
+            <TextView
+                android:id="@+id/tempPrevisione06"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="t°"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
 
-        <TextView
-            android:id="@+id/oraPrevisione09"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="ora"
-            tools:layout_editor_absoluteX="60dp"
-            tools:layout_editor_absoluteY="129dp" />
+            <TextView
+                android:id="@+id/umidityPrevisione06"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="H" />
 
-        <TextView
-            android:id="@+id/tempPrevisione09"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="t°"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
+            <TextView
+                android:id="@+id/ventoPrevisione06"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="w"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
 
-        <TextView
-            android:id="@+id/ventoPrevisione09"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="w"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
+            <TextView
+                android:id="@+id/textPrevisione06"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="w"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
+        </TableRow>
 
-        <TextView
-            android:id="@+id/textPrevisione09"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="w"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
-    </LinearLayout>
+        <TableRow
+            android:id="@+id/previsione09"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/previsione12"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/previsione09">
+            <ImageView
+                android:id="@+id/immagineMeteo09"
+                android:layout_width="40px"
+                android:layout_height="40px"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/nav_meteo"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="77dp" />
 
-        <ImageView
-            android:id="@+id/immagineMeteo12"
-            android:layout_width="30px"
-            android:layout_height="30px"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/nav_meteo"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="77dp" />
+            <TextView
+                android:id="@+id/oraPrevisione09"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ora"
+                tools:layout_editor_absoluteX="60dp"
+                tools:layout_editor_absoluteY="129dp" />
 
-        <TextView
-            android:id="@+id/oraPrevisione12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="ora"
-            tools:layout_editor_absoluteX="60dp"
-            tools:layout_editor_absoluteY="129dp" />
+            <TextView
+                android:id="@+id/tempPrevisione09"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="t°"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
 
-        <TextView
-            android:id="@+id/tempPrevisione12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="t°"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
+            <TextView
+                android:id="@+id/umidityPrevisione09"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="H" />
 
-        <TextView
-            android:id="@+id/ventoPrevisione12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="w"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
+            <TextView
+                android:id="@+id/ventoPrevisione09"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="w"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
 
-        <TextView
-            android:id="@+id/textPrevisione12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="w"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/textPrevisione09"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="w"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
+        </TableRow>
 
-    <LinearLayout
-        android:id="@+id/previsione15"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/previsione12">
+        <TableRow
+            android:id="@+id/previsione12"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/immagineMeteo15"
-            android:layout_width="30px"
-            android:layout_height="30px"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/nav_meteo"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="77dp" />
+            <ImageView
+                android:id="@+id/immagineMeteo12"
+                android:layout_width="40px"
+                android:layout_height="40px"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/nav_meteo"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="77dp" />
 
-        <TextView
-            android:id="@+id/oraPrevisione15"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="ora"
-            tools:layout_editor_absoluteX="60dp"
-            tools:layout_editor_absoluteY="129dp" />
+            <TextView
+                android:id="@+id/oraPrevisione12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ora"
+                tools:layout_editor_absoluteX="60dp"
+                tools:layout_editor_absoluteY="129dp" />
 
-        <TextView
-            android:id="@+id/tempPrevisione15"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="t°"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
+            <TextView
+                android:id="@+id/tempPrevisione12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="t°"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
 
-        <TextView
-            android:id="@+id/ventoPrevisione15"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="w"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
+            <TextView
+                android:id="@+id/umidityPrevisione12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="H" />
 
-        <TextView
-            android:id="@+id/textPrevisione15"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="w"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/ventoPrevisione12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="w"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
 
-    <LinearLayout
-        android:id="@+id/previsione18"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/previsione15">
+            <TextView
+                android:id="@+id/textPrevisione12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="w"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
 
-        <ImageView
-            android:id="@+id/immagineMeteo18"
-            android:layout_width="30px"
-            android:layout_height="30px"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/nav_meteo"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="77dp" />
+        </TableRow>
 
-        <TextView
-            android:id="@+id/oraPrevisione18"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="ora"
-            tools:layout_editor_absoluteX="60dp"
-            tools:layout_editor_absoluteY="129dp" />
+        <TableRow
+            android:id="@+id/previsione15"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tempPrevisione18"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="t°"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
+            <ImageView
+                android:id="@+id/immagineMeteo15"
+                android:layout_width="40px"
+                android:layout_height="40px"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/nav_meteo"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="77dp" />
 
-        <TextView
-            android:id="@+id/ventoPrevisione18"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="w"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
+            <TextView
+                android:id="@+id/oraPrevisione15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ora"
+                tools:layout_editor_absoluteX="60dp"
+                tools:layout_editor_absoluteY="129dp" />
 
-        <TextView
-            android:id="@+id/textPrevisione18"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="w"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tempPrevisione15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="t°"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
 
-    <LinearLayout
-        android:id="@+id/previsione21"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/previsione18">
+            <TextView
+                android:id="@+id/umidityPrevisione15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="H" />
 
-        <ImageView
-            android:id="@+id/immagineMeteo21"
-            android:layout_width="30px"
-            android:layout_height="30px"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/nav_meteo"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="77dp" />
+            <TextView
+                android:id="@+id/ventoPrevisione15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="w"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
 
-        <TextView
-            android:id="@+id/oraPrevisione21"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="ora"
-            tools:layout_editor_absoluteX="60dp"
-            tools:layout_editor_absoluteY="129dp" />
+            <TextView
+                android:id="@+id/textPrevisione15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="w"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
 
-        <TextView
-            android:id="@+id/tempPrevisione21"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="t°"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
+        </TableRow>
 
-        <TextView
-            android:id="@+id/ventoPrevisione21"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="w"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
+        <TableRow
+            android:id="@+id/previsione18"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textPrevisione21"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="w"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="121dp" />
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/immagineMeteo18"
+                android:layout_width="40px"
+                android:layout_height="40px"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/nav_meteo"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="77dp" />
+
+            <TextView
+                android:id="@+id/oraPrevisione18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ora"
+                tools:layout_editor_absoluteX="60dp"
+                tools:layout_editor_absoluteY="129dp" />
+
+            <TextView
+                android:id="@+id/tempPrevisione18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="t°"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
+
+            <TextView
+                android:id="@+id/umidityPrevisione18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="H" />
+
+            <TextView
+                android:id="@+id/ventoPrevisione18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="w"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
+
+            <TextView
+                android:id="@+id/textPrevisione18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="w"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/previsione21"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/immagineMeteo21"
+                android:layout_width="40px"
+                android:layout_height="40px"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/nav_meteo"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="77dp" />
+
+            <TextView
+                android:id="@+id/oraPrevisione21"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ora"
+                tools:layout_editor_absoluteX="60dp"
+                tools:layout_editor_absoluteY="129dp" />
+
+            <TextView
+                android:id="@+id/tempPrevisione21"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="t°"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
+
+            <TextView
+                android:id="@+id/umidityPrevisione21"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="H" />
+
+            <TextView
+                android:id="@+id/ventoPrevisione21"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="w"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
+
+            <TextView
+                android:id="@+id/textPrevisione21"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="w"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="121dp" />
+
+        </TableRow>
+
+
+    </TableLayout>
 
 </android.support.constraint.ConstraintLayout>

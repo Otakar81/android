@@ -48,6 +48,8 @@ public class MeteoActivity extends AppCompatActivity
 
     ArrayList<GiornataMeteoDao> elencoPrevisioni;
 
+    String LANGUAGE_CODE = "it";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -324,7 +326,7 @@ public class MeteoActivity extends AppCompatActivity
 
         final OpenWeatherMapService openWeatherMapService = retrofit.create(OpenWeatherMapService.class);
 
-        Call<JsonObject> call = openWeatherMapService.meteoForecast(latitudine, longitudine, apiKey);
+        Call<JsonObject> call = openWeatherMapService.meteoForecast(latitudine, longitudine, LANGUAGE_CODE, apiKey);
 
         call.enqueue(new Callback<JsonObject>() {
 
@@ -367,12 +369,20 @@ public class MeteoActivity extends AppCompatActivity
                     JsonObject ventoJson = meteoGiornoOra.get("wind").getAsJsonObject();
                     String vento = ventoJson.get("speed").getAsString();
 
+                    //Le nuvole
+                    JsonObject nuvoleJson = meteoGiornoOra.get("clouds").getAsJsonObject();
+                    String nuvole = nuvoleJson.get("all").getAsString();
+
+                    //Umidità
+                    JsonObject umiditaJson = meteoGiornoOra.get("main").getAsJsonObject();
+                    String umidita = umiditaJson.get("humidity").getAsString();
+
 
                     //Valorizzo le liste
                     if(!giorniInteressati.contains(dataGiorno))
                         giorniInteressati.add(dataGiorno);
 
-                    MeteoDao previsioneMeteo = new MeteoDao(dataGiorno, oraPrevisione, previsione, previsioneDescription, temperaturaCelsius + "", vento, previsioneIcona);
+                    MeteoDao previsioneMeteo = new MeteoDao(dataGiorno, oraPrevisione, previsione, previsioneDescription, temperaturaCelsius + "", vento, previsioneIcona, nuvole, umidita);
                     meteoPrevisto.add(previsioneMeteo);
                 }
 
