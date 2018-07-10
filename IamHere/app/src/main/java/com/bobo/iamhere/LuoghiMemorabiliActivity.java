@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -38,6 +39,9 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_luoghi_memorabili);
+
+        //Recupero l'oggetto che mi permetterà di caricare i layout
+        final LayoutInflater inflater = this.getLayoutInflater();
 
         //Cambio il titolo all'activity
         setTitle(getString(R.string.title_activity_luoghi_memorabili));
@@ -82,6 +86,7 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
+
                 new AlertDialog.Builder(LuoghiMemorabiliActivity.this)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setTitle("Eliminazione luogo")
@@ -103,6 +108,31 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
                         })
                         .setNegativeButton("No", null)
                         .show();
+
+                /* TODO Da vedere se riesco a precaricare i valori dei campi. Probabilmente c'è da creare una classe che estenda DialogFragment
+                https://stackoverflow.com/questions/33193324/how-to-set-the-value-of-textview-in-custom-dialog-in-android
+
+                new AlertDialog.Builder(LuoghiMemorabiliActivity.this)
+                        .setView(inflater.inflate(R.layout.dialog_luogo_preferito, null))
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Modifica luogo")
+                        .setMessage("Modificare o eliminare il luogo")
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                //Elimino il posto dall'elenco di quelli memorizzati
+                                DatabaseManager.deleteLocation(MainActivity.database, elencoPostiMemorabili.get(position).getId());
+
+                                //Avverto la lista che i dati sono cambiati
+                                aggiornaLista(DatabaseManager.getAllLocation(MainActivity.database, false));
+
+                                Toast.makeText(getApplicationContext(), "Luogo eliminato", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+*/
 
                 return true;
             }

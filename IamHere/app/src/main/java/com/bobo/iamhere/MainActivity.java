@@ -23,8 +23,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +50,9 @@ public class MainActivity extends AppCompatActivity
 
     //Database
     public static SQLiteDatabase database;
+
+    //Variabili
+    static boolean mostraSoloPreferiti;
 
 
     @Override
@@ -98,6 +104,9 @@ public class MainActivity extends AppCompatActivity
 
         //Se non esistono, creo le tabelle
         DatabaseManager.createTables(database);
+
+        //Variabili
+        mostraSoloPreferiti = false;
     }
 
     @Override
@@ -162,16 +171,28 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_salva_corrente) {
 
-            final EditText taskEditText = new EditText(this);
+            //Recupero l'oggetto che mi permetterà di caricare i layout
+            LayoutInflater inflater = this.getLayoutInflater();
+            final View dialoglayout = inflater.inflate(R.layout.dialog_luogo_preferito, null);
+
+                    //final EditText taskEditText = new EditText(this);
+
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("Aggiunta luogo")
                     .setMessage("Specificare un alias per il luogo (opzionale)")
-                    .setView(taskEditText)
+                    .setView(dialoglayout)
                     .setPositiveButton("Aggiungi", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            String alias = String.valueOf(taskEditText.getText());
+                            EditText aliasView = dialoglayout.findViewById(R.id.aliasLuogo);
+                            CheckBox isPreferitoView = dialoglayout.findViewById(R.id.isLuogoPreferito);
+
+                            String alias = aliasView.getText().toString();
+                            int isChecked = 0;
+
+                            if(isPreferitoView.isChecked())
+                                isChecked = 1;
 
                             if(alias == null || alias.trim().equals(""))
                                 alias = "";
@@ -179,7 +200,7 @@ public class MainActivity extends AppCompatActivity
                             if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
                             {
                                 Location lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                                salvaLocation(lastKnowLocation, alias, 0);
+                                salvaLocation(lastKnowLocation, alias, isChecked);
 
                                 //Refresh dell'elenco dei luoghi
                                 valorizzaDatiVideo(lastKnowLocation);
@@ -223,6 +244,23 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), "Non hai ancora salvato un 'luogo veloce'", Toast.LENGTH_SHORT).show();
             }
 
+        } else if (id == R.id.action_mostra_preferiti) {
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            {
+                if(mostraSoloPreferiti) //Stavo mostrando solo i preferiti, l'utente mi ha chiesto di visualizzarli tutti
+                    item.setIcon(R.drawable.action_preferiti_no);
+                else
+                    item.setIcon(R.drawable.action_preferiti_si);
+
+                //Inverto il valore della variabile
+                mostraSoloPreferiti = !mostraSoloPreferiti;
+
+                Location lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                //Refresh dell'elenco dei luoghi
+                valorizzaDatiVideo(lastKnowLocation);
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -437,9 +475,14 @@ public class MainActivity extends AppCompatActivity
         try{
 
             //Recupero la lista del luoghi "preferiti" salvati sul database
-            ArrayList<LocationDao> elencoLuoghi = DatabaseManager.getAllLocation(MainActivity.database, false);
+            ArrayList<LocationDao> elencoLuoghi = DatabaseManager.getAllLocation(MainActivity.database, mostraSoloPreferiti);
 
-            String infoDistanze = "Distanze dai luoghi memorizzati: \n";
+            String mostraSoloPreferitiString = "";
+
+            if(mostraSoloPreferiti)
+                mostraSoloPreferitiString = " (preferiti)";
+
+            String infoDistanze = "Distanze dai luoghi memorizzati" + mostraSoloPreferitiString + ": \n";
 
             if(elencoLuoghi.size() == 0)
                 infoDistanze += "\nNon ci sono luoghi memorizzati";
