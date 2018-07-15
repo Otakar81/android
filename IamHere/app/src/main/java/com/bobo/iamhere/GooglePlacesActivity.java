@@ -21,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -40,6 +41,8 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 
@@ -191,6 +194,10 @@ public class GooglePlacesActivity extends AppCompatActivity
 
         //Recupero le tipologie tra cui scegliere e popolo il menu
         ArrayList<GooglePlacesTypeDao> elencoTipi = DatabaseManager.getAllPlaceTypes(MainActivity.database);
+        ArrayList<String> elencoGruppi = DatabaseManager.getAllPlaceTypeGroup(MainActivity.database);
+
+        //Oggetto di appoggio, per la suddivisione del menù in gruppi
+        Hashtable<String, ArrayList<GooglePlacesTypeDao>> elencoTipiPerGruppo = new Hashtable<String, ArrayList<GooglePlacesTypeDao>>();
 
         //Aggiungo la traduzione
         for (GooglePlacesTypeDao tipo:elencoTipi) {
@@ -205,8 +212,57 @@ public class GooglePlacesActivity extends AppCompatActivity
             }
 
             tipo.setNomeDescrittivo(nomeDescrittivo);
+
+
+            //Popolo l'hashtable
+            ArrayList<GooglePlacesTypeDao> subMenu = elencoTipiPerGruppo.get(tipo.getGruppo());
+
+            if(subMenu == null)
+                subMenu = new ArrayList<GooglePlacesTypeDao>();
+
+            subMenu.add(tipo);
+            elencoTipiPerGruppo.put(tipo.getGruppo(), subMenu);
         }
 
+        //Per ogni gruppo, ciclo tutti i membri e li aggiungo al menu
+        Enumeration<String> nomiGruppi = elencoTipiPerGruppo.keys();
+        //ArrayList<String> list = Collections.list(enumeration);
+
+        while(nomiGruppi.hasMoreElements())
+        {
+            String key = nomiGruppi.nextElement();
+
+            //Recupero la traduzione
+            String nomeDescrittivo = key;
+
+            try{
+                int resId = getResources().getIdentifier(key, "string", "com.bobo.iamhere");
+                nomeDescrittivo = getString(resId);
+            }catch (Exception e)
+            {
+                //Se non trovo la traduzione, stampo il codice
+            }
+
+            //Recupero l'elenco di tipi associati a quel gruppo
+            ArrayList<GooglePlacesTypeDao> tipiPerGruppo = elencoTipiPerGruppo.get(key);
+
+            if(tipiPerGruppo != null && tipiPerGruppo.size() > 0)
+            {
+                //Aggiungo l'item col nome del gruppo
+                SubMenu subMenuGruppo = menu.addSubMenu(nomeDescrittivo);
+
+                //Ed aggiungo i "figli"
+                Collections.sort(tipiPerGruppo); //Ordino l'insieme sulla base del nome descrittivo
+
+                for (GooglePlacesTypeDao tipo:tipiPerGruppo) {
+
+                    subMenuGruppo.add(Menu.NONE, tipo.getId(), Menu.NONE, tipo.getNomeDescrittivo()).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                }
+            }
+        }
+
+
+/*
         //Ordino l'insieme sulla base del nome descrittivo
         Collections.sort(elencoTipi);
 
@@ -214,6 +270,7 @@ public class GooglePlacesActivity extends AppCompatActivity
 
             menu.add(Menu.NONE, tipo.getId(), Menu.NONE, tipo.getNomeDescrittivo()).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
+        */
 
         getMenuInflater().inflate(R.menu.places_action, menu);
 
@@ -249,26 +306,30 @@ public class GooglePlacesActivity extends AppCompatActivity
             {
                 //Recupero il tipo selezionato
                 GooglePlacesTypeDao tipo = DatabaseManager.getPlaceType(MainActivity.database, id);
-                tipologiaSelezionata = tipo.getCodice();
 
-                //Valorizzo il titolo della lista, specificando quale è la tipologia dei luoghi che sto per mostrare
-                String nomeDescrittivo = tipo.getCodice();
-
-                try{
-                    int resId = getResources().getIdentifier(tipo.getCodice(), "string", "com.bobo.iamhere");
-                    nomeDescrittivo = getString(resId);
-                }catch (Exception e)
+                if(tipo != null)
                 {
-                    //Se non trovo la traduzione, stampo il codice
+                    tipologiaSelezionata = tipo.getCodice();
+
+                    //Valorizzo il titolo della lista, specificando quale è la tipologia dei luoghi che sto per mostrare
+                    String nomeDescrittivo = tipo.getCodice();
+
+                    try{
+                        int resId = getResources().getIdentifier(tipo.getCodice(), "string", "com.bobo.iamhere");
+                        nomeDescrittivo = getString(resId);
+                    }catch (Exception e)
+                    {
+                        //Se non trovo la traduzione, stampo il codice
+                    }
+
+
+                    TextView googlePlacesListTitle = findViewById(R.id.googlePlacesListTitle);
+                    googlePlacesListTitle.setText("Tipologia: " + nomeDescrittivo);
+
+                    //Valorizzo la lista a video
+                    Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    callRestApi(lastKnowLocation);
                 }
-
-
-                TextView googlePlacesListTitle = findViewById(R.id.googlePlacesListTitle);
-                googlePlacesListTitle.setText("Tipologia: " + nomeDescrittivo);
-
-                //Valorizzo la lista a video
-                Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                callRestApi(lastKnowLocation);
             }
         }
 

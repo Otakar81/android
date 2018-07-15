@@ -112,6 +112,14 @@
     <string name="veterinary_care">Veterinario</string>
     <string name="zoo">Zoo</string>
 
+    <!-- Gruppi Tipologie di Google Places -->
+    <string name="servizi">Servizi</string>
+    <string name="trasporti">Trasporti</string>
+    <string name="cibi_bevande">Cibi e Bevande</string>
+    <string name="cose_da_fare">Cose da Fare</string>
+    <string name="shopping">Shopping</string>
+    <string name="luoghi_servizi_religiosi">Luoghi e Servizi Religiosi</string>
+
 
 
 </resources>

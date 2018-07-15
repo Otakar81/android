@@ -20,5 +20,5 @@
         android:id="@+id/action_carica_quick"
         android:orderInCategory="100"
         android:title="@string/action_carica_quick"
-        app:showAsAction="never" />
+        app:showAsAction="never" ></item>
 </menu>

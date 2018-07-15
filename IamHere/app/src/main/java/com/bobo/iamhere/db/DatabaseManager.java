@@ -47,6 +47,12 @@ public class DatabaseManager {
 
         database.execSQL(sql);
 
+        /* TODO Da togliere
+        sql = "DELETE FROM google_places_type";
+
+        database.execSQL(sql);
+        */
+
 
         Cursor c = database.rawQuery("SELECT count(*) numero_tipi FROM google_places_type", null);
 
@@ -60,29 +66,29 @@ public class DatabaseManager {
             if(numeroTipi == 0) //Valorizzo la tabella
             {
                 sql = "INSERT INTO google_places_type (chiave, gruppo, is_preferito) VALUES " +
-                    "('accounting', '', 0), ('airport', '', 0), ('amusement_park', '', 0), ('aquarium', '', 0), " +
-                    "('art_gallery', '', 0), ('atm', '', 0), ('bakery', '', 0), ('bank', '', 0), " +
-                    "('bar', '', 0), ('beauty_salon', '', 0), ('bicycle_store', '', 0), ('book_store', '', 0), " +
-                    "('bowling_alley', '', 0), ('bus_station', '', 0), ('cafe', '', 0), ('campground', '', 0), " +
-                    "('car_dealer', '', 0), ('car_rental', '', 0), ('car_repair', '', 0), ('car_wash', '', 0), " +
-                    "('casino', '', 0), ('cemetery', '', 0), ('church', '', 0), ('city_hall', '', 0), " +
-                    "('clothing_store', '', 0), ('convenience_store', '', 0), ('courthouse', '', 0), ('dentist', '', 0), " +
-                    "('department_store', '', 0), ('doctor', '', 0), ('electrician', '', 0), ('electronics_store', '', 0), " +
-                    "('embassy', '', 0), ('fire_station', '', 0), ('florist', '', 0), ('funeral_home', '', 0), " +
-                    "('furniture_store', '', 0), ('gas_station', '', 0), ('gym', '', 0), ('hair_care', '', 0), " +
-                    "('hardware_store', '', 0), ('hindu_temple', '', 0), ('home_goods_store', '', 0), ('hospital', '', 0), " +
-                    "('insurance_agency', '', 0), ('jewelry_store', '', 0), ('laundry', '', 0), ('lawyer', '', 0), " +
-                    "('library', '', 0), ('liquor_store', '', 0), ('local_government_office', '', 0), ('locksmith', '', 0), " +
-                    "('lodging', '', 0), ('meal_delivery', '', 0), ('meal_takeaway', '', 0), ('mosque', '', 0), " +
-                    "('movie_rental', '', 0), ('movie_theater', '', 0), ('moving_company', '', 0), ('museum', '', 0), " +
-                    "('night_club', '', 0), ('painter', '', 0), ('park', '', 0), ('parking', '', 0), " +
-                    "('pet_store', '', 0), ('pharmacy', '', 0), ('physiotherapist', '', 0), ('plumber', '', 0), " +
-                    "('police', '', 0), ('post_office', '', 0), ('real_estate_agency', '', 0), ('restaurant', '', 0), " +
-                    "('roofing_contractor', '', 0), ('rv_park', '', 0), ('school', '', 0), ('shoe_store', '', 0), " +
-                    "('shopping_mall', '', 0), ('spa', '', 0), ('stadium', '', 0), ('storage', '', 0), " +
-                    "('store', '', 0), ('subway_station', '', 0), ('supermarket', '', 0), ('synagogue', '', 0), " +
-                    "('taxi_stand', '', 0), ('train_station', '', 0), ('transit_station', '', 0), ('travel_agency', '', 0), " +
-                    "('veterinary_care', '', 0), ('zoo', '', 0)";
+                    "('accounting', 'servizi', 0), ('airport', 'trasporti', 0), ('amusement_park', 'cose_da_fare', 0), ('aquarium', 'cose_da_fare', 0), " +
+                    "('art_gallery', 'cose_da_fare', 0), ('atm', 'servizi', 0), ('bakery', 'cibi_bevande', 0), ('bank', 'servizi', 0), " +
+                    "('bar', 'cibi_bevande', 0), ('beauty_salon', 'servizi', 0), ('bicycle_store', 'shopping', 0), ('book_store', 'shopping', 0), " +
+                    "('bowling_alley', 'cose_da_fare', 0), ('bus_station', 'trasporti', 0), ('cafe', 'cibi_bevande', 0), ('campground', 'servizi', 0), " +
+                    "('car_dealer', 'shopping', 0), ('car_rental', 'trasporti', 0), ('car_repair', 'servizi', 0), ('car_wash', 'servizi', 0), " +
+                    "('casino', 'cose_da_fare', 0), ('cemetery', 'luoghi_servizi_religiosi', 0), ('church', 'luoghi_servizi_religiosi', 0), ('city_hall', 'servizi', 0), " +
+                    "('clothing_store', 'shopping', 0), ('convenience_store', 'shopping', 0), ('courthouse', 'servizi', 0), ('dentist', 'servizi', 0), " +
+                    "('department_store', 'shopping', 0), ('doctor', 'servizi', 0), ('electrician', 'servizi', 0), ('electronics_store', 'shopping', 0), " +
+                    "('embassy', 'servizi', 0), ('fire_station', 'servizi', 0), ('florist', 'shopping', 0), ('funeral_home', 'luoghi_servizi_religiosi', 0), " +
+                    "('furniture_store', 'shopping', 0), ('gas_station', 'trasporti', 0), ('gym', 'cose_da_fare', 0), ('hair_care', 'servizi', 0), " +
+                    "('hardware_store', 'shopping', 0), ('hindu_temple', 'luoghi_servizi_religiosi', 0), ('home_goods_store', 'shopping', 0), ('hospital', 'servizi', 0), " +
+                    "('insurance_agency', 'servizi', 0), ('jewelry_store', 'shopping', 0), ('laundry', 'servizi', 0), ('lawyer', 'servizi', 0), " +
+                    "('library', 'cose_da_fare', 0), ('liquor_store', 'shopping', 0), ('local_government_office', 'servizi', 0), ('locksmith', 'servizi', 0), " +
+                    "('lodging', 'servizi', 0), ('meal_delivery', 'cibi_bevande', 0), ('meal_takeaway', 'cibi_bevande', 0), ('mosque', 'luoghi_servizi_religiosi', 0), " +
+                    "('movie_rental', 'cose_da_fare', 0), ('movie_theater', 'cose_da_fare', 0), ('moving_company', 'servizi', 0), ('museum', 'cose_da_fare', 0), " +
+                    "('night_club', 'cose_da_fare', 0), ('painter', 'servizi', 0), ('park', 'cose_da_fare', 0), ('parking', 'trasporti', 0), " +
+                    "('pet_store', 'shopping', 0), ('pharmacy', 'shopping', 0), ('physiotherapist', 'servizi', 0), ('plumber', 'servizi', 0), " +
+                    "('police', 'servizi', 0), ('post_office', 'servizi', 0), ('real_estate_agency', 'servizi', 0), ('restaurant', 'cibi_bevande', 0), " +
+                    "('roofing_contractor', 'servizi', 0), ('rv_park', 'trasporti', 0), ('school', 'servizi', 0), ('shoe_store', 'shopping', 0), " +
+                    "('shopping_mall', 'shopping', 0), ('spa', 'cose_da_fare', 0), ('stadium', 'cose_da_fare', 0), ('storage', 'servizi', 0), " +
+                    "('store', 'shopping', 0), ('subway_station', 'trasporti', 0), ('supermarket', 'shopping', 0), ('synagogue', 'luoghi_servizi_religiosi', 0), " +
+                    "('taxi_stand', 'trasporti', 0), ('train_station', 'trasporti', 0), ('transit_station', 'trasporti', 0), ('travel_agency', 'servizi', 0), " +
+                    "('veterinary_care', 'servizi', 0), ('zoo', 'cose_da_fare', 0)";
 
                 database.execSQL(sql);
             }
@@ -145,6 +151,16 @@ public class DatabaseManager {
         SQLiteStatement stmt = database.compileStatement("UPDATE location SET is_preferito = ? WHERE id = ?");
         stmt.bindLong(1, isLuogoPreferito);
         stmt.bindLong(2, id);
+
+        stmt.execute();
+    }
+
+    public static void updateLuogoPreferito(SQLiteDatabase database, long id, String alias, int isLuogoPreferito)
+    {
+        SQLiteStatement stmt = database.compileStatement("UPDATE location SET alias = ?, is_preferito = ? WHERE id = ?");
+        stmt.bindString(1, alias);
+        stmt.bindLong(2, isLuogoPreferito);
+        stmt.bindLong(3, id);
 
         stmt.execute();
     }
@@ -466,6 +482,27 @@ public class DatabaseManager {
             GooglePlacesTypeDao typeDao = new GooglePlacesTypeDao(id, chiave, gruppo, isPreferito);
 
             result.add(typeDao);
+        }
+
+        c.close();
+
+        return result;
+    }
+
+    public static ArrayList<String> getAllPlaceTypeGroup(SQLiteDatabase database)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+
+        String sql = "SELECT distinct gruppo FROM google_places_type";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        int gruppoIndex = c.getColumnIndex("gruppo");
+
+        while (c.moveToNext())
+        {
+            String gruppo = c.getString(gruppoIndex);
+            result.add(gruppo);
         }
 
         c.close();

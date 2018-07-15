@@ -15,17 +15,20 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.bobo.iamhere.adapters.LocationAdapter;
 import com.bobo.iamhere.db.DatabaseManager;
 import com.bobo.iamhere.db.LocationDao;
+import com.bobo.iamhere.dialogfragments.LuoghiMemorabiliDialog;
 
 import java.util.ArrayList;
 
@@ -86,57 +89,20 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
+                //Apre il dialog personalizzato, per modifica e cancellazione del luogo
+                LocationDao locationDao = elencoPostiMemorabili.get(position);
 
-                new AlertDialog.Builder(LuoghiMemorabiliActivity.this)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle("Eliminazione luogo")
-                        .setMessage("Sei sicuro di voler eliminare questo luogo?")
-                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(LuoghiMemorabiliActivity.this);
+                LuoghiMemorabiliDialog luoghiMemorabiliDialog = LuoghiMemorabiliDialog.newInstance(builder);
+                luoghiMemorabiliDialog.show(getSupportFragmentManager(),"luoghi_dialog");
 
-                                //Elimino il posto dall'elenco di quelli memorizzati
-                                DatabaseManager.deleteLocation(MainActivity.database, elencoPostiMemorabili.get(position).getId());
-
-                                //Avverto la lista che i dati sono cambiati
-                                aggiornaLista(DatabaseManager.getAllLocation(MainActivity.database, false));
-
-                                //((BaseAdapter) listaPostiView.getAdapter()).notifyDataSetChanged(); TODO Verificare perchè non funziona
-
-                                Toast.makeText(getApplicationContext(), "Luogo eliminato", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setNegativeButton("No", null)
-                        .show();
-
-                /* TODO Da vedere se riesco a precaricare i valori dei campi. Probabilmente c'è da creare una classe che estenda DialogFragment
-                https://stackoverflow.com/questions/33193324/how-to-set-the-value-of-textview-in-custom-dialog-in-android
-
-                new AlertDialog.Builder(LuoghiMemorabiliActivity.this)
-                        .setView(inflater.inflate(R.layout.dialog_luogo_preferito, null))
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle("Modifica luogo")
-                        .setMessage("Modificare o eliminare il luogo")
-                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                //Elimino il posto dall'elenco di quelli memorizzati
-                                DatabaseManager.deleteLocation(MainActivity.database, elencoPostiMemorabili.get(position).getId());
-
-                                //Avverto la lista che i dati sono cambiati
-                                aggiornaLista(DatabaseManager.getAllLocation(MainActivity.database, false));
-
-                                Toast.makeText(getApplicationContext(), "Luogo eliminato", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setNegativeButton("No", null)
-                        .show();
-*/
+                //E lo valorizza con gli attributi dell'oggetto su cui abbiamo cliccato
+                luoghiMemorabiliDialog.valorizzaDialog(locationDao.getId(), locationDao.getAlias(), locationDao.getLuogoPreferito() == 1);
 
                 return true;
             }
         });
+
     }
 
     @Override
@@ -220,9 +186,8 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
      * Aggiorna la lista delle località
      * @param elencoPostiMemorabili
      */
-    private void aggiornaLista(ArrayList<LocationDao> elencoPostiMemorabili)
+    public void aggiornaLista(ArrayList<LocationDao> elencoPostiMemorabili)
     {
-//        ArrayAdapter<LocationDao> adapter = new ArrayAdapter<LocationDao>(this, android.R.layout.simple_list_item_1, elencoPostiMemorabili);
         ArrayAdapter<LocationDao> adapter = new LocationAdapter(elencoPostiMemorabili, this);
         listaPostiView.setAdapter(adapter);
     }
