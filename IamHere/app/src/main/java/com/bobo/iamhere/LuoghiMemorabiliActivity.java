@@ -175,6 +175,10 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
             //Creo un intent e vado sulla activity corrispondente
             Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
             startActivity(intent);
+
+        } else if (id == R.id.nav_database)
+        {
+            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

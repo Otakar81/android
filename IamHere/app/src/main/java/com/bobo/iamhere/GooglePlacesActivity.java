@@ -402,6 +402,9 @@ public class GooglePlacesActivity extends AppCompatActivity
         {
             Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
 
+        } else if (id == R.id.nav_database)
+        {
+            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

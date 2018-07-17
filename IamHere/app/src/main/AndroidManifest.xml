@@ -31,8 +31,8 @@
             android:name="com.google.places.API_KEY"
             android:value="AIzaSyCxDmTmRy_XCJ-GMXqwPtogYb0bG0m-Hac" />
         <meta-data
-            android:name="openweathermap.URI_SERVICE_5DAYS"
-            android:value="http://api.openweathermap.org/data/2.5/forecast" />
+            android:name="openweathermap.URI_SERVICE"
+            android:value="http://api.openweathermap.org/" />
         <meta-data
             android:name="com.google.places.URI_SERVICE"
             android:value="https://maps.googleapis.com/" />

@@ -48,8 +48,7 @@ public class MeteoActivity extends AppCompatActivity
 
     ArrayList<GiornataMeteoDao> elencoPrevisioni;
 
-    String LANGUAGE_CODE = "it";
-
+    String LANGUAGE_CODE = "it"; //TODO VA preso dal sistema
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,46 +80,14 @@ public class MeteoActivity extends AppCompatActivity
             Bundle bundle = app.metaData;
 
             String API_KEY = bundle.getString("openweathermap.API_KEY");
-            String URI_SERVICE_5DAYS = bundle.getString("openweathermap.URI_SERVICE_5DAYS");
+            String URI_SERVICE = bundle.getString("openweathermap.URI_SERVICE");
 
 
             //Recupero le coordinate correnti
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                //TODO TEST
-                callRestApi(lastKnowLocation.getLatitude(), lastKnowLocation.getLongitude(), API_KEY);
-
-                /*
-                String parametriRicerca = "?lat=" + lastKnowLocation.getLatitude() + "&lon=" + lastKnowLocation.getLongitude();
-
-                //Aggiungo la API_KEY
-                parametriRicerca += "&appid=" + API_KEY;
-
-
-                Log.i("Parametri ricerca", parametriRicerca);
-
-                //Chiamo le API
-                String uriChiamata = URI_SERVICE_5DAYS + parametriRicerca;
-
-                DownloadTask task = new DownloadTask();
-                String jsonData = task.execute(uriChiamata).get();
-                Log.i("JsonData", jsonData);
-
-                if(jsonData.length() > 0)
-                {
-                    //Popolo la lista con i risultati meteo
-                    ListView listView = findViewById(R.id.listMeteoResults);
-                    listView.setAdapter(elaboraJsonForecast(jsonData));
-
-                    //Mostro la lista
-                    findViewById(R.id.listMeteoResults).setVisibility(View.VISIBLE);
-
-                }else{
-                    Toast.makeText(this, "Errore nel reperimento dei dati.", Toast.LENGTH_LONG).show();
-                }
-                */
-
+                callRestApi(lastKnowLocation.getLatitude(), lastKnowLocation.getLongitude(), URI_SERVICE, API_KEY);
             }
 
         } catch (Exception e) {
@@ -204,6 +171,10 @@ public class MeteoActivity extends AppCompatActivity
             //Creo un intent e vado sulla activity corrispondente
             Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
             startActivity(intent);
+
+        } else if (id == R.id.nav_database)
+        {
+            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -211,116 +182,13 @@ public class MeteoActivity extends AppCompatActivity
         return true;
     }
 
-
-    /***
-     * Elabora il Json restituito dalla chiamata alle API
-     *
-     * @param jsonString
-     * @return
-     * @throws JSONException
-
-    private ArrayAdapter<String> elaboraJsonForecast(String jsonString) throws JSONException {
-
-        JSONObject jsonContent = new JSONObject(jsonString);
-        JSONArray listaPrevisioni = jsonContent.getJSONArray("list");
-
-
-        //Memorizzo i giorni interessati
-        ArrayList<String> giorniInteressati = new ArrayList<String>();
-        ArrayList<MeteoDao> meteoPrevisto = new ArrayList<MeteoDao>();
-
-        for (int i = 0; i < listaPrevisioni.length(); i++)
-        {
-            JSONObject meteoGiornoOra = listaPrevisioni.getJSONObject(i); //Contiene le previsioni ogni tre ore
-
-            //Recupero la data
-            String dataOra = meteoGiornoOra.getString("dt_txt"); //Nel formato: 2018-06-08 03:00:00
-            String dataGiorno = dataOra.substring(0, 10);
-            String oraPrevisione = dataOra.substring(11, 16);
-
-            //Recupero le info meteo
-            JSONArray previsioneDelGiorno = meteoGiornoOra.getJSONArray("weather");
-            JSONObject weather = previsioneDelGiorno.getJSONObject(0);
-            String previsione = weather.getString("main");
-            String previsioneDescription = weather.getString("description");
-            String previsioneIcona = weather.getString("icon");
-
-            //La temperatura
-            JSONObject temperaturaJson = meteoGiornoOra.getJSONObject("main");
-            int temperaturaCelsius = (int) (Float.parseFloat(temperaturaJson.getString("temp")) - 273.15f);
-
-            //Ed il vento
-            JSONObject ventoJson = meteoGiornoOra.getJSONObject("wind");
-            String vento = ventoJson.getString("speed");
-
-
-            //Valorizzo le liste
-            if(!giorniInteressati.contains(dataGiorno))
-                giorniInteressati.add(dataGiorno);
-
-            MeteoDao previsioneMeteo = new MeteoDao(dataGiorno, oraPrevisione, previsione, previsioneDescription, temperaturaCelsius + "", vento, previsioneIcona);
-            meteoPrevisto.add(previsioneMeteo);
-        }
-
-        //Adesso prepariamo la lista.
-        ArrayList<String> listValue = new ArrayList<String>();
-
-        for(int i = 0; i < giorniInteressati.size(); i++)
-        {
-            String rigaDaStampare = "";
-            String giorno = giorniInteressati.get(i);
-
-            //Per ciascun giorno, stampo un "header" seguito da tutte le previsioni che riguardano quella giornata
-            rigaDaStampare += giorno;
-
-            for(int j = 0; j < meteoPrevisto.size(); j++)
-            {
-                MeteoDao meteo = meteoPrevisto.get(j);
-
-                if(meteo.getData().equalsIgnoreCase(giorno))
-                    rigaDaStampare += "\n\t " + meteo;
-            }
-
-            listValue.add(rigaDaStampare);
-        }
-
-
-        //Creo l'array adapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listValue){
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent){
-                // Get the Item from ListView
-                View view = super.getView(position, convertView, parent);
-
-                // Initialize a TextView for ListView each Item
-                TextView tv = (TextView) view.findViewById(android.R.id.text1);
-
-                //Set color
-                //tv.setTextColor(Color.WHITE);
-
-                // Generate ListView Item using TextView
-                return view;
-            }
-        };;
-
-
-        return adapter;
-    }
-*/
-
-
-
-
-
     /***
      * Chiamata alle Api Rest
      */
-    private void callRestApi(double latitudine, double longitudine, String apiKey)
+    private void callRestApi(double latitudine, double longitudine, String uriService, String apiKey)
     {
-
         //Creo il retrofit
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://api.openweathermap.org/")
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(uriService)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

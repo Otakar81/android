@@ -210,6 +210,10 @@ public class NoteActivity extends AppCompatActivity
         } else if (id == R.id.nav_note)
         {
             //Nulla, sono già qui
+
+        } else if (id == R.id.nav_database)
+        {
+            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
