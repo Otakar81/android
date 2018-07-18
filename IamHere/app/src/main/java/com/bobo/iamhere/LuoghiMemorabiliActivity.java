@@ -150,20 +150,26 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             {
-                Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(MainActivity.LOCATION_PROVIDER_NAME);
 
-                Double latitude = lastKnowLocation.getLatitude();
-                Double longitude = lastKnowLocation.getLongitude();
+                if(lastKnowLocation != null)
+                {
+                    Double latitude = lastKnowLocation.getLatitude();
+                    Double longitude = lastKnowLocation.getLongitude();
 
-                String uri = "https://www.google.com/maps/search/?api=1&query=" +latitude+","+longitude; //Apre la mappa e la centra sulle coordinate con un marker
-                //String uri = "https://maps.google.com/maps?daddr=" +latitude+","+longitude; //Apre direttamente il "calcola percorso" fino alle coordinate passate
+                    String uri = "https://www.google.com/maps/search/?api=1&query=" +latitude+","+longitude; //Apre la mappa e la centra sulle coordinate con un marker
+                    //String uri = "https://maps.google.com/maps?daddr=" +latitude+","+longitude; //Apre direttamente il "calcola percorso" fino alle coordinate passate
 
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-                String ShareSub = "Here is my location";
-                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, ShareSub);
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, uri);
-                startActivity(Intent.createChooser(sharingIntent, "Share via"));
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    String ShareSub = "Here is my location";
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, ShareSub);
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, uri);
+                    startActivity(Intent.createChooser(sharingIntent, "Share via"));
+
+                } else {
+                    Toast.makeText(this, R.string.location_null, Toast.LENGTH_LONG).show();
+                }
             }
 
         } else if (id == R.id.nav_settings)

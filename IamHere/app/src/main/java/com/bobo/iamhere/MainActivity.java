@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity
     //Variabili utilizzate per la geolocalizzazione
     static LocationManager locationManager;
     static LocationListener locationListener;
+    static String LOCATION_PROVIDER_NAME;
 
     //Database
     public static SQLiteDatabase database;
@@ -99,6 +100,22 @@ public class MainActivity extends AppCompatActivity
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE); //Valorizzo il location manager dai servizi di sistema
         locationListener = createLocationListener();
 
+        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            LOCATION_PROVIDER_NAME = LocationManager.GPS_PROVIDER;
+        }
+        else
+        {
+            if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+                LOCATION_PROVIDER_NAME = LocationManager.NETWORK_PROVIDER;
+            else
+                LOCATION_PROVIDER_NAME = LocationManager.PASSIVE_PROVIDER;
+
+
+            Toast.makeText(this, R.string.abilita_geolocalizzazione, Toast.LENGTH_LONG).show();
+        }
+
+
+
         //Creo il database
         database = this.openOrCreateDatabase("location_db", Context.MODE_PRIVATE, null);
 
@@ -136,7 +153,7 @@ public class MainActivity extends AppCompatActivity
 
                 startListening();
 
-                Location lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                Location lastKnowLocation = locationManager.getLastKnownLocation(LOCATION_PROVIDER_NAME);
 
                 //Stampo a video le info, visto che già ho i permessi
                 valorizzaDatiVideo(lastKnowLocation);
@@ -199,7 +216,7 @@ public class MainActivity extends AppCompatActivity
 
                             if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
                             {
-                                Location lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                Location lastKnowLocation = locationManager.getLastKnownLocation(LOCATION_PROVIDER_NAME);
                                 salvaLocation(lastKnowLocation, alias, isChecked);
 
                                 //Refresh dell'elenco dei luoghi
@@ -219,7 +236,7 @@ public class MainActivity extends AppCompatActivity
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             {
-                Location lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                Location lastKnowLocation = locationManager.getLastKnownLocation(LOCATION_PROVIDER_NAME);
                 salvaLocation(lastKnowLocation, DatabaseManager.NOME_LOCATION_VELOCE, 1);
 
                 //Refresh dell'elenco dei luoghi
@@ -256,7 +273,7 @@ public class MainActivity extends AppCompatActivity
                 //Inverto il valore della variabile
                 mostraSoloPreferiti = !mostraSoloPreferiti;
 
-                Location lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                Location lastKnowLocation = locationManager.getLastKnownLocation(LOCATION_PROVIDER_NAME);
 
                 //Refresh dell'elenco dei luoghi
                 valorizzaDatiVideo(lastKnowLocation);
@@ -313,7 +330,7 @@ public class MainActivity extends AppCompatActivity
 
             if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             {
-                Location lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                Location lastKnowLocation = locationManager.getLastKnownLocation(LOCATION_PROVIDER_NAME);
 
                 Double latitude = lastKnowLocation.getLatitude();
                 Double longitude = lastKnowLocation.getLongitude();
@@ -387,7 +404,7 @@ public class MainActivity extends AppCompatActivity
     private void startListening()
     {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10, 10, locationListener);
+            locationManager.requestLocationUpdates(LOCATION_PROVIDER_NAME, 10, 10, locationListener);
     }
 
     /***

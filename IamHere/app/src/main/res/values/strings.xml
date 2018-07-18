@@ -20,6 +20,13 @@
     <string name="action_salva_corrente">Salva posizione corrente</string>
     <string name="action_share">Condividi</string>
 
+
+    <!-- MainActivity -->
+    <string name="abilita_geolocalizzazione">Abilita la geolocalizzazione per avere una maggiore precisione</string>
+
+    <!-- Messaggi generici -->
+    <string name="location_null">Non è stato possibile risalire alla tua posizione. Abilita i servizi di geolocalizzazione</string>
+
     <!-- Tipologie di Google Places -->
     <string name="accounting">Contabilità</string>
     <string name="airport">Aeroporto</string>
