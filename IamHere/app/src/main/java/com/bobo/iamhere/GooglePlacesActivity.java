@@ -327,7 +327,7 @@ public class GooglePlacesActivity extends AppCompatActivity
                     googlePlacesListTitle.setText("Tipologia: " + nomeDescrittivo);
 
                     //Valorizzo la lista a video
-                    Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(MainActivity.LOCATION_PROVIDER_NAME);
+                    Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
 
                     if(lastKnowLocation != null)
                         callRestApi(lastKnowLocation);
@@ -386,7 +386,7 @@ public class GooglePlacesActivity extends AppCompatActivity
 
             if (ContextCompat.checkSelfPermission(GooglePlacesActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             {
-                Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(MainActivity.LOCATION_PROVIDER_NAME);
+                Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
 
                 if(lastKnowLocation != null)
                 {

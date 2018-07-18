@@ -85,7 +85,7 @@ public class MeteoActivity extends AppCompatActivity
 
             //Recupero le coordinate correnti
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(MainActivity.LOCATION_PROVIDER_NAME);
+                Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
 
                 if(lastKnowLocation != null)
                     callRestApi(lastKnowLocation.getLatitude(), lastKnowLocation.getLongitude(), URI_SERVICE, API_KEY);
@@ -149,7 +149,7 @@ public class MeteoActivity extends AppCompatActivity
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             {
-                Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(MainActivity.LOCATION_PROVIDER_NAME);
+                Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
 
                 if(lastKnowLocation != null)
                 {

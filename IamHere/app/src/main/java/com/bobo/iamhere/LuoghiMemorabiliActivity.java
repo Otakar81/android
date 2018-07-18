@@ -150,7 +150,7 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             {
-                Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(MainActivity.LOCATION_PROVIDER_NAME);
+                Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
 
                 if(lastKnowLocation != null)
                 {

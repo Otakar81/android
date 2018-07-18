@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity
     //Variabili utilizzate per la geolocalizzazione
     static LocationManager locationManager;
     static LocationListener locationListener;
-    static String LOCATION_PROVIDER_NAME;
 
     //Database
     public static SQLiteDatabase database;
@@ -100,22 +99,6 @@ public class MainActivity extends AppCompatActivity
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE); //Valorizzo il location manager dai servizi di sistema
         locationListener = createLocationListener();
 
-        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            LOCATION_PROVIDER_NAME = LocationManager.GPS_PROVIDER;
-        }
-        else
-        {
-            if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
-                LOCATION_PROVIDER_NAME = LocationManager.NETWORK_PROVIDER;
-            else
-                LOCATION_PROVIDER_NAME = LocationManager.PASSIVE_PROVIDER;
-
-
-            Toast.makeText(this, R.string.abilita_geolocalizzazione, Toast.LENGTH_LONG).show();
-        }
-
-
-
         //Creo il database
         database = this.openOrCreateDatabase("location_db", Context.MODE_PRIVATE, null);
 
@@ -153,7 +136,7 @@ public class MainActivity extends AppCompatActivity
 
                 startListening();
 
-                Location lastKnowLocation = locationManager.getLastKnownLocation(LOCATION_PROVIDER_NAME);
+                Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
 
                 //Stampo a video le info, visto che già ho i permessi
                 valorizzaDatiVideo(lastKnowLocation);
@@ -216,7 +199,7 @@ public class MainActivity extends AppCompatActivity
 
                             if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
                             {
-                                Location lastKnowLocation = locationManager.getLastKnownLocation(LOCATION_PROVIDER_NAME);
+                                Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
                                 salvaLocation(lastKnowLocation, alias, isChecked);
 
                                 //Refresh dell'elenco dei luoghi
@@ -236,7 +219,7 @@ public class MainActivity extends AppCompatActivity
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             {
-                Location lastKnowLocation = locationManager.getLastKnownLocation(LOCATION_PROVIDER_NAME);
+                Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
                 salvaLocation(lastKnowLocation, DatabaseManager.NOME_LOCATION_VELOCE, 1);
 
                 //Refresh dell'elenco dei luoghi
@@ -273,7 +256,7 @@ public class MainActivity extends AppCompatActivity
                 //Inverto il valore della variabile
                 mostraSoloPreferiti = !mostraSoloPreferiti;
 
-                Location lastKnowLocation = locationManager.getLastKnownLocation(LOCATION_PROVIDER_NAME);
+                Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
 
                 //Refresh dell'elenco dei luoghi
                 valorizzaDatiVideo(lastKnowLocation);
@@ -330,7 +313,7 @@ public class MainActivity extends AppCompatActivity
 
             if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             {
-                Location lastKnowLocation = locationManager.getLastKnownLocation(LOCATION_PROVIDER_NAME);
+                Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
 
                 Double latitude = lastKnowLocation.getLatitude();
                 Double longitude = lastKnowLocation.getLongitude();
@@ -360,6 +343,20 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+
+    /**
+     * Restituisce il LocationProvider più preciso tra quelli abilitati dall'utente
+     * @return
+     */
+    public static String getLocationProviderName()
+    {
+        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+            return LocationManager.GPS_PROVIDER;
+        else if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+            return LocationManager.NETWORK_PROVIDER;
+        else
+            return LocationManager.PASSIVE_PROVIDER;
+    }
 
     /***
      * Crea il LocationListener
@@ -404,7 +401,7 @@ public class MainActivity extends AppCompatActivity
     private void startListening()
     {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-            locationManager.requestLocationUpdates(LOCATION_PROVIDER_NAME, 10, 10, locationListener);
+            locationManager.requestLocationUpdates(getLocationProviderName(), 10, 10, locationListener);
     }
 
     /***
@@ -416,149 +413,159 @@ public class MainActivity extends AppCompatActivity
     {
         String elencoInfo = "";
 
-        //Utilizzo il Geocoder per ottenere info sulla mia posizione
-        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+        if(location == null) //Non sono riuscito a risalire alla posizione attuale
+        {
+            //Stampo le info generiche
+            TextView listaInfoText = findViewById(R.id.elencoInfoText);
+            listaInfoText.setText(getResources().getString(R.string.no_info));
 
-        try {
+            Toast.makeText(this, R.string.location_null, Toast.LENGTH_LONG).show();
 
+        } else {
 
-            List<Address> indirizzi = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            //Utilizzo il Geocoder per ottenere info sulla mia posizione
+            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
-            if(indirizzi != null && indirizzi.size() > 0)
-            {
-                Address address = indirizzi.get(0);
+            try {
 
-                String latitudine = location.getLatitude() + "";
-                String longitudine = location.getLongitude() + "";
-                String accuracy = location.getAccuracy() + "";
-                String altitudine = location.getAltitude() + "";
-                String nazione = address.getCountryName();
-                String regione = address.getAdminArea();
-                String provincia = address.getSubAdminArea();
-                String citta = address.getLocality();
-                String indirizzoPostale = address.getThoroughfare();
-                String cap = address.getPostalCode();
+                List<Address> indirizzi = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
 
-                //Valorizzo l'elenco delle info
-                if(latitudine.trim().length() > 0)
-                    elencoInfo += "\nLatitudine: " + latitudine;
+                if(indirizzi != null && indirizzi.size() > 0)
+                {
+                    Address address = indirizzi.get(0);
 
-                if(longitudine.trim().length() > 0)
-                    elencoInfo += "\nLongitudine: " + longitudine;
+                    String latitudine = location.getLatitude() + "";
+                    String longitudine = location.getLongitude() + "";
+                    String accuracy = location.getAccuracy() + "";
+                    String altitudine = location.getAltitude() + "";
+                    String nazione = address.getCountryName();
+                    String regione = address.getAdminArea();
+                    String provincia = address.getSubAdminArea();
+                    String citta = address.getLocality();
+                    String indirizzoPostale = address.getThoroughfare();
+                    String cap = address.getPostalCode();
 
-                if(accuracy.trim().length() > 0)
-                    elencoInfo += "\nAccuratezza: " + accuracy;
+                    //Valorizzo l'elenco delle info
+                    if(latitudine.trim().length() > 0)
+                        elencoInfo += "\nLatitudine: " + latitudine;
 
-                if(altitudine.trim().length() > 0) {
+                    if(longitudine.trim().length() > 0)
+                        elencoInfo += "\nLongitudine: " + longitudine;
 
-                    double altitudineDouble = Double.parseDouble(altitudine);
-                    altitudineDouble = (double) (Math.round( altitudineDouble * Math.pow( 10, 2 ) )/Math.pow( 10, 2 ));
+                    if(accuracy.trim().length() > 0)
+                        elencoInfo += "\nAccuratezza: " + accuracy;
 
-                    elencoInfo += "\nAltitudine: " + altitudineDouble + "m";
+                    if(altitudine.trim().length() > 0) {
+
+                        double altitudineDouble = Double.parseDouble(altitudine);
+                        altitudineDouble = (double) (Math.round( altitudineDouble * Math.pow( 10, 2 ) )/Math.pow( 10, 2 ));
+
+                        elencoInfo += "\nAltitudine: " + altitudineDouble + "m";
+                    }
+
+                    if(nazione != null && nazione.trim().length() > 0)
+                        elencoInfo += "\nNazione: " + nazione;
+
+                    if(regione != null && regione.trim().length() > 0)
+                        elencoInfo += "\nRegione: " + regione;
+
+                    if(provincia != null && provincia.trim().length() > 0)
+                        elencoInfo += "\nProvincia: " + provincia;
+
+                    if(citta != null && citta.trim().length() > 0)
+                        elencoInfo += "\nComune: " + citta;
+
+                    if(indirizzoPostale != null && indirizzoPostale.trim().length() > 0)
+                        elencoInfo += "\nIndirizzo: " + indirizzoPostale;
+
+                    if(cap != null && cap.trim().length() > 0)
+                        elencoInfo += "\nCAP: " + cap;
                 }
 
-                if(nazione != null && nazione.trim().length() > 0)
-                    elencoInfo += "\nNazione: " + nazione;
+            } catch (IOException e) {
+                e.printStackTrace();
 
-                if(regione != null && regione.trim().length() > 0)
-                    elencoInfo += "\nRegione: " + regione;
+                elencoInfo = getResources().getString(R.string.no_info);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
 
-                if(provincia != null && provincia.trim().length() > 0)
-                    elencoInfo += "\nProvincia: " + provincia;
-
-                if(citta != null && citta.trim().length() > 0)
-                    elencoInfo += "\nComune: " + citta;
-
-                if(indirizzoPostale != null && indirizzoPostale.trim().length() > 0)
-                    elencoInfo += "\nIndirizzo: " + indirizzoPostale;
-
-                if(cap != null && cap.trim().length() > 0)
-                    elencoInfo += "\nCAP: " + cap;
+                elencoInfo = getResources().getString(R.string.no_info);
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            //Stampo le info generiche
+            TextView listaInfoText = findViewById(R.id.elencoInfoText);
+            listaInfoText.setText(elencoInfo);
 
-            elencoInfo = "Nessuna info presente";
-        } catch (Exception e)
-        {
-            e.printStackTrace();
+            //E stampo le distanze dai luoghi memorizzati
+            try{
 
-            elencoInfo = "Nessuna info presente";
-        }
+                //Recupero la lista del luoghi "preferiti" salvati sul database
+                ArrayList<LocationDao> elencoLuoghi = DatabaseManager.getAllLocation(MainActivity.database, mostraSoloPreferiti);
 
-        //Stampo le info generiche
-        TextView listaInfoText = findViewById(R.id.elencoInfoText);
-        listaInfoText.setText(elencoInfo);
+                String mostraSoloPreferitiString = "";
 
-        //E stampo le distanze dai luoghi memorizzati
-        try{
+                if(mostraSoloPreferiti)
+                    mostraSoloPreferitiString = " (preferiti)";
 
-            //Recupero la lista del luoghi "preferiti" salvati sul database
-            ArrayList<LocationDao> elencoLuoghi = DatabaseManager.getAllLocation(MainActivity.database, mostraSoloPreferiti);
+                String infoDistanze = "Distanze dai luoghi memorizzati" + mostraSoloPreferitiString + ": \n";
 
-            String mostraSoloPreferitiString = "";
+                if(elencoLuoghi.size() == 0)
+                    infoDistanze += "\nNon ci sono luoghi memorizzati";
 
-            if(mostraSoloPreferiti)
-                mostraSoloPreferitiString = " (preferiti)";
+                //Valorizzo le distanze
+                for (LocationDao luogo:elencoLuoghi)
+                {
+                    Location indirizzoLuogo = new Location(luogo.toString());
+                    indirizzoLuogo.setLatitude(luogo.getLatitudine());
+                    indirizzoLuogo.setLongitude(luogo.getLongitudine());
 
-            String infoDistanze = "Distanze dai luoghi memorizzati" + mostraSoloPreferitiString + ": \n";
+                    //Calcolo la distanza
+                    float distanza = location.distanceTo(indirizzoLuogo);
 
-            if(elencoLuoghi.size() == 0)
-                infoDistanze += "\nNon ci sono luoghi memorizzati";
+                    //E la setto
+                    luogo.setDistanzaDaMe(distanza);
+                }
 
-            //Valorizzo le distanze
-            for (LocationDao luogo:elencoLuoghi)
-            {
-                Location indirizzoLuogo = new Location(luogo.toString());
-                indirizzoLuogo.setLatitude(luogo.getLatitudine());
-                indirizzoLuogo.setLongitude(luogo.getLongitudine());
+                //Ordino la lista sulla base della distanza dal luogo in cui mi trovo
+                Collections.sort(elencoLuoghi);
 
-                //Calcolo la distanza
-                float distanza = location.distanceTo(indirizzoLuogo);
-
-                //E la setto
-                luogo.setDistanzaDaMe(distanza);
-            }
-
-            //Ordino la lista sulla base della distanza dal luogo in cui mi trovo
-            Collections.sort(elencoLuoghi);
-
-            //E stampo la lista ordinata a video
-            for (LocationDao luogo:elencoLuoghi)
-            {
+                //E stampo la lista ordinata a video
+                for (LocationDao luogo:elencoLuoghi)
+                {
                 /*
                 Location indirizzoLuogo = new Location(luogo.toString());
                 indirizzoLuogo.setLatitude(luogo.getLatitudine());
                 indirizzoLuogo.setLongitude(luogo.getLongitudine());
                 */
 
-                //Calcolo la distanza
-                float distanza = luogo.getDistanzaDaMe();
-                String unitaDiMisura = "m";
+                    //Calcolo la distanza
+                    float distanza = luogo.getDistanzaDaMe();
+                    String unitaDiMisura = "m";
 
-                if(distanza > 1000) {
-                    distanza = distanza / 1000;
-                    unitaDiMisura = "km";
+                    if(distanza > 1000) {
+                        distanza = distanza / 1000;
+                        unitaDiMisura = "km";
 
-                    //Arrotondo ai due decimali
-                    distanza = (float) (Math.round( distanza * Math.pow( 10, 2 ) )/Math.pow( 10, 2 ));
-                }else{
-                    distanza = (float) (Math.round( distanza * Math.pow( 10, 1 ) )/Math.pow( 10, 1 ));
+                        //Arrotondo ai due decimali
+                        distanza = (float) (Math.round( distanza * Math.pow( 10, 2 ) )/Math.pow( 10, 2 ));
+                    }else{
+                        distanza = (float) (Math.round( distanza * Math.pow( 10, 1 ) )/Math.pow( 10, 1 ));
+                    }
+
+                    //Stampo la riga di informazione
+                    infoDistanze += "\n" + luogo.toStringShort() + " - " + distanza + unitaDiMisura;
                 }
 
-                //Stampo la riga di informazione
-                infoDistanze += "\n" + luogo.toStringShort() + " - " + distanza + unitaDiMisura;
+
+
+                TextView distanzeText = findViewById(R.id.infoDistanzeText);
+                distanzeText.setText(infoDistanze);
+
+            }catch (Exception e)
+            {
+
             }
-
-
-
-            TextView distanzeText = findViewById(R.id.infoDistanzeText);
-            distanzeText.setText(infoDistanze);
-
-        }catch (Exception e)
-        {
-
         }
     }
 

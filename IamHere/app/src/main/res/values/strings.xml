@@ -23,6 +23,7 @@
 
     <!-- MainActivity -->
     <string name="abilita_geolocalizzazione">Abilita la geolocalizzazione per avere una maggiore precisione</string>
+    <string name="no_info">Nessuna info presente</string>
 
     <!-- Messaggi generici -->
     <string name="location_null">Non è stato possibile risalire alla tua posizione. Abilita i servizi di geolocalizzazione</string>
