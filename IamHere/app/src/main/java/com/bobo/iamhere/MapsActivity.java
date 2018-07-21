@@ -103,7 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }else{ //Altrimenti centro la posizione sull'utente
 
-                Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
+                Location lastKnowLocation = getLastKnownLocation(); //MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
 
                 if(lastKnowLocation != null)
                 {
@@ -122,6 +122,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             MainActivity.locationManager.requestLocationUpdates(MainActivity.getLocationProviderName(), 10, 10, MainActivity.locationListener);
+    }
+
+    /**
+     * Ottiene l'ultima posizione conosciuta
+     * @return
+     */
+    private Location getLastKnownLocation()
+    {
+        Location lastKnowLocation = null;
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        {
+            lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
+
+            if(lastKnowLocation == null)
+                lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        }
+
+        return lastKnowLocation;
     }
 
     /***

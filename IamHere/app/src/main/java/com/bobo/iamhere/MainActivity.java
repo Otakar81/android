@@ -136,7 +136,8 @@ public class MainActivity extends AppCompatActivity
 
                 startListening();
 
-                Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
+                //Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
+                Location lastKnowLocation = getLastKnownLocation();
 
                 //Stampo a video le info, visto che già ho i permessi
                 valorizzaDatiVideo(lastKnowLocation);
@@ -199,7 +200,8 @@ public class MainActivity extends AppCompatActivity
 
                             if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
                             {
-                                Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
+                                //Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
+                                Location lastKnowLocation = getLastKnownLocation();
                                 salvaLocation(lastKnowLocation, alias, isChecked);
 
                                 //Refresh dell'elenco dei luoghi
@@ -219,7 +221,8 @@ public class MainActivity extends AppCompatActivity
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             {
-                Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
+                //Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
+                Location lastKnowLocation = getLastKnownLocation();
                 salvaLocation(lastKnowLocation, DatabaseManager.NOME_LOCATION_VELOCE, 1);
 
                 //Refresh dell'elenco dei luoghi
@@ -256,7 +259,8 @@ public class MainActivity extends AppCompatActivity
                 //Inverto il valore della variabile
                 mostraSoloPreferiti = !mostraSoloPreferiti;
 
-                Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
+                //Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
+                Location lastKnowLocation = getLastKnownLocation();
 
                 //Refresh dell'elenco dei luoghi
                 valorizzaDatiVideo(lastKnowLocation);
@@ -313,7 +317,8 @@ public class MainActivity extends AppCompatActivity
 
             if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             {
-                Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
+                //Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
+                Location lastKnowLocation = getLastKnownLocation();
 
                 Double latitude = lastKnowLocation.getLatitude();
                 Double longitude = lastKnowLocation.getLongitude();
@@ -341,21 +346,6 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-
-    /**
-     * Restituisce il LocationProvider più preciso tra quelli abilitati dall'utente
-     * @return
-     */
-    public static String getLocationProviderName()
-    {
-        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-            return LocationManager.GPS_PROVIDER;
-        else if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
-            return LocationManager.NETWORK_PROVIDER;
-        else
-            return LocationManager.PASSIVE_PROVIDER;
     }
 
     /***
@@ -394,6 +384,19 @@ public class MainActivity extends AppCompatActivity
         return locationListener;
     }
 
+    /**
+     * Restituisce il LocationProvider più preciso tra quelli abilitati dall'utente
+     * @return
+     */
+    public static String getLocationProviderName()
+    {
+        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+            return LocationManager.GPS_PROVIDER;
+        else if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+            return LocationManager.NETWORK_PROVIDER;
+        else
+            return LocationManager.PASSIVE_PROVIDER;
+    }
 
     /***
      * Richiede gli update riguardo la posizione dell'utente
@@ -402,6 +405,25 @@ public class MainActivity extends AppCompatActivity
     {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             locationManager.requestLocationUpdates(getLocationProviderName(), 10, 10, locationListener);
+    }
+
+    /**
+     * Ottiene l'ultima posizione conosciuta
+     * @return
+     */
+    private Location getLastKnownLocation()
+    {
+        Location lastKnowLocation = null;
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        {
+            lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
+
+            if(lastKnowLocation == null)
+                lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        }
+
+        return lastKnowLocation;
     }
 
     /***
