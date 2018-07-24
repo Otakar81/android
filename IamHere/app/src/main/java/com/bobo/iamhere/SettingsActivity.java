@@ -4,44 +4,43 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bobo.iamhere.db.DatabaseManager;
-import com.bobo.iamhere.db.NotaDao;
+import com.bobo.iamhere.db.LocationDao;
 
 import java.util.ArrayList;
 
-public class NoteActivity extends AppCompatActivity
+public class SettingsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    ListView listaNoteView;
-
-    static ArrayList<NotaDao> elencoNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_note);
+        setContentView(R.layout.activity_settings);
 
         //Cambio il titolo all'activity
-        setTitle(getString(R.string.title_activity_note));
+        setTitle(getString(R.string.title_activity_settings));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -57,61 +56,15 @@ public class NoteActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        //Inizializzo la lista di lavoro con l'elenco delle note
-        elencoNote = DatabaseManager.getAllNote(MainActivity.database);
+        //Valorizzo gli elementi della pagina
+        Spinner minTimeSpinner = findViewById(R.id.minTimeSpinner);
 
+        //Popolo la lista TODO per ora metto dei dati di esempio
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.min_time_label, android.R.layout.simple_spinner_dropdown_item);
+        minTimeSpinner.setAdapter(adapter);
 
-        //Inizializzo la list view
-        listaNoteView = (ListView) findViewById(R.id.listaNote);
-
-        //Sull'evento "onClick" della lista, vado in modifica della nota su NotaActivity
-        listaNoteView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                NotaDao notaSelezionata = elencoNote.get(position);
-
-                //Creo un intent e vado sulla seconda activity
-                Intent intent = new Intent(getApplicationContext(), Note_DettaglioActivity.class);
-                intent.putExtra("idNota", notaSelezionata.getId());
-                startActivity(intent);
-
-            }
-        });
-
-        //Sull'evento "onLongClick" della lista, apro popup di cancellazione della nota
-        listaNoteView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-
-                //Apro una dialog per confermare l'eliminazione
-                new AlertDialog.Builder(NoteActivity.this)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle("Eliminare la nota?")
-                        .setMessage("Sei sicuro di voler eliminare la nota?")
-                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                NotaDao notaSelezionata = elencoNote.get(position);
-
-                                DatabaseManager.deleteNota(MainActivity.database, notaSelezionata.getId());
-                                elencoNote = DatabaseManager.getAllNote(MainActivity.database);
-                                aggiornaLista();
-
-                                Toast.makeText(NoteActivity.this, "Nota eliminata", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setNegativeButton("No", null)
-                        .show();
-
-                return true;
-            }
-        });
 
     }
-
-
 
     @Override
     public void onBackPressed() {
@@ -123,33 +76,6 @@ public class NoteActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.note_action, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
-
-        switch (item.getItemId())
-        {
-            case R.id.action_aggiungi_nota:
-
-
-                Intent intent = new Intent(getApplicationContext(), Note_DettaglioActivity.class);
-                startActivity(intent);
-
-
-                Toast.makeText(getApplicationContext(), "Aggiungo nota", Toast.LENGTH_SHORT).show();
-                return true;
-            default:
-                return false;
-        }
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -158,7 +84,9 @@ public class NoteActivity extends AppCompatActivity
 
         if( id == R.id.nav_home)
         {
-            //Sono già qui, non faccio nulla
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_maps) {
 
@@ -183,11 +111,18 @@ public class NoteActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), GooglePlacesActivity.class);
             startActivity(intent);
 
+        } else if (id == R.id.nav_note)
+        {
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
+            startActivity(intent);
+
         } else if (id == R.id.nav_share) {
 
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            if (ContextCompat.checkSelfPermission(SettingsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             {
-                Location lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                //Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
+                Location lastKnowLocation = getLastKnownLocation();
 
                 Double latitude = lastKnowLocation.getLatitude();
                 Double longitude = lastKnowLocation.getLongitude();
@@ -205,13 +140,11 @@ public class NoteActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_settings)
         {
+            /*Sono già qui, non faccio nulla
             //Creo un intent e vado sulla activity corrispondente
             Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
             startActivity(intent);
-
-        } else if (id == R.id.nav_note)
-        {
-            //Nulla, sono già qui
+            */
 
         } else if (id == R.id.nav_database)
         {
@@ -223,28 +156,58 @@ public class NoteActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    /**
+     * Ottiene l'ultima posizione conosciuta
+     * @return
+     */
+    private Location getLastKnownLocation()
+    {
+        Location lastKnowLocation = null;
 
-        elencoNote = DatabaseManager.getAllNote(MainActivity.database);
-        aggiornaLista();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        {
+            lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
+
+            if(lastKnowLocation == null)
+                lastKnowLocation = MainActivity.locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        }
+
+        return lastKnowLocation;
     }
 
 
 
-    private void aggiornaLista()
+
+
+
+
+    /**
+     * Restituisce il settings relativo al "minTime" usato per il calcolo dello spostameno della location
+     * @return
+     */
+    public static int getMinTime()
     {
-        ArrayList<String> elencoNotePerLista = new ArrayList<String>();
+        SharedPreferences preferences = MainActivity.preferences;
+        return preferences.getInt("location_updates_minTime", 20000); //Default: 20 secondi
+    }
 
-        for (NotaDao nota:elencoNote)
-        {
-            String notaPerLista = nota.getNotaPerLista();
-            elencoNotePerLista.add(notaPerLista);
-        }
+    /**
+     * Restituisce il settings relativo al "minDistance" usato per il calcolo dello spostameno della location
+     * @return
+     */
+    public static int getMinDistance()
+    {
+        SharedPreferences preferences = MainActivity.preferences;
+        return preferences.getInt("location_updates_minDistance", 10); //Default: 10 metri
+    }
 
-        //Popolo la lista
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, elencoNotePerLista);
-        listaNoteView.setAdapter(adapter);
+    /**
+     * Restituisce il raggio (in metri) settato per individuare i luoghi interessanti nelle vicinanze
+     * @return
+     */
+    public static int getGooglePlacesRadius()
+    {
+        SharedPreferences preferences = MainActivity.preferences;
+        return preferences.getInt("google_places_radius", 1500); //Default: 1500 metri
     }
 }

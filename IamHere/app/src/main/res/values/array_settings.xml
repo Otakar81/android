@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="min_time_label">
+        <item>1 secondo</item>
+        <item>10 secondi</item>
+        <item>30 secondi</item>
+        <item>1 minuto</item>
+        <item>3 minuti</item>
+        <item>5 minuti</item>
+        <item>10 minuti</item>
+    </string-array>
+
+    <integer-array name="min_time_value">
+        <item>1000</item>
+        <item>10000</item>
+        <item>30000</item>
+        <item>60000</item>
+        <item>180000</item>
+        <item>300000</item>
+        <item>600000</item>
+    </integer-array>
+</resources>

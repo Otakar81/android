@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Address;
@@ -50,6 +51,9 @@ public class MainActivity extends AppCompatActivity
 
     //Database
     public static SQLiteDatabase database;
+
+    //Utilizzato per memorizzare i settaggi utente
+    public static SharedPreferences preferences;
 
     //Variabili
     static boolean mostraSoloPreferiti;
@@ -104,6 +108,9 @@ public class MainActivity extends AppCompatActivity
 
         //Se non esistono, creo le tabelle
         DatabaseManager.createTables(database);
+
+        //Inizializzo le shared preferences     TODO
+        preferences = getSharedPreferences("com.bobo.iamhere", Context.MODE_PRIVATE);
 
         //Variabili
         mostraSoloPreferiti = false;
@@ -336,7 +343,9 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_settings)
         {
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_database)
         {

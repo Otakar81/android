@@ -59,11 +59,15 @@
         <activity
             android:name=".NoteActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".Note_DettaglioActivity" />
         <activity
             android:name=".GooglePlacesActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".WebContentActivity"></activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity android:name=".Note_DettaglioActivity" />
+        <activity android:name=".WebContentActivity" />
     </application>
 
 </manifest>

@@ -175,7 +175,9 @@ public class MeteoActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_settings)
         {
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_note)
         {
