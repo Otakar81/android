@@ -26,6 +26,34 @@
     <string name="abilita_geolocalizzazione">Abilita la geolocalizzazione per avere una maggiore precisione</string>
     <string name="no_info">Nessuna info presente</string>
 
+    <!-- SettingsActivity -->
+    <string name="settings_aggiornamento_posizione_header">Aggiornamento della posizione</string>
+    <string name="settings_aggiornamento_posizione_mintime_description">Tempo minimo di aggiornamento. \n(Un tempo più lungo aiuta a preservare la batteria)</string>
+    <string name="settings_aggiornamento_posizione_mindistance_description">Distanza minima di aggiornamento</string>
+    <string name="google_places_radius_description">Raggio entro cui cercare i luoghi nei dintorni</string>
+
+    <string name="secondi_1">1 secondo</string>
+    <string name="secondi_10">10 secondi</string>
+    <string name="secondi_30">30 secondi</string>
+    <string name="minuti_1">1 minuto</string>
+    <string name="minuti_3">3 minuti</string>
+    <string name="minuti_5">5 minuti</string>
+    <string name="minuti_10">10 minuti</string>
+
+    <string name="metri_1">1 metro</string>
+    <string name="metri_5">5 metri</string>
+    <string name="metri_10">10 metri</string>
+    <string name="metri_30">30 metri</string>
+    <string name="metri_50">50 metri</string>
+
+    <string name="metri_500">500 metri</string>
+    <string name="metri_1000">1000 metri</string>
+    <string name="metri_1500">1500 metri</string>
+    <string name="metri_2000">2000 metri</string>
+    <string name="metri_3000">3000 metri</string>
+    <string name="metri_4000">4000 metri</string>
+    <string name="metri_5000">5000 metri</string>
+
     <!-- Messaggi generici -->
     <string name="location_null">Non è stato possibile risalire alla tua posizione. Abilita i servizi di geolocalizzazione</string>
 

@@ -16,10 +16,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -56,12 +58,93 @@ public class SettingsActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        //Valorizzo gli elementi della pagina
+        /*
+            Valorizzo gli elementi della pagina
+         */
+
+        //Min Time
         Spinner minTimeSpinner = findViewById(R.id.minTimeSpinner);
 
-        //Popolo la lista TODO per ora metto dei dati di esempio
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.min_time_label, android.R.layout.simple_spinner_dropdown_item);
-        minTimeSpinner.setAdapter(adapter);
+        //Popolo la lista
+        int[] elencoValoriPossibili = getResources().getIntArray(R.array.min_time_value);
+        int minTimeSelezionato = getMinTime();
+        int posizioneSelezionata = getPosizioneSelezionata(elencoValoriPossibili, minTimeSelezionato);
+
+        ArrayAdapter<CharSequence> minTimeAdapter = ArrayAdapter.createFromResource(this, R.array.min_time_label, android.R.layout.simple_spinner_dropdown_item);
+        minTimeSpinner.setAdapter(minTimeAdapter);
+        minTimeSpinner.setSelection(posizioneSelezionata);
+        minTimeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int pos, long id) {
+                int[] arrayValori = getResources().getIntArray(R.array.min_time_value);
+                int selectedVal = arrayValori[pos];
+
+                SharedPreferences.Editor editor = MainActivity.preferences.edit();
+                editor.putInt("location_updates_minTime", selectedVal);
+                editor.commit();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0)
+            { }
+        });
+
+        //Min Distance
+        Spinner minDistanceSpinner = findViewById(R.id.minDistanceSpinner);
+
+        //Popolo la lista
+        elencoValoriPossibili = getResources().getIntArray(R.array.min_distance_value);
+        int minDistanceSelezionata = getMinDistance();
+        posizioneSelezionata = getPosizioneSelezionata(elencoValoriPossibili, minDistanceSelezionata);
+
+        ArrayAdapter<CharSequence> minDistanceAdapter = ArrayAdapter.createFromResource(this, R.array.min_distance_label, android.R.layout.simple_spinner_dropdown_item);
+        minDistanceSpinner.setAdapter(minDistanceAdapter);
+        minDistanceSpinner.setSelection(posizioneSelezionata);
+        minDistanceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int pos, long id) {
+                int[] arrayValori = getResources().getIntArray(R.array.min_distance_value);
+                int selectedVal = arrayValori[pos];
+
+                SharedPreferences.Editor editor = MainActivity.preferences.edit();
+                editor.putInt("location_updates_minDistance", selectedVal);
+                editor.commit();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0)
+            { }
+        });
+
+        //Google Places Radius
+        Spinner googlePlacesRadiusSpinner = findViewById(R.id.settings_googlePlacesRadiusSpinner);
+
+        //Popolo la lista
+        elencoValoriPossibili = getResources().getIntArray(R.array.google_places_radius_value);
+        int radiusSelezionato = getGooglePlacesRadius();
+        posizioneSelezionata = getPosizioneSelezionata(elencoValoriPossibili, radiusSelezionato);
+
+        ArrayAdapter<CharSequence> radiusAdapter = ArrayAdapter.createFromResource(this, R.array.google_places_radius_label, android.R.layout.simple_spinner_dropdown_item);
+        googlePlacesRadiusSpinner.setAdapter(radiusAdapter);
+        googlePlacesRadiusSpinner.setSelection(posizioneSelezionata);
+        googlePlacesRadiusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int pos, long id) {
+                int[] arrayValori = getResources().getIntArray(R.array.google_places_radius_value);
+                int selectedVal = arrayValori[pos];
+
+                SharedPreferences.Editor editor = MainActivity.preferences.edit();
+                editor.putInt("google_places_radius", selectedVal);
+                editor.commit();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0)
+            { }
+        });
 
 
     }
@@ -176,7 +259,27 @@ public class SettingsActivity extends AppCompatActivity
     }
 
 
+    /**
+     * Metodo di servizio<br>
+     * Dato un elenco di valori possibili ed uno degli elementi dell'insieme, restituisce la posizione occupata dal secondo nel primo
+     *
+     * @param elencoValoriPossibili
+     * @param valoreSelezionato
+     * @return
+     */
+    private int getPosizioneSelezionata(int[] elencoValoriPossibili, int valoreSelezionato)
+    {
+        int posizioneSelezionata = 0;
 
+        for (int valore:elencoValoriPossibili) {
+            if(valore == valoreSelezionato)
+                break;
+            else
+                posizioneSelezionata++;
+        }
+
+        return posizioneSelezionata;
+    }
 
 
 
@@ -188,7 +291,7 @@ public class SettingsActivity extends AppCompatActivity
     public static int getMinTime()
     {
         SharedPreferences preferences = MainActivity.preferences;
-        return preferences.getInt("location_updates_minTime", 20000); //Default: 20 secondi
+        return preferences.getInt("location_updates_minTime", 30000); //Default: 30 secondi
     }
 
     /**

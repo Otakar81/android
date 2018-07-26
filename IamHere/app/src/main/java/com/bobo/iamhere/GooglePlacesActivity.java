@@ -464,7 +464,7 @@ public class GooglePlacesActivity extends AppCompatActivity
 
         String location = latitudine + "," + longitudine;
 
-        Call<JsonObject> call = googlePlacesService.nearbyPlaces(location, 1500, tipologiaSelezionata, API_KEY);
+        Call<JsonObject> call = googlePlacesService.nearbyPlaces(location, SettingsActivity.getGooglePlacesRadius(), tipologiaSelezionata, API_KEY);
 
         call.enqueue(new Callback<JsonObject>() {
 

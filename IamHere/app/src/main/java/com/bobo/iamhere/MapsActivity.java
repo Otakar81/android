@@ -121,7 +121,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void startListening()
     {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-            MainActivity.locationManager.requestLocationUpdates(MainActivity.getLocationProviderName(), 10, 10, MainActivity.locationListener);
+            MainActivity.locationManager.requestLocationUpdates(MainActivity.getLocationProviderName(), SettingsActivity.getMinTime(), SettingsActivity.getMinDistance(), MainActivity.locationListener);
     }
 
     /**

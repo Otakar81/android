@@ -413,7 +413,7 @@ public class MainActivity extends AppCompatActivity
     private void startListening()
     {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-            locationManager.requestLocationUpdates(getLocationProviderName(), 10, 10, locationListener);
+            locationManager.requestLocationUpdates(getLocationProviderName(), SettingsActivity.getMinTime(), SettingsActivity.getMinDistance(), locationListener);
     }
 
     /**

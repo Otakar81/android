@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="min_time_label">
-        <item>1 secondo</item>
-        <item>10 secondi</item>
-        <item>30 secondi</item>
-        <item>1 minuto</item>
-        <item>3 minuti</item>
-        <item>5 minuti</item>
-        <item>10 minuti</item>
-    </string-array>
 
+    <!-- Array MinTime -->
+    <string-array name="min_time_label">
+        <item>@string/secondi_1</item>
+        <item>@string/secondi_10</item>
+        <item>@string/secondi_30</item>
+        <item>@string/minuti_1</item>
+        <item>@string/minuti_3</item>
+        <item>@string/minuti_5</item>
+        <item>@string/minuti_10</item>
+    </string-array>
     <integer-array name="min_time_value">
         <item>1000</item>
         <item>10000</item>
@@ -18,5 +19,41 @@
         <item>180000</item>
         <item>300000</item>
         <item>600000</item>
+    </integer-array>
+
+    <!-- Array MinDistance -->
+    <string-array name="min_distance_label">
+        <item>@string/metri_1</item>
+        <item>@string/metri_5</item>
+        <item>@string/metri_10</item>
+        <item>@string/metri_30</item>
+        <item>@string/metri_50</item>
+    </string-array>
+    <integer-array name="min_distance_value">
+        <item>1</item>
+        <item>5</item>
+        <item>10</item>
+        <item>30</item>
+        <item>50</item>
+    </integer-array>
+
+    <!-- Array MinDistance -->
+    <string-array name="google_places_radius_label">
+        <item>@string/metri_500</item>
+        <item>@string/metri_1000</item>
+        <item>@string/metri_1500</item>
+        <item>@string/metri_2000</item>
+        <item>@string/metri_3000</item>
+        <item>@string/metri_4000</item>
+        <item>@string/metri_5000</item>
+    </string-array>
+    <integer-array name="google_places_radius_value">
+        <item>500</item>
+        <item>1000</item>
+        <item>1500</item>
+        <item>2000</item>
+        <item>3000</item>
+        <item>4000</item>
+        <item>5000</item>
     </integer-array>
 </resources>
