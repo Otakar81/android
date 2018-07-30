@@ -35,7 +35,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,6 +53,7 @@ public class MeteoActivity extends AppCompatActivity
     ArrayList<GiornataMeteoDao> elencoPrevisioni;
 
     String LANGUAGE_CODE = "it"; //TODO VA preso dal sistema
+    Locale LOCALE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +62,10 @@ public class MeteoActivity extends AppCompatActivity
 
         //Cambio il titolo all'activity
         setTitle(getString(R.string.title_activity_meteo));
+
+        //Setto la lingua
+        LOCALE = getResources().getConfiguration().locale;
+        LANGUAGE_CODE = LOCALE.getLanguage();
 
         //Carico la toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -234,12 +243,9 @@ public class MeteoActivity extends AppCompatActivity
 
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
-                //ArrayList<PlaceDao> luoghi = new ArrayList<PlaceDao>();
-
                 JsonObject jsonContent = response.body();
 
                 JsonArray listaPrevisioni = jsonContent.get("list").getAsJsonArray();
-
 
                 //Memorizzo i giorni interessati
                 ArrayList<String> giorniInteressati = new ArrayList<String>();
@@ -289,11 +295,27 @@ public class MeteoActivity extends AppCompatActivity
                 //Adesso prepariamo la lista.
                 ArrayList<GiornataMeteoDao> previsioni = new ArrayList<GiornataMeteoDao>();
 
+                //Preparo gli oggetti per la stampa della data
+                SimpleDateFormat sdfOrigine = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat sdfOutput = new SimpleDateFormat("EEEE, d MMMM", LOCALE);
+
                 for(int i = 0; i < giorniInteressati.size(); i++)
                 {
                     String giorno = giorniInteressati.get(i);
 
-                    GiornataMeteoDao giornataMeteo = new GiornataMeteoDao(giorno);
+                    //Elaboro la data in formato leggibile
+                    String dataLeggibile = giorno;
+
+                    try {
+
+                        Date data = sdfOrigine.parse(giorno);
+                        dataLeggibile = sdfOutput.format(data);
+
+                    } catch (ParseException e) {
+                        //e.printStackTrace();
+                    }
+
+                    GiornataMeteoDao giornataMeteo = new GiornataMeteoDao(dataLeggibile);
 
                     for(int j = 0; j < meteoPrevisto.size(); j++)
                     {

@@ -19,6 +19,10 @@ import android.widget.Toast;
 import com.bobo.iamhere.db.DatabaseManager;
 import com.bobo.iamhere.db.LocationDao;
 import com.bobo.iamhere.ws.google.PlaceDao;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -43,10 +47,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
+        //Ricerca delle location
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+//                mMap.clear();
+//                mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(place.getLatLng()));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 18.0f));
+            }
+
+            @Override
+            public void onError(Status status) {
+
+            }
+        });
     }
 
 
@@ -148,6 +173,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     private void addListenersOnMap()
     {
+        /*
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener(){
 
             @Override
@@ -155,6 +181,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //Nulla (per ora)
             }
         });
+        */
 
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override

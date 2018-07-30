@@ -8,14 +8,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -30,17 +33,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bobo.iamhere.db.DatabaseManager;
 import com.bobo.iamhere.db.LocationDao;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -114,6 +120,11 @@ public class MainActivity extends AppCompatActivity
 
         //Variabili
         mostraSoloPreferiti = false;
+
+        //Setto randomicamente lo sfondo
+        ConstraintLayout layoutPagina = findViewById(R.id.layoutHome);
+        layoutPagina.setBackground(getDrawableSfondo());
+
     }
 
     @Override
@@ -450,6 +461,196 @@ public class MainActivity extends AppCompatActivity
             TextView listaInfoText = findViewById(R.id.elencoInfoText);
             listaInfoText.setText(getResources().getString(R.string.no_info));
 
+            //Nascondo la TextView dei luoghi preferiti
+            TextView distanzeText = findViewById(R.id.infoDistanzeText);
+            distanzeText.setVisibility(View.INVISIBLE);
+
+            Toast.makeText(this, R.string.location_null, Toast.LENGTH_LONG).show();
+
+        } else {
+
+            //Utilizzo il Geocoder per ottenere info sulla mia posizione
+            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
+            try {
+
+                List<Address> indirizzi = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+
+                if(indirizzi != null && indirizzi.size() > 0)
+                {
+                    Address address = indirizzi.get(0);
+
+                    String latitudine = location.getLatitude() + "";
+                    String longitudine = location.getLongitude() + "";
+                    String accuracy = location.getAccuracy() + "";
+                    String altitudine = location.getAltitude() + "";
+                    String nazione = address.getCountryName();
+                    String regione = address.getAdminArea();
+                    String provincia = address.getSubAdminArea();
+                    String citta = address.getLocality();
+                    String indirizzoPostale = address.getThoroughfare();
+                    String cap = address.getPostalCode();
+
+                    boolean isPrimaRiga = true;
+
+                    //Nazione e regione
+                    if(regione != null && regione.trim().length() > 0) {
+
+                        if(!isPrimaRiga) {
+                            elencoInfo += "\n";
+                        }else{
+                            isPrimaRiga = false;
+                        }
+
+                        elencoInfo += "Sei in " + regione;
+
+                        if(nazione != null && nazione.trim().length() > 0)
+                            elencoInfo += " (" + nazione + ")";
+
+                    }
+
+                    //Comune e provincia
+                    if(citta != null && citta.trim().length() > 0) {
+
+                        if(!isPrimaRiga) {
+                            elencoInfo += "\n";
+                        }else{
+                            isPrimaRiga = false;
+                        }
+
+                        elencoInfo += "Nel comune di " + citta;
+
+                        if(provincia != null && provincia.trim().length() > 0)
+                            elencoInfo += " (" + provincia + ") ";
+                    }
+
+                    //Via e CAP
+                    if(indirizzoPostale != null && indirizzoPostale.trim().length() > 0) {
+
+                        if(!isPrimaRiga) {
+                            elencoInfo += "\n";
+                        }else{
+                            isPrimaRiga = false;
+                        }
+
+                        elencoInfo += indirizzoPostale;
+
+                        if(cap != null && cap.trim().length() > 0)
+                            elencoInfo += " (" + cap + ")";
+                    }
+
+                    //Coordinate
+                    if(!isPrimaRiga) {
+                        elencoInfo += "\n";
+                    }else{
+                        isPrimaRiga = false;
+                    }
+
+                    elencoInfo += "Coordinate GPS: (" + latitudine + ", " + longitudine + ")";
+
+                    //Altitudine
+                    if(altitudine.trim().length() > 0) {
+
+                        double altitudineDouble = Double.parseDouble(altitudine);
+                        altitudineDouble = (double) (Math.round( altitudineDouble * Math.pow( 10, 2 ) )/Math.pow( 10, 2 ));
+
+                        elencoInfo += "\nAltitudine sul livello del mare: " + altitudineDouble + "m";
+                    }
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+
+                elencoInfo = getResources().getString(R.string.no_info);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+
+                elencoInfo = getResources().getString(R.string.no_info);
+            }
+
+            //Stampo le info generiche
+            TextView listaInfoText = findViewById(R.id.elencoInfoText);
+            listaInfoText.setText(elencoInfo);
+
+            //E stampo le distanze dai luoghi memorizzati
+            try{
+
+                //Recupero la lista del luoghi "preferiti" salvati sul database
+                ArrayList<LocationDao> elencoLuoghi = DatabaseManager.getAllLocation(MainActivity.database, mostraSoloPreferiti);
+
+                String mostraSoloPreferitiString = "";
+
+                if(mostraSoloPreferiti)
+                    mostraSoloPreferitiString = " (preferiti)";
+
+                String infoDistanze = "Distanze dai luoghi memorizzati" + mostraSoloPreferitiString + ": \n";
+
+                if(elencoLuoghi.size() == 0)
+                    infoDistanze += "\nNon ci sono luoghi memorizzati";
+
+                //Valorizzo le distanze
+                for (LocationDao luogo:elencoLuoghi)
+                {
+                    Location indirizzoLuogo = new Location(luogo.toString());
+                    indirizzoLuogo.setLatitude(luogo.getLatitudine());
+                    indirizzoLuogo.setLongitude(luogo.getLongitudine());
+
+                    //Calcolo la distanza
+                    float distanza = location.distanceTo(indirizzoLuogo);
+
+                    //E la setto
+                    luogo.setDistanzaDaMe(distanza);
+                }
+
+                //Ordino la lista sulla base della distanza dal luogo in cui mi trovo
+                Collections.sort(elencoLuoghi);
+
+                //E stampo la lista ordinata a video
+                for (LocationDao luogo:elencoLuoghi)
+                {
+                    //Calcolo la distanza
+                    float distanza = luogo.getDistanzaDaMe();
+                    String unitaDiMisura = "m";
+
+                    if(distanza > 1000) {
+                        distanza = distanza / 1000;
+                        unitaDiMisura = "km";
+
+                        //Arrotondo ai due decimali
+                        distanza = (float) (Math.round( distanza * Math.pow( 10, 2 ) )/Math.pow( 10, 2 ));
+                    }else{
+                        distanza = (float) (Math.round( distanza * Math.pow( 10, 1 ) )/Math.pow( 10, 1 ));
+                    }
+
+                    //Stampo la riga di informazione
+                    infoDistanze += "\n" + luogo.toStringShort() + " - " + distanza + unitaDiMisura;
+                }
+
+
+
+                TextView distanzeText = findViewById(R.id.infoDistanzeText);
+                distanzeText.setVisibility(View.VISIBLE);
+                distanzeText.setText(infoDistanze);
+
+            }catch (Exception e)
+            {
+
+            }
+        }
+    }
+
+    /*
+    private void valorizzaDatiVideo(Location location)
+    {
+        String elencoInfo = "";
+
+        if(location == null) //Non sono riuscito a risalire alla posizione attuale
+        {
+            //Stampo le info generiche
+            TextView listaInfoText = findViewById(R.id.elencoInfoText);
+            listaInfoText.setText(getResources().getString(R.string.no_info));
+
             Toast.makeText(this, R.string.location_null, Toast.LENGTH_LONG).show();
 
         } else {
@@ -564,41 +765,39 @@ public class MainActivity extends AppCompatActivity
                 //E stampo la lista ordinata a video
                 for (LocationDao luogo:elencoLuoghi)
                 {
-                /*
-                Location indirizzoLuogo = new Location(luogo.toString());
-                indirizzoLuogo.setLatitude(luogo.getLatitudine());
-                indirizzoLuogo.setLongitude(luogo.getLongitudine());
-                */
 
-                    //Calcolo la distanza
-                    float distanza = luogo.getDistanzaDaMe();
-                    String unitaDiMisura = "m";
 
-                    if(distanza > 1000) {
-                        distanza = distanza / 1000;
-                        unitaDiMisura = "km";
+                //Calcolo la distanza
+                float distanza = luogo.getDistanzaDaMe();
+                String unitaDiMisura = "m";
 
-                        //Arrotondo ai due decimali
-                        distanza = (float) (Math.round( distanza * Math.pow( 10, 2 ) )/Math.pow( 10, 2 ));
-                    }else{
-                        distanza = (float) (Math.round( distanza * Math.pow( 10, 1 ) )/Math.pow( 10, 1 ));
-                    }
+                                if(distanza > 1000) {
+                    distanza = distanza / 1000;
+                    unitaDiMisura = "km";
 
-                    //Stampo la riga di informazione
-                    infoDistanze += "\n" + luogo.toStringShort() + " - " + distanza + unitaDiMisura;
+                    //Arrotondo ai due decimali
+                    distanza = (float) (Math.round( distanza * Math.pow( 10, 2 ) )/Math.pow( 10, 2 ));
+                }else{
+                    distanza = (float) (Math.round( distanza * Math.pow( 10, 1 ) )/Math.pow( 10, 1 ));
                 }
+
+                //Stampo la riga di informazione
+                infoDistanze += "\n" + luogo.toStringShort() + " - " + distanza + unitaDiMisura;
+            }
 
 
 
                 TextView distanzeText = findViewById(R.id.infoDistanzeText);
-                distanzeText.setText(infoDistanze);
+                            distanzeText.setText(infoDistanze);
 
-            }catch (Exception e)
-            {
+                                    }catch (Exception e)
+                                    {
 
-            }
-        }
-    }
+                                    }
+                                    }
+                                    }
+
+     */
 
 
     /***
@@ -659,6 +858,63 @@ public class MainActivity extends AppCompatActivity
 
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+
+    /**
+     * Seleziona una immagine da mostrare come sfondo
+     * @return
+     */
+    private Drawable getDrawableSfondo()
+    {
+        int indiceMax = 10;
+        int indiceMin = 1;
+
+        Drawable sfondo;
+
+        Random rn = new Random();
+        int randomNum = rn.nextInt((indiceMax - indiceMin) + 1) + indiceMin;
+
+
+        switch (randomNum)
+        {
+            case 1:
+                sfondo = getResources().getDrawable(R.drawable.sfondo01, null);
+                break;
+            case 2:
+                sfondo = getResources().getDrawable(R.drawable.sfondo02, null);
+                break;
+            case 3:
+                sfondo = getResources().getDrawable(R.drawable.sfondo03, null);
+                break;
+            case 4:
+                sfondo = getResources().getDrawable(R.drawable.sfondo04, null);
+                break;
+            case 5:
+                sfondo = getResources().getDrawable(R.drawable.sfondo05, null);
+                break;
+            case 6:
+                sfondo = getResources().getDrawable(R.drawable.sfondo06, null);
+                break;
+            case 7:
+                sfondo = getResources().getDrawable(R.drawable.sfondo07, null);
+                break;
+            case 8:
+                sfondo = getResources().getDrawable(R.drawable.sfondo08, null);
+                break;
+            case 9:
+                sfondo = getResources().getDrawable(R.drawable.sfondo09, null);
+                break;
+            case 10:
+                sfondo = getResources().getDrawable(R.drawable.sfondo10, null);
+                break;
+
+            default:
+                sfondo = getResources().getDrawable(R.drawable.sfondo01, null);
+                break;
+        }
+
+        return sfondo;
     }
 
 }

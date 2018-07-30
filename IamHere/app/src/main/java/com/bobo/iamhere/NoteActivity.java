@@ -158,7 +158,9 @@ public class NoteActivity extends AppCompatActivity
 
         if( id == R.id.nav_home)
         {
-            //Sono già qui, non faccio nulla
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_maps) {
 

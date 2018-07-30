@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/whiteTransparent"
     android:orientation="vertical"
     android:padding="10dp">
 
@@ -14,7 +15,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Data"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@android:color/holo_blue_dark"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,12 +25,12 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:stretchColumns="*"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/giornoMeteo"
-        android:stretchColumns="*" >
+        app:layout_constraintTop_toBottomOf="@+id/giornoMeteo">
 
         <TableRow
             android:id="@+id/previsione00"
@@ -51,6 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="ora"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="60dp"
                 tools:layout_editor_absoluteY="129dp" />
 
@@ -60,6 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="t°"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -67,7 +70,8 @@
                 android:id="@+id/umidityPrevisione00"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="H" />
+                android:text="H"
+                android:textColor="@android:color/black" />
 
             <TextView
                 android:id="@+id/ventoPrevisione00"
@@ -75,6 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="w"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -84,6 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="w"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
         </TableRow>
@@ -108,6 +114,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="ora"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="60dp"
                 tools:layout_editor_absoluteY="129dp" />
 
@@ -117,6 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="t°"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -124,7 +132,8 @@
                 android:id="@+id/umidityPrevisione03"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="H" />
+                android:text="H"
+                android:textColor="@android:color/black" />
 
             <TextView
                 android:id="@+id/ventoPrevisione03"
@@ -132,6 +141,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="w"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -141,6 +151,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="w"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -166,6 +177,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="ora"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="60dp"
                 tools:layout_editor_absoluteY="129dp" />
 
@@ -175,6 +187,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="t°"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -182,7 +195,8 @@
                 android:id="@+id/umidityPrevisione06"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="H" />
+                android:text="H"
+                android:textColor="@android:color/black" />
 
             <TextView
                 android:id="@+id/ventoPrevisione06"
@@ -190,6 +204,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="w"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -199,6 +214,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="w"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
         </TableRow>
@@ -223,6 +239,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="ora"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="60dp"
                 tools:layout_editor_absoluteY="129dp" />
 
@@ -232,6 +249,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="t°"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -239,7 +257,8 @@
                 android:id="@+id/umidityPrevisione09"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="H" />
+                android:text="H"
+                android:textColor="@android:color/black" />
 
             <TextView
                 android:id="@+id/ventoPrevisione09"
@@ -247,6 +266,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="w"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -256,6 +276,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="w"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
         </TableRow>
@@ -280,6 +301,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="ora"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="60dp"
                 tools:layout_editor_absoluteY="129dp" />
 
@@ -289,6 +311,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="t°"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -296,7 +319,8 @@
                 android:id="@+id/umidityPrevisione12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="H" />
+                android:text="H"
+                android:textColor="@android:color/black" />
 
             <TextView
                 android:id="@+id/ventoPrevisione12"
@@ -304,6 +328,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="w"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -313,6 +338,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="w"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -338,6 +364,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="ora"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="60dp"
                 tools:layout_editor_absoluteY="129dp" />
 
@@ -347,6 +374,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="t°"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -354,7 +382,8 @@
                 android:id="@+id/umidityPrevisione15"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="H" />
+                android:text="H"
+                android:textColor="@android:color/black" />
 
             <TextView
                 android:id="@+id/ventoPrevisione15"
@@ -362,6 +391,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="w"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -371,6 +401,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="w"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -396,6 +427,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="ora"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="60dp"
                 tools:layout_editor_absoluteY="129dp" />
 
@@ -405,6 +437,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="t°"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -412,7 +445,8 @@
                 android:id="@+id/umidityPrevisione18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="H" />
+                android:text="H"
+                android:textColor="@android:color/black" />
 
             <TextView
                 android:id="@+id/ventoPrevisione18"
@@ -420,6 +454,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="w"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -429,6 +464,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="w"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -454,6 +490,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="ora"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="60dp"
                 tools:layout_editor_absoluteY="129dp" />
 
@@ -463,6 +500,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="t°"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -470,7 +508,8 @@
                 android:id="@+id/umidityPrevisione21"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="H" />
+                android:text="H"
+                android:textColor="@android:color/black" />
 
             <TextView
                 android:id="@+id/ventoPrevisione21"
@@ -478,6 +517,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="w"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
@@ -487,6 +527,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="w"
+                android:textColor="@android:color/black"
                 tools:layout_editor_absoluteX="91dp"
                 tools:layout_editor_absoluteY="121dp" />
 
