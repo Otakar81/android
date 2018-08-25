@@ -208,6 +208,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         String postalCode = indirizzo.getPostalCode();
                         String indirizzoPostale = indirizzo.getThoroughfare();
 
+                        //Alcune di queste info potrebbero essere NULL. Le gestisco
+                        if(country == null)
+                            country = "";
+
+                        if(locality == null)
+                            locality = "";
+
+                        if(adminArea == null)
+                            adminArea = "";
+
+                        if(subAdminArea == null)
+                            subAdminArea = "";
+
+                        if(postalCode == null)
+                            postalCode = "";
+
+                        if(indirizzoPostale == null)
+                            indirizzoPostale = "";
+
                         //Salvo sul database il luogo selezionato
                         LocationDao locationDao = new LocationDao(latLng.latitude, latLng.longitude, country, adminArea, subAdminArea, locality, postalCode, indirizzoPostale);
                         DatabaseManager.insertLocation(MainActivity.database, locationDao);

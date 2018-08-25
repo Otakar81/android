@@ -640,165 +640,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /*
-    private void valorizzaDatiVideo(Location location)
-    {
-        String elencoInfo = "";
-
-        if(location == null) //Non sono riuscito a risalire alla posizione attuale
-        {
-            //Stampo le info generiche
-            TextView listaInfoText = findViewById(R.id.elencoInfoText);
-            listaInfoText.setText(getResources().getString(R.string.no_info));
-
-            Toast.makeText(this, R.string.location_null, Toast.LENGTH_LONG).show();
-
-        } else {
-
-            //Utilizzo il Geocoder per ottenere info sulla mia posizione
-            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-
-            try {
-
-                List<Address> indirizzi = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-
-                if(indirizzi != null && indirizzi.size() > 0)
-                {
-                    Address address = indirizzi.get(0);
-
-                    String latitudine = location.getLatitude() + "";
-                    String longitudine = location.getLongitude() + "";
-                    String accuracy = location.getAccuracy() + "";
-                    String altitudine = location.getAltitude() + "";
-                    String nazione = address.getCountryName();
-                    String regione = address.getAdminArea();
-                    String provincia = address.getSubAdminArea();
-                    String citta = address.getLocality();
-                    String indirizzoPostale = address.getThoroughfare();
-                    String cap = address.getPostalCode();
-
-                    //Valorizzo l'elenco delle info
-                    if(latitudine.trim().length() > 0)
-                        elencoInfo += "\nLatitudine: " + latitudine;
-
-                    if(longitudine.trim().length() > 0)
-                        elencoInfo += "\nLongitudine: " + longitudine;
-
-                    if(accuracy.trim().length() > 0)
-                        elencoInfo += "\nAccuratezza: " + accuracy;
-
-                    if(altitudine.trim().length() > 0) {
-
-                        double altitudineDouble = Double.parseDouble(altitudine);
-                        altitudineDouble = (double) (Math.round( altitudineDouble * Math.pow( 10, 2 ) )/Math.pow( 10, 2 ));
-
-                        elencoInfo += "\nAltitudine: " + altitudineDouble + "m";
-                    }
-
-                    if(nazione != null && nazione.trim().length() > 0)
-                        elencoInfo += "\nNazione: " + nazione;
-
-                    if(regione != null && regione.trim().length() > 0)
-                        elencoInfo += "\nRegione: " + regione;
-
-                    if(provincia != null && provincia.trim().length() > 0)
-                        elencoInfo += "\nProvincia: " + provincia;
-
-                    if(citta != null && citta.trim().length() > 0)
-                        elencoInfo += "\nComune: " + citta;
-
-                    if(indirizzoPostale != null && indirizzoPostale.trim().length() > 0)
-                        elencoInfo += "\nIndirizzo: " + indirizzoPostale;
-
-                    if(cap != null && cap.trim().length() > 0)
-                        elencoInfo += "\nCAP: " + cap;
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-
-                elencoInfo = getResources().getString(R.string.no_info);
-            } catch (Exception e)
-            {
-                e.printStackTrace();
-
-                elencoInfo = getResources().getString(R.string.no_info);
-            }
-
-            //Stampo le info generiche
-            TextView listaInfoText = findViewById(R.id.elencoInfoText);
-            listaInfoText.setText(elencoInfo);
-
-            //E stampo le distanze dai luoghi memorizzati
-            try{
-
-                //Recupero la lista del luoghi "preferiti" salvati sul database
-                ArrayList<LocationDao> elencoLuoghi = DatabaseManager.getAllLocation(MainActivity.database, mostraSoloPreferiti);
-
-                String mostraSoloPreferitiString = "";
-
-                if(mostraSoloPreferiti)
-                    mostraSoloPreferitiString = " (preferiti)";
-
-                String infoDistanze = "Distanze dai luoghi memorizzati" + mostraSoloPreferitiString + ": \n";
-
-                if(elencoLuoghi.size() == 0)
-                    infoDistanze += "\nNon ci sono luoghi memorizzati";
-
-                //Valorizzo le distanze
-                for (LocationDao luogo:elencoLuoghi)
-                {
-                    Location indirizzoLuogo = new Location(luogo.toString());
-                    indirizzoLuogo.setLatitude(luogo.getLatitudine());
-                    indirizzoLuogo.setLongitude(luogo.getLongitudine());
-
-                    //Calcolo la distanza
-                    float distanza = location.distanceTo(indirizzoLuogo);
-
-                    //E la setto
-                    luogo.setDistanzaDaMe(distanza);
-                }
-
-                //Ordino la lista sulla base della distanza dal luogo in cui mi trovo
-                Collections.sort(elencoLuoghi);
-
-                //E stampo la lista ordinata a video
-                for (LocationDao luogo:elencoLuoghi)
-                {
-
-
-                //Calcolo la distanza
-                float distanza = luogo.getDistanzaDaMe();
-                String unitaDiMisura = "m";
-
-                                if(distanza > 1000) {
-                    distanza = distanza / 1000;
-                    unitaDiMisura = "km";
-
-                    //Arrotondo ai due decimali
-                    distanza = (float) (Math.round( distanza * Math.pow( 10, 2 ) )/Math.pow( 10, 2 ));
-                }else{
-                    distanza = (float) (Math.round( distanza * Math.pow( 10, 1 ) )/Math.pow( 10, 1 ));
-                }
-
-                //Stampo la riga di informazione
-                infoDistanze += "\n" + luogo.toStringShort() + " - " + distanza + unitaDiMisura;
-            }
-
-
-
-                TextView distanzeText = findViewById(R.id.infoDistanzeText);
-                            distanzeText.setText(infoDistanze);
-
-                                    }catch (Exception e)
-                                    {
-
-                                    }
-                                    }
-                                    }
-
-     */
-
 
     /***
      * Salva la location passata come argomento<br>
@@ -839,6 +680,25 @@ public class MainActivity extends AppCompatActivity
                 String subAdminArea = indirizzo.getSubAdminArea();
                 String postalCode = indirizzo.getPostalCode();
                 String indirizzoPostale = indirizzo.getThoroughfare();
+
+                //Alcune di queste info potrebbero essere NULL. Le gestisco
+                if(country == null)
+                    country = "";
+
+                if(locality == null)
+                    locality = "";
+
+                if(adminArea == null)
+                    adminArea = "";
+
+                if(subAdminArea == null)
+                    subAdminArea = "";
+
+                if(postalCode == null)
+                    postalCode = "";
+
+                if(indirizzoPostale == null)
+                    indirizzoPostale = "";
 
                 //Salvo sul database il luogo selezionato
                 LocationDao locationDao = new LocationDao(location.getLatitude(), location.getLongitude(), country, adminArea, subAdminArea, locality, postalCode, indirizzoPostale);
