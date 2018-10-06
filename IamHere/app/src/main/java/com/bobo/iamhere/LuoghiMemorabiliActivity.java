@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -36,6 +37,9 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     ListView listaPostiView;
+
+    //Variabili
+    static boolean mostraSoloPreferiti;
 
 
     @Override
@@ -62,6 +66,9 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
         //Inizializzo la navigation view
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Variabili
+        mostraSoloPreferiti = false;
 
 
         //Inizializzo la ListView
@@ -111,6 +118,43 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
 
         //Aggiorno la lista, necessario se sto tornando indietro dalla mappa ed ho aggiunto un luogo
         aggiornaLista(DatabaseManager.getAllLocation(MainActivity.database, false));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.luoghi_memorabili_action, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_mostra_preferiti) {
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            {
+                if(mostraSoloPreferiti) //Stavo mostrando solo i preferiti, l'utente mi ha chiesto di visualizzarli tutti
+                    item.setIcon(R.drawable.action_preferiti_no);
+                else
+                    item.setIcon(R.drawable.action_preferiti_si);
+
+                //Inverto il valore della variabile
+                mostraSoloPreferiti = !mostraSoloPreferiti;
+
+                //Faccio refresh della lista, mostrando solo i luoghi compatibili con la richiesta dell'utente
+                ArrayList<LocationDao> elencoPostiMemorabili = DatabaseManager.getAllLocation(MainActivity.database, mostraSoloPreferiti);
+
+                //Popolo la lista delle località
+                aggiornaLista(elencoPostiMemorabili);
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
