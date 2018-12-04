@@ -1,6 +1,7 @@
 package magazzino.bobo.com.magazzinodomestico;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
 
@@ -26,11 +28,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Bottone fluttuante
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        //Menu laterale
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -54,7 +59,7 @@ public class MainActivity extends AppCompatActivity
         database = this.openOrCreateDatabase("magazzino_db", Context.MODE_PRIVATE, null);
 
         //Se non esistono, creo le tabelle
-        //DatabaseManager.createTables(database);
+        DatabaseManager.createTables(database);
     }
 
     @Override
@@ -95,18 +100,25 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_home) {
+            // Nulla, sono già qui
+        } else if (id == R.id.nav_stanze) {
 
-        } else if (id == R.id.nav_slideshow) {
+            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_mobili) {
 
-        } else if (id == R.id.nav_share) {
+            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_contenitori) {
 
+            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+
+        } else if (id == R.id.nav_categorie) {
+
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), CategorieActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

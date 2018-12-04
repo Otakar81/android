@@ -18,6 +18,17 @@ public class CategoriaDao {
         this.colore = "";
     }
 
+    public CategoriaDao(String nome) {
+        this.id = -1;
+        this.nome = nome;
+        this.colore = "";
+    }
+
+    public CategoriaDao(String nome, String colore) {
+        this.id = -1;
+        this.nome = nome;
+        this.colore = colore;
+    }
 
     public long getId() {
         return id;

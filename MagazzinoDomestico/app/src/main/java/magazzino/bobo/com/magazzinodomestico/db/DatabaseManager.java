@@ -1,7 +1,10 @@
 package magazzino.bobo.com.magazzinodomestico.db;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+
+import java.util.ArrayList;
 
 import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.ContenitoreDao;
@@ -106,8 +109,101 @@ public class DatabaseManager {
         //Vanno azzerati gli eventuali puntamenti a questa categoria
         database.execSQL("UPDATE contenitori SET id_categoria = -1 WHERE id_categoria = " + id_categoria);
         database.execSQL("UPDATE oggetti SET id_categoria = -1 WHERE id_categoria = " + id_categoria);
-
     }
+
+    /***
+     * Restituisce tutte le categorie presenti nel sistema
+     *
+     * @param database
+     * @return
+     */
+    public static ArrayList<CategoriaDao> getAllCategorie(SQLiteDatabase database)
+    {
+        ArrayList<CategoriaDao> result = new ArrayList<CategoriaDao>();
+
+        String sql = "SELECT id, nome, colore FROM categorie ORDER BY nome";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        int idIndex = c.getColumnIndex("id");
+        int nomeIndex = c.getColumnIndex("nome");
+        int coloreIndex = c.getColumnIndex("colore");
+
+        while (c.moveToNext())
+        {
+            long id = c.getLong(idIndex);
+            String nome = c.getString(nomeIndex);
+            String colore = c.getString(coloreIndex);
+
+            CategoriaDao dao = new CategoriaDao(id, nome, colore);
+            result.add(dao);
+        }
+
+        c.close();
+
+        return result;
+    }
+
+    /***
+     * Restituisce la categoria passata come argomento
+     *
+     * @param database
+     * @param id
+     * @return
+     */
+    public static CategoriaDao getCategoria(SQLiteDatabase database, long id)
+    {
+        CategoriaDao result = null;
+
+        Cursor c = database.rawQuery("SELECT * FROM categorie where id = " + id, null);
+
+        int nomeIndex = c.getColumnIndex("nome");
+        int coloreIndex = c.getColumnIndex("colore");
+
+        if (c.moveToNext())
+        {
+            String nome = c.getString(nomeIndex);
+            String colore = c.getString(coloreIndex);
+
+            result = new CategoriaDao(id, nome, colore);
+        }
+
+        c.close();
+
+        return result;
+    }
+
+    /***
+     * Restituisce la categoria passata come argomento
+     *
+     * @param database
+     * @param nome
+     * @return
+     */
+    public static CategoriaDao getCategoriaByName(SQLiteDatabase database, String nome)
+    {
+        CategoriaDao result = null;
+
+        Cursor c = database.rawQuery("SELECT * FROM categorie where nome = '" + nome + "'", null);
+
+        int idIndex = c.getColumnIndex("id");
+        int coloreIndex = c.getColumnIndex("colore");
+
+        if (c.moveToNext())
+        {
+            long id = c.getLong(idIndex);
+            String colore = c.getString(coloreIndex);
+
+            result = new CategoriaDao(id, nome, colore);
+        }
+
+        c.close();
+
+        return result;
+    }
+
+
+
 //endregion
 
 //region SEZIONE stanze
