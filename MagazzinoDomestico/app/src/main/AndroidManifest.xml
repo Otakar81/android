@@ -22,6 +22,18 @@
         <activity
             android:name=".CategorieActivity"
             android:label="@string/title_activity_categorie"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".StanzeActivity"
+            android:label="@string/title_activity_stanze"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MobiliActivity"
+            android:label="@string/title_activity_mobili"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ContenitoriActivity"
+            android:label="@string/title_activity_contenitori"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

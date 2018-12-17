@@ -53,4 +53,10 @@ public class CategoriaDao {
     public void setColore(String colore) {
         this.colore = colore;
     }
+
+
+    @Override
+    public String toString() {
+        return nome;
+    }
 }

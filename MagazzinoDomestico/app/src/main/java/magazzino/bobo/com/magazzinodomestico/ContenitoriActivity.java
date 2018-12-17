@@ -5,50 +5,51 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
-import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
-import magazzino.bobo.com.magazzinodomestico.dialogfragments.CategoriaDialog;
+import magazzino.bobo.com.magazzinodomestico.db.dao.ContenitoreDao;
+import magazzino.bobo.com.magazzinodomestico.db.dao.MobileDao;
+import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
+import magazzino.bobo.com.magazzinodomestico.dialogfragments.ContenitoreDialog;
+import magazzino.bobo.com.magazzinodomestico.dialogfragments.MobileDialog;
 
-public class CategorieActivity extends AppCompatActivity
+public class ContenitoriActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    ListView listaCategorieView;
-    ArrayList<CategoriaDao> elencoCategorie;
-
-
+    ListView listaContenitoriView;
+    ArrayList<ContenitoreDao> elencoContenitori;
 
     @Override
     protected void onResume() {
         super.onResume();
 
         //Aggiorno la lista
-        aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database));
+        aggiornaLista(DatabaseManager.getAllContenitori(MainActivity.database));
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_categorie);
-
+        setContentView(R.layout.activity_contenitori);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -56,34 +57,35 @@ public class CategorieActivity extends AppCompatActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(final View view) {
+            public void onClick(View view) {
 
-                //Mostro il dialog per il nuovo inserimento
-                AlertDialog.Builder builder = new AlertDialog.Builder(CategorieActivity.this);
-                CategoriaDialog categoriaDialog = CategoriaDialog.newInstance(builder, false);
-                categoriaDialog.show(getSupportFragmentManager(),"categoria_dialog");
+                //Creo il dialog per il nuovo inserimento
+                AlertDialog.Builder builder = new AlertDialog.Builder(ContenitoriActivity.this);
+                ContenitoreDialog dialog = ContenitoreDialog.newInstance(builder, false);
+                dialog.show(getSupportFragmentManager(),"contenitore_dialog");
+
             }
         });
 
-        //Drawler laterale
+        //Menu laterale
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        //Navigation view
+        //Navigation View
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         //Inizializzo la ListView
-        listaCategorieView = findViewById(R.id.listaCategorieView);
-        elencoCategorie = DatabaseManager.getAllCategorie(MainActivity.database);
+        listaContenitoriView = findViewById(R.id.listaContenitoriView);
+        elencoContenitori = DatabaseManager.getAllContenitori(MainActivity.database);
 
-        //Popolo la lista delle categorie
-        aggiornaLista(elencoCategorie);
+        //Popolo la lista
+        aggiornaLista(elencoContenitori);
 
-        listaCategorieView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listaContenitoriView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -98,31 +100,29 @@ public class CategorieActivity extends AppCompatActivity
                 */
 
                 //Dovrei saltare alla pagina con l'elenco degli elementi associati a questa categoria
-                Toast.makeText(CategorieActivity.this, "Click", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ContenitoriActivity.this, "Click", Toast.LENGTH_SHORT).show();
             };
         });
 
-        listaCategorieView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        listaContenitoriView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
 
-                //Apre il dialog personalizzato, per modifica e cancellazione del luogo
-                CategoriaDao dao = elencoCategorie.get(position);
+                //Apre il dialog personalizzato, per modifica e cancellazione
+                ContenitoreDao dao = elencoContenitori.get(position);
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(CategorieActivity.this);
-                CategoriaDialog categoriaDialog = CategoriaDialog.newInstance(builder, true);
-                categoriaDialog.show(getSupportFragmentManager(),"categoria_dialog");
+                AlertDialog.Builder builder = new AlertDialog.Builder(ContenitoriActivity.this);
+                ContenitoreDialog dialog = ContenitoreDialog.newInstance(builder, true);
+                dialog.show(getSupportFragmentManager(),"stanza_dialog");
 
                 //E lo valorizza con gli attributi dell'oggetto su cui abbiamo cliccato
-                categoriaDialog.valorizzaDialog(dao.getId(), dao.getNome());
+                dialog.valorizzaDialog(dao.getId(), dao.getNome(), dao.getId_stanza(), dao.getId_mobile(), dao.getId_categoria());
 
-
-                //Toast.makeText(CategorieActivity.this, "LongClick", Toast.LENGTH_SHORT).show();
                 return true;
-
             }
         });
+
     }
 
     @Override
@@ -138,7 +138,7 @@ public class CategorieActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.categorie, menu);
+        getMenuInflater().inflate(R.menu.contenitori, menu);
         return true;
     }
 
@@ -180,27 +180,28 @@ public class CategorieActivity extends AppCompatActivity
             //Creo un intent e vado sulla activity corrispondente
             Intent intent = new Intent(getApplicationContext(), MobiliActivity.class);
             startActivity(intent);
+
         } else if (id == R.id.nav_contenitori) {
 
-            //Creo un intent e vado sulla activity corrispondente
-            Intent intent = new Intent(getApplicationContext(), ContenitoriActivity.class);
-            startActivity(intent);
+            // Nulla, sono già qui
 
         } else if (id == R.id.nav_categorie) {
 
-            // Nulla, sono già qui
-        }
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), CategorieActivity.class);
+            startActivity(intent);        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
+
     /***
-     * Aggiorna la lista delle categorie
-     * @param elencoCategorieNew
+     * Aggiorna la lista
+     * @param elencoNew
      */
-    public void aggiornaLista(ArrayList<CategoriaDao> elencoCategorieNew)
+    public void aggiornaLista(ArrayList<ContenitoreDao> elencoNew)
     {
         /*
         ArrayAdapter<CategoriaDao> adapter = new LocationAdapter(elencoPostiMemorabili, this);
@@ -208,16 +209,16 @@ public class CategorieActivity extends AppCompatActivity
         */
 
         //La variabile globale deve essere aggiornata
-        elencoCategorie = elencoCategorieNew;
+        elencoContenitori = elencoNew;
 
         //Per ora stampo solo una lista di stringhe
-        ArrayList<String> elencoCategorieString = new ArrayList<String>();
+        ArrayList<String> elencoString = new ArrayList<String>();
 
-        for (CategoriaDao categoria: elencoCategorieNew) {
-            elencoCategorieString.add(categoria.getNome());
+        for (ContenitoreDao contenitore: elencoNew) {
+            elencoString.add(contenitore.toString());
         }
 
-        ArrayAdapter<String> valori = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, elencoCategorieString);
-        listaCategorieView.setAdapter(valori);
+        ArrayAdapter<String> valori = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, elencoString);
+        listaContenitoriView.setAdapter(valori);
     }
 }

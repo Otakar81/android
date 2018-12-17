@@ -8,15 +8,16 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import magazzino.bobo.com.magazzinodomestico.CategorieActivity;
 import magazzino.bobo.com.magazzinodomestico.MainActivity;
 import magazzino.bobo.com.magazzinodomestico.R;
+import magazzino.bobo.com.magazzinodomestico.StanzeActivity;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
 import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
+import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
 
 
 /*
@@ -32,7 +33,7 @@ import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
  */
 
 
-public class CategoriaDialog extends DialogFragment {
+public class StanzaDialog extends DialogFragment {
 
     //Specifica se il dialog da aprire sarà in modalità "edit" oppure "nuova istanza"
     boolean isEditMode;
@@ -48,9 +49,9 @@ public class CategoriaDialog extends DialogFragment {
     //Dialog builder
     private AlertDialog.Builder mBuilder;
 
-    public static CategoriaDialog newInstance(AlertDialog.Builder builder, boolean isEditMode){
+    public static StanzaDialog newInstance(AlertDialog.Builder builder, boolean isEditMode){
 
-        CategoriaDialog dialogFragment = new CategoriaDialog();
+        StanzaDialog dialogFragment = new StanzaDialog();
         dialogFragment.isEditMode = isEditMode;
         dialogFragment.mBuilder = builder;
         return dialogFragment;
@@ -61,32 +62,32 @@ public class CategoriaDialog extends DialogFragment {
 
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_categoria, null);
+        View view = inflater.inflate(R.layout.dialog_stanza, null);
 
         //Valorizzo le view del layout
-        nomeView = view.findViewById(R.id.nomeCategoria);
+        nomeView = view.findViewById(R.id.nomeStanza);
 
         //E costruisco il builder
         if(isEditMode) //Finestra per edit di un elemento esistente
         {
             mBuilder.setView(view)
                     .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("Modifica categoria")
+                    .setTitle("Modifica stanza")
                     .setPositiveButton("Modifica", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
                             String nome = nomeView.getText().toString().trim();
 
-                            CategoriaDao dao = new CategoriaDao(id, nome);
+                            StanzaDao dao = new StanzaDao(id, nome);
 
                             //Modifico il luogo
-                            DatabaseManager.updateCategoria(MainActivity.database, dao);
+                            DatabaseManager.updateStanza(MainActivity.database, dao);
 
                             //Avverto la lista che i dati sono cambiati
-                            ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database));
+                            ((StanzeActivity)getActivity()).aggiornaLista(DatabaseManager.getAllStanze(MainActivity.database));
 
-                            Toast.makeText(getActivity(), "Categoria modificata", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Modifica effettuata con successo", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .setNegativeButton("Elimina", new DialogInterface.OnClickListener() {
@@ -94,15 +95,16 @@ public class CategoriaDialog extends DialogFragment {
                         public void onClick(DialogInterface dialog, int which) {
 
                             //Elimino il posto dall'elenco di quelli memorizzati
-                            DatabaseManager.deleteCategoria(MainActivity.database, id);
+                            DatabaseManager.deleteStanza(MainActivity.database, id);
 
                             //Avverto la lista che i dati sono cambiati
-                            ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database));
+                            ((StanzeActivity)getActivity()).aggiornaLista(DatabaseManager.getAllStanze(MainActivity.database));
 
-                            Toast.makeText(getActivity(), "Categoria eliminata", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Eliminazione effettuata con successo", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .setNeutralButton("Cancella", null);
+
 
             //Se le variabili sono già state valorizzate, le uso per riempire la finestra
             if(this.nome != null) {
@@ -112,55 +114,46 @@ public class CategoriaDialog extends DialogFragment {
         }else{ //Finestra per nuovo inserimento
 
             mBuilder.setView(view)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("Aggiunta categoria")
-                    .setMessage("Specificare il nome della categoria")
+                    .setTitle("Aggiunta stanza")
+                    .setMessage("Specificare il nome della stanza")
                     .setPositiveButton("Aggiungi", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
                             String nome = nomeView.getText().toString().trim();
 
+
                             if(nome == null || nome.trim().equals(""))
                             {
-                                Toast.makeText(getActivity(), "Specificare un nome valido", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "Specificare il nome di una stanza", Toast.LENGTH_SHORT).show();
+
                             }else{
 
                                 //Verifico che il nome passato come argomento non sia già stato usato
-                                CategoriaDao categoria = DatabaseManager.getCategoriaByName(MainActivity.database, nome);
+                                StanzaDao stanza = DatabaseManager.getStanzaByName(MainActivity.database, nome);
 
-                                if(categoria != null)
+                                if(stanza != null)
                                 {
                                     Toast.makeText(getActivity(), "Nome già in uso", Toast.LENGTH_SHORT).show();
                                 }else{
 
                                     //Creo e salvo la categoria
-                                    categoria = new CategoriaDao(nome);
-                                    DatabaseManager.insertCategoria(MainActivity.database, categoria);
+                                    stanza = new StanzaDao(nome);
+                                    DatabaseManager.insertStanza(MainActivity.database, stanza);
 
-                                    ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database));
+                                    ((StanzeActivity)getActivity()).aggiornaLista(DatabaseManager.getAllStanze(MainActivity.database));
 
                                     Toast.makeText(getActivity(), "Inserimento avvenuto con successo", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
                     })
-                    .setNegativeButton("Elimina", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                            //Elimino il posto dall'elenco di quelli memorizzati
-                            DatabaseManager.deleteCategoria(MainActivity.database, id);
-
-                            //Avverto la lista che i dati sono cambiati
-                            ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database));
-
-                            Toast.makeText(getActivity(), "Categoria eliminata", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .setNeutralButton("Cancella", null);
+                    .setNegativeButton("Cancella", null);
 
         }
+
+
+
 
         // Create the AlertDialog object and return it
         return mBuilder.create();

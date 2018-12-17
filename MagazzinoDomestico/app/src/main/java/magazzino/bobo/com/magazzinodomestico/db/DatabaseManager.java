@@ -253,6 +253,91 @@ public class DatabaseManager {
         database.execSQL("UPDATE contenitori SET id_stanza = -1 WHERE id_stanza = " + id_stanza);
         database.execSQL("UPDATE oggetti SET id_stanza = -1 WHERE id_stanza = " + id_stanza);
     }
+
+    /***
+     * Restituisce tutte le stanze presenti nel sistema
+     *
+     * @param database
+     * @return
+     */
+    public static ArrayList<StanzaDao> getAllStanze(SQLiteDatabase database)
+    {
+        ArrayList<StanzaDao> result = new ArrayList<StanzaDao>();
+
+        String sql = "SELECT id, nome FROM stanze ORDER BY nome";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        int idIndex = c.getColumnIndex("id");
+        int nomeIndex = c.getColumnIndex("nome");
+
+        while (c.moveToNext())
+        {
+            long id = c.getLong(idIndex);
+            String nome = c.getString(nomeIndex);
+
+            StanzaDao dao = new StanzaDao(id, nome);
+            result.add(dao);
+        }
+
+        c.close();
+
+        return result;
+    }
+
+    /***
+     * Restituisce la stanza passata come argomento
+     *
+     * @param database
+     * @param id
+     * @return
+     */
+    public static StanzaDao getStanza(SQLiteDatabase database, long id)
+    {
+        StanzaDao result = null;
+
+        Cursor c = database.rawQuery("SELECT * FROM stanze where id = " + id, null);
+
+        int nomeIndex = c.getColumnIndex("nome");
+
+        if (c.moveToNext())
+        {
+            String nome = c.getString(nomeIndex);
+
+            result = new StanzaDao(id, nome);
+        }
+
+        c.close();
+
+        return result;
+    }
+
+    /***
+     * Restituisce la stanza passata come argomento
+     *
+     * @param database
+     * @param nome
+     * @return
+     */
+    public static StanzaDao getStanzaByName(SQLiteDatabase database, String nome)
+    {
+        StanzaDao result = null;
+
+        Cursor c = database.rawQuery("SELECT * FROM stanze where nome = '" + nome + "'", null);
+
+        int idIndex = c.getColumnIndex("id");
+
+        if (c.moveToNext())
+        {
+            long id = c.getLong(idIndex);
+
+            result = new StanzaDao(id, nome);
+        }
+
+        c.close();
+
+        return result;
+    }
 //endregion
 
 //region SEZIONE mobili
@@ -304,6 +389,129 @@ public class DatabaseManager {
         //Vanno azzerati gli eventuali puntamenti a questa categoria
         database.execSQL("UPDATE contenitori SET id_mobile = -1 WHERE id_mobile = " + id_mobile);
         database.execSQL("UPDATE oggetti SET id_mobile = -1 WHERE id_mobile = " + id_mobile);
+    }
+
+    /***
+     * Restituisce tutti i mobili presenti in archivio
+     *
+     * @param database
+     * @return
+     */
+    public static ArrayList<MobileDao> getAllMobili(SQLiteDatabase database)
+    {
+        ArrayList<MobileDao> result = new ArrayList<MobileDao>();
+
+        String sql = "SELECT m.id, m.nome, m.immagine, m.id_stanza, s.nome as nome_stanza " +
+                "FROM mobili m LEFT JOIN stanze s ON m.id_stanza = s.id ORDER BY m.nome";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        int idIndex = c.getColumnIndex("id");
+        int nomeIndex = c.getColumnIndex("nome");
+        int immagineIndex = c.getColumnIndex("immagine");
+        int idStanzaIndex = c.getColumnIndex("id_stanza");
+        int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
+
+        while (c.moveToNext())
+        {
+            long id = c.getLong(idIndex);
+            long idStanza = c.getLong(idStanzaIndex);
+
+            String nome = c.getString(nomeIndex);
+            String immagine = c.getString(immagineIndex);
+            String nomeStanza = "";
+
+            if(!c.isNull(nomeStanzaIndex))
+                nomeStanza = c.getString(nomeStanzaIndex);
+
+            MobileDao dao = new MobileDao(id, nome, immagine, idStanza, nomeStanza);
+            result.add(dao);
+        }
+
+        c.close();
+
+        return result;
+    }
+
+    /***
+     * Restituisce tutti i mobili della stanza passata come argomento
+     *
+     * @param database
+     * @param id_stanza
+     * @return
+     */
+    public static ArrayList<MobileDao> getAllMobiliByStanza(SQLiteDatabase database, long id_stanza)
+    {
+        ArrayList<MobileDao> result = new ArrayList<MobileDao>();
+
+        String sql = "SELECT m.id, m.nome, m.immagine, m.id_stanza, s.nome as nome_stanza " +
+                "FROM mobili m LEFT JOIN stanze s ON m.id_stanza = s.id " +
+                "WHERE m.id_stanza = " + id_stanza + " ORDER BY m.nome";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        int idIndex = c.getColumnIndex("id");
+        int nomeIndex = c.getColumnIndex("nome");
+        int immagineIndex = c.getColumnIndex("immagine");
+        int idStanzaIndex = c.getColumnIndex("id_stanza");
+        int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
+
+        while (c.moveToNext())
+        {
+            long id = c.getLong(idIndex);
+            long idStanza = c.getLong(idStanzaIndex);
+
+            String nome = c.getString(nomeIndex);
+            String immagine = c.getString(immagineIndex);
+            String nomeStanza = "";
+
+            if(!c.isNull(nomeStanzaIndex))
+                nomeStanza = c.getString(nomeStanzaIndex);
+
+            MobileDao dao = new MobileDao(id, nome, immagine, idStanza, nomeStanza);
+            result.add(dao);
+        }
+
+        c.close();
+
+        return result;
+    }
+
+
+    /***
+     * Restituisce il mobile passato come argomento
+     * @param database
+     * @param id
+     * @return
+     */
+    public static MobileDao getMobile(SQLiteDatabase database, long id)
+    {
+        MobileDao result = null;
+
+        Cursor c = database.rawQuery("SELECT * FROM mobili m LEFT JOIN stanze s ON m.id_stanza = s.id where m.id = " + id, null);
+
+        int nomeIndex = c.getColumnIndex("nome");
+        int immagineIndex = c.getColumnIndex("immagine");
+        int idStanzaIndex = c.getColumnIndex("id_stanza");
+        int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
+
+        if (c.moveToNext())
+        {
+            long idStanza = c.getLong(idStanzaIndex);
+
+            String nome = c.getString(nomeIndex);
+            String immagine = c.getString(immagineIndex);
+            String nomeStanza = "";
+
+            if(!c.isNull(nomeStanzaIndex))
+                c.getString(nomeStanzaIndex);
+
+            result = new MobileDao(id, nome, immagine, idStanza, nomeStanza);
+        }
+
+        c.close();
+
+        return result;
     }
 //endregion
 
@@ -359,6 +567,139 @@ public class DatabaseManager {
 
         //Vanno azzerati gli eventuali puntamenti a questa categoria
         database.execSQL("UPDATE oggetti SET id_contenitore = -1 WHERE id_contenitore = " + id_contenitore);
+    }
+
+    /***
+     * Restituisce tutti i contenitori presenti in archivio
+     *
+     * @param database
+     * @return
+     */
+    public static ArrayList<ContenitoreDao> getAllContenitori(SQLiteDatabase database)
+    {
+        ArrayList<ContenitoreDao> result = new ArrayList<ContenitoreDao>();
+
+        String sql = "SELECT c.id, c.nome, c.immagine, c.id_categoria, c.id_stanza, c.id_mobile, " +
+                        "m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
+                        "FROM contenitori c " +
+                        "LEFT JOIN mobili m ON c.id_mobile = m.id " +
+                        "LEFT JOIN stanze s ON c.id_stanza = s.id " +
+                        "LEFT JOIN categorie cat ON c.id_stanza = cat.id " +
+                        "ORDER BY c.nome";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        int idIndex = c.getColumnIndex("id");
+        int nomeIndex = c.getColumnIndex("nome");
+        int immagineIndex = c.getColumnIndex("immagine");
+        int idMobileIndex = c.getColumnIndex("id_mobile");
+        int nomeMobileIndex = c.getColumnIndex("nome_mobile");
+        int idStanzaIndex = c.getColumnIndex("id_stanza");
+        int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
+        int idCategoriaIndex = c.getColumnIndex("id_categoria");
+        int nomeCategoriaIndex = c.getColumnIndex("nome_categoria");
+
+        while (c.moveToNext())
+        {
+            long id = c.getLong(idIndex);
+            long idStanza = c.getLong(idStanzaIndex);
+            long idMobile = c.getLong(idMobileIndex);
+            long idCategoria = c.getLong(idCategoriaIndex);
+
+            String nome = c.getString(nomeIndex);
+            String immagine = c.getString(immagineIndex);
+
+            String nomeMobile = "";
+
+            if(!c.isNull(nomeMobileIndex))
+                nomeMobile = c.getString(nomeMobileIndex);
+
+            String nomeStanza = "";
+
+            if(!c.isNull(nomeStanzaIndex))
+                nomeStanza = c.getString(nomeStanzaIndex);
+
+            String nomeCategoria = "";
+
+            if(!c.isNull(nomeCategoriaIndex))
+                nomeCategoria = c.getString(nomeCategoriaIndex);
+
+
+            ContenitoreDao dao = new ContenitoreDao(id, nome, immagine, idCategoria, nomeCategoria,
+                    idStanza, nomeStanza, idMobile, nomeMobile);
+
+            result.add(dao);
+        }
+
+        c.close();
+
+        return result;
+    }
+
+
+    /***
+     * Restituisce il contenitore passato come argomento
+     * @param database
+     * @param id
+     * @return
+     */
+    public static ContenitoreDao getContenitore(SQLiteDatabase database, long id)
+    {
+        ContenitoreDao result = null;
+
+        String sql = "SELECT c.id, c.nome, c.immagine, c.id_categoria, c.id_stanza, c.id_mobile, " +
+                "m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
+                "FROM contenitori c " +
+                "LEFT JOIN mobili m ON c.id_mobile = m.id " +
+                "LEFT JOIN stanze s ON c.id_stanza = s.id " +
+                "LEFT JOIN categorie cat ON c.id_stanza = cat.id " +
+                "WHERE c.id = " + id;
+
+        Cursor c = database.rawQuery(sql, null);
+
+        int idIndex = c.getColumnIndex("id");
+        int nomeIndex = c.getColumnIndex("nome");
+        int immagineIndex = c.getColumnIndex("immagine");
+        int idMobileIndex = c.getColumnIndex("id_mobile");
+        int nomeMobileIndex = c.getColumnIndex("nome_mobile");
+        int idStanzaIndex = c.getColumnIndex("id_stanza");
+        int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
+        int idCategoriaIndex = c.getColumnIndex("id_categoria");
+        int nomeCategoriaIndex = c.getColumnIndex("nome_categoria");
+
+
+        if (c.moveToNext())
+        {
+            long idStanza = c.getLong(idStanzaIndex);
+            long idMobile = c.getLong(idMobileIndex);
+            long idCategoria = c.getLong(idCategoriaIndex);
+
+            String nome = c.getString(nomeIndex);
+            String immagine = c.getString(immagineIndex);
+
+            String nomeMobile = "";
+
+            if(!c.isNull(nomeMobileIndex))
+                nomeMobile = c.getString(nomeMobileIndex);
+
+            String nomeStanza = "";
+
+            if(!c.isNull(nomeStanzaIndex))
+                nomeStanza = c.getString(nomeStanzaIndex);
+
+            String nomeCategoria = "";
+
+            if(!c.isNull(nomeCategoriaIndex))
+                nomeCategoria = c.getString(nomeCategoriaIndex);
+
+
+            result = new ContenitoreDao(id, nome, immagine, idCategoria, nomeCategoria,
+                    idStanza, nomeStanza, idMobile, nomeMobile);
+        }
+
+        c.close();
+
+        return result;
     }
 //endregion
 

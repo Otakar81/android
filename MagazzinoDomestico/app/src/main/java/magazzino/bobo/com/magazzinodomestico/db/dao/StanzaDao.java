@@ -10,6 +10,11 @@ public class StanzaDao {
         this.nome = nome;
     }
 
+    public StanzaDao(String nome) {
+        this.id = -1;
+        this.nome = nome;
+    }
+
     public long getId() {
         return id;
     }
@@ -24,5 +29,10 @@ public class StanzaDao {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
     }
 }

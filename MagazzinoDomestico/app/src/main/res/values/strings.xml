@@ -10,5 +10,8 @@
 
     <!-- Categorie -->
     <string name="categoria_nome">Nome Categoria</string>
+    <string name="title_activity_stanze">StanzeActivity</string>
+    <string name="title_activity_mobili">MobiliActivity</string>
+    <string name="title_activity_contenitori">ContenitoriActivity</string>
 
 </resources>

@@ -104,15 +104,21 @@ public class MainActivity extends AppCompatActivity
             // Nulla, sono già qui
         } else if (id == R.id.nav_stanze) {
 
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), StanzeActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_mobili) {
 
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), MobiliActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_contenitori) {
 
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), ContenitoriActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_categorie) {
 

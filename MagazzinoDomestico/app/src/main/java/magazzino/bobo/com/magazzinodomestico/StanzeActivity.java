@@ -5,17 +5,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -26,14 +26,14 @@ import java.util.ArrayList;
 
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
 import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
-import magazzino.bobo.com.magazzinodomestico.dialogfragments.CategoriaDialog;
+import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
+import magazzino.bobo.com.magazzinodomestico.dialogfragments.StanzaDialog;
 
-public class CategorieActivity extends AppCompatActivity
+public class StanzeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    ListView listaCategorieView;
-    ArrayList<CategoriaDao> elencoCategorie;
-
+    ListView listaStanzeView;
+    ArrayList<StanzaDao> elencoStanze;
 
 
     @Override
@@ -41,14 +41,13 @@ public class CategorieActivity extends AppCompatActivity
         super.onResume();
 
         //Aggiorno la lista
-        aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database));
+        aggiornaLista(DatabaseManager.getAllStanze(MainActivity.database));
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_categorie);
-
+        setContentView(R.layout.activity_stanze);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -58,10 +57,10 @@ public class CategorieActivity extends AppCompatActivity
             @Override
             public void onClick(final View view) {
 
-                //Mostro il dialog per il nuovo inserimento
-                AlertDialog.Builder builder = new AlertDialog.Builder(CategorieActivity.this);
-                CategoriaDialog categoriaDialog = CategoriaDialog.newInstance(builder, false);
-                categoriaDialog.show(getSupportFragmentManager(),"categoria_dialog");
+                //Creo il dialog per l'inserimento
+                AlertDialog.Builder builder = new AlertDialog.Builder(StanzeActivity.this);
+                StanzaDialog dialog = StanzaDialog.newInstance(builder, false);
+                dialog.show(getSupportFragmentManager(),"stanza_dialog");
             }
         });
 
@@ -77,13 +76,13 @@ public class CategorieActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //Inizializzo la ListView
-        listaCategorieView = findViewById(R.id.listaCategorieView);
-        elencoCategorie = DatabaseManager.getAllCategorie(MainActivity.database);
+        listaStanzeView = findViewById(R.id.listaStanzeView);
+        elencoStanze = DatabaseManager.getAllStanze(MainActivity.database);
 
-        //Popolo la lista delle categorie
-        aggiornaLista(elencoCategorie);
+        //Popolo la lista
+        aggiornaLista(elencoStanze);
 
-        listaCategorieView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listaStanzeView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -98,29 +97,26 @@ public class CategorieActivity extends AppCompatActivity
                 */
 
                 //Dovrei saltare alla pagina con l'elenco degli elementi associati a questa categoria
-                Toast.makeText(CategorieActivity.this, "Click", Toast.LENGTH_SHORT).show();
+                Toast.makeText(StanzeActivity.this, "Click", Toast.LENGTH_SHORT).show();
             };
         });
 
-        listaCategorieView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        listaStanzeView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
 
-                //Apre il dialog personalizzato, per modifica e cancellazione del luogo
-                CategoriaDao dao = elencoCategorie.get(position);
+                //Apre il dialog personalizzato, per modifica e cancellazione
+                StanzaDao dao = elencoStanze.get(position);
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(CategorieActivity.this);
-                CategoriaDialog categoriaDialog = CategoriaDialog.newInstance(builder, true);
-                categoriaDialog.show(getSupportFragmentManager(),"categoria_dialog");
+                AlertDialog.Builder builder = new AlertDialog.Builder(StanzeActivity.this);
+                StanzaDialog dialog = StanzaDialog.newInstance(builder, true);
+                dialog.show(getSupportFragmentManager(),"stanza_dialog");
 
                 //E lo valorizza con gli attributi dell'oggetto su cui abbiamo cliccato
-                categoriaDialog.valorizzaDialog(dao.getId(), dao.getNome());
+                dialog.valorizzaDialog(dao.getId(), dao.getNome());
 
-
-                //Toast.makeText(CategorieActivity.this, "LongClick", Toast.LENGTH_SHORT).show();
                 return true;
-
             }
         });
     }
@@ -138,7 +134,7 @@ public class CategorieActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.categorie, menu);
+        getMenuInflater().inflate(R.menu.stanze, menu);
         return true;
     }
 
@@ -170,16 +166,13 @@ public class CategorieActivity extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_stanze) {
-
-            //Creo un intent e vado sulla activity corrispondente
-            Intent intent = new Intent(getApplicationContext(), StanzeActivity.class);
-            startActivity(intent);
-
+            // Nulla, sono già qui
         } else if (id == R.id.nav_mobili) {
 
             //Creo un intent e vado sulla activity corrispondente
             Intent intent = new Intent(getApplicationContext(), MobiliActivity.class);
             startActivity(intent);
+
         } else if (id == R.id.nav_contenitori) {
 
             //Creo un intent e vado sulla activity corrispondente
@@ -188,8 +181,9 @@ public class CategorieActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_categorie) {
 
-            // Nulla, sono già qui
-        }
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), CategorieActivity.class);
+            startActivity(intent);        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -197,10 +191,10 @@ public class CategorieActivity extends AppCompatActivity
     }
 
     /***
-     * Aggiorna la lista delle categorie
-     * @param elencoCategorieNew
+     * Aggiorna la lista
+     * @param elencoStanzeNew
      */
-    public void aggiornaLista(ArrayList<CategoriaDao> elencoCategorieNew)
+    public void aggiornaLista(ArrayList<StanzaDao> elencoStanzeNew)
     {
         /*
         ArrayAdapter<CategoriaDao> adapter = new LocationAdapter(elencoPostiMemorabili, this);
@@ -208,16 +202,16 @@ public class CategorieActivity extends AppCompatActivity
         */
 
         //La variabile globale deve essere aggiornata
-        elencoCategorie = elencoCategorieNew;
+        elencoStanze = elencoStanzeNew;
 
         //Per ora stampo solo una lista di stringhe
-        ArrayList<String> elencoCategorieString = new ArrayList<String>();
+        ArrayList<String> elencoString = new ArrayList<String>();
 
-        for (CategoriaDao categoria: elencoCategorieNew) {
-            elencoCategorieString.add(categoria.getNome());
+        for (StanzaDao stanza: elencoStanzeNew) {
+            elencoString.add(stanza.getNome());
         }
 
-        ArrayAdapter<String> valori = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, elencoCategorieString);
-        listaCategorieView.setAdapter(valori);
+        ArrayAdapter<String> valori = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, elencoString);
+        listaStanzeView.setAdapter(valori);
     }
 }
