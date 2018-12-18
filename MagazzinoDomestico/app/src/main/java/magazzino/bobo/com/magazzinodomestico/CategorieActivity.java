@@ -41,7 +41,7 @@ public class CategorieActivity extends AppCompatActivity
         super.onResume();
 
         //Aggiorno la lista
-        aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database));
+        aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database, false));
     }
 
     @Override
@@ -78,7 +78,7 @@ public class CategorieActivity extends AppCompatActivity
 
         //Inizializzo la ListView
         listaCategorieView = findViewById(R.id.listaCategorieView);
-        elencoCategorie = DatabaseManager.getAllCategorie(MainActivity.database);
+        elencoCategorie = DatabaseManager.getAllCategorie(MainActivity.database, false);
 
         //Popolo la lista delle categorie
         aggiornaLista(elencoCategorie);

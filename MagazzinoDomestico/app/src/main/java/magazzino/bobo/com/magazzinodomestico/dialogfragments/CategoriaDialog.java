@@ -71,8 +71,8 @@ public class CategoriaDialog extends DialogFragment {
         {
             mBuilder.setView(view)
                     .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("Modifica categoria")
-                    .setPositiveButton("Modifica", new DialogInterface.OnClickListener() {
+                    .setTitle(R.string.categoria_modifica)
+                    .setPositiveButton(R.string.modifica, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -84,12 +84,12 @@ public class CategoriaDialog extends DialogFragment {
                             DatabaseManager.updateCategoria(MainActivity.database, dao);
 
                             //Avverto la lista che i dati sono cambiati
-                            ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database));
+                            ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database, false));
 
-                            Toast.makeText(getActivity(), "Categoria modificata", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
                         }
                     })
-                    .setNegativeButton("Elimina", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(R.string.elimina, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -97,12 +97,12 @@ public class CategoriaDialog extends DialogFragment {
                             DatabaseManager.deleteCategoria(MainActivity.database, id);
 
                             //Avverto la lista che i dati sono cambiati
-                            ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database));
+                            ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database, false));
 
-                            Toast.makeText(getActivity(), "Categoria eliminata", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
                         }
                     })
-                    .setNeutralButton("Cancella", null);
+                    .setNeutralButton(R.string.annulla, null);
 
             //Se le variabili sono già state valorizzate, le uso per riempire la finestra
             if(this.nome != null) {
@@ -113,9 +113,9 @@ public class CategoriaDialog extends DialogFragment {
 
             mBuilder.setView(view)
                     .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("Aggiunta categoria")
-                    .setMessage("Specificare il nome della categoria")
-                    .setPositiveButton("Aggiungi", new DialogInterface.OnClickListener() {
+                    .setTitle(R.string.categoria_nuova)
+                    .setMessage(R.string.categoria_nome)
+                    .setPositiveButton(R.string.aggiungi, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -123,7 +123,7 @@ public class CategoriaDialog extends DialogFragment {
 
                             if(nome == null || nome.trim().equals(""))
                             {
-                                Toast.makeText(getActivity(), "Specificare un nome valido", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), R.string.errore_nome, Toast.LENGTH_SHORT).show();
                             }else{
 
                                 //Verifico che il nome passato come argomento non sia già stato usato
@@ -131,21 +131,21 @@ public class CategoriaDialog extends DialogFragment {
 
                                 if(categoria != null)
                                 {
-                                    Toast.makeText(getActivity(), "Nome già in uso", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), R.string.errore_nome_in_uso, Toast.LENGTH_SHORT).show();
                                 }else{
 
                                     //Creo e salvo la categoria
                                     categoria = new CategoriaDao(nome);
                                     DatabaseManager.insertCategoria(MainActivity.database, categoria);
 
-                                    ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database));
+                                    ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database, false));
 
-                                    Toast.makeText(getActivity(), "Inserimento avvenuto con successo", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
                     })
-                    .setNegativeButton("Elimina", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(R.string.elimina, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -153,12 +153,12 @@ public class CategoriaDialog extends DialogFragment {
                             DatabaseManager.deleteCategoria(MainActivity.database, id);
 
                             //Avverto la lista che i dati sono cambiati
-                            ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database));
+                            ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database, false));
 
-                            Toast.makeText(getActivity(), "Categoria eliminata", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
                         }
                     })
-                    .setNeutralButton("Cancella", null);
+                    .setNeutralButton(R.string.annulla, null);
 
         }
 

@@ -86,6 +86,22 @@ public class MobileDao {
         if(id_stanza != -1)
             return nome + " (" + nomeStanza + ")";
         else
-            return nome + " ( - )";
+            return nome;
+    }
+
+    /***
+     * Restituisce true se la stringa passata come argomento "trova" l'oggetto
+     *
+     * @param searchString
+     * @return
+     */
+    public boolean searchItem(String searchString)
+    {
+        if(nome.toUpperCase().contains(searchString.toUpperCase()))
+            return true;
+        else if(nomeStanza.toUpperCase().contains(searchString.toUpperCase()))
+            return true;
+        else
+            return false;
     }
 }

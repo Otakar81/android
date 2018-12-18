@@ -99,7 +99,7 @@ public class ContenitoreDialog extends DialogFragment {
 
                 StanzaDao stanzaSelezionata = elencoStanze.get(position);
 
-                elencoMobili = DatabaseManager.getAllMobiliByStanza(MainActivity.database, stanzaSelezionata.getId());
+                elencoMobili = DatabaseManager.getAllMobiliByStanza(MainActivity.database, stanzaSelezionata.getId(), true);
                 ArrayAdapter<MobileDao> valoriMobili = new ArrayAdapter<MobileDao>(getActivity(), android.R.layout.simple_list_item_1, elencoMobili);
                 elencoMobiliView.setAdapter(valoriMobili);
             }
@@ -114,7 +114,7 @@ public class ContenitoreDialog extends DialogFragment {
         elencoMobili = new ArrayList<MobileDao>();
 
 
-        elencoCategorie = DatabaseManager.getAllCategorie(MainActivity.database);
+        elencoCategorie = DatabaseManager.getAllCategorie(MainActivity.database, true);
         ArrayAdapter<CategoriaDao> valoriCategorie = new ArrayAdapter<CategoriaDao>(getActivity(), android.R.layout.simple_list_item_1, elencoCategorie);
         elencoCategorieView.setAdapter(valoriCategorie);
 

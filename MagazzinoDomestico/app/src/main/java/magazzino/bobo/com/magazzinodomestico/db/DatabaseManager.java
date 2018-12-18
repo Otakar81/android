@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteStatement;
 
 import java.util.ArrayList;
 
+import magazzino.bobo.com.magazzinodomestico.R;
 import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.ContenitoreDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.MobileDao;
@@ -117,7 +118,7 @@ public class DatabaseManager {
      * @param database
      * @return
      */
-    public static ArrayList<CategoriaDao> getAllCategorie(SQLiteDatabase database)
+    public static ArrayList<CategoriaDao> getAllCategorie(SQLiteDatabase database, boolean showDefaultElement)
     {
         ArrayList<CategoriaDao> result = new ArrayList<CategoriaDao>();
 
@@ -128,6 +129,9 @@ public class DatabaseManager {
         int idIndex = c.getColumnIndex("id");
         int nomeIndex = c.getColumnIndex("nome");
         int coloreIndex = c.getColumnIndex("colore");
+
+        if(showDefaultElement) //Se true, inserisco il record di default
+            result.add(new CategoriaDao(-1, "-", ""));
 
         while (c.moveToNext())
         {
@@ -440,7 +444,7 @@ public class DatabaseManager {
      * @param id_stanza
      * @return
      */
-    public static ArrayList<MobileDao> getAllMobiliByStanza(SQLiteDatabase database, long id_stanza)
+    public static ArrayList<MobileDao> getAllMobiliByStanza(SQLiteDatabase database, long id_stanza, boolean showDefaultElement)
     {
         ArrayList<MobileDao> result = new ArrayList<MobileDao>();
 
@@ -455,6 +459,9 @@ public class DatabaseManager {
         int immagineIndex = c.getColumnIndex("immagine");
         int idStanzaIndex = c.getColumnIndex("id_stanza");
         int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
+
+        if(showDefaultElement) //Se true, inserisco il record di default
+            result.add(new MobileDao(-1, "-", "", -1, ""));
 
         while (c.moveToNext())
         {

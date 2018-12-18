@@ -100,7 +100,7 @@ public class MobileDialog extends DialogFragment {
                             DatabaseManager.updateMobile(MainActivity.database, dao);
 
                             //Avverto la lista che i dati sono cambiati
-                            ((MobiliActivity)getActivity()).aggiornaLista(DatabaseManager.getAllMobili(MainActivity.database));
+                            ((MobiliActivity)getActivity()).aggiornaLista(DatabaseManager.getAllMobili(MainActivity.database), true);
 
                             Toast.makeText(getActivity(), "Modifica effettuata con successo", Toast.LENGTH_SHORT).show();
                         }
@@ -113,7 +113,7 @@ public class MobileDialog extends DialogFragment {
                             DatabaseManager.deleteMobile(MainActivity.database, id);
 
                             //Avverto la lista che i dati sono cambiati
-                            ((MobiliActivity)getActivity()).aggiornaLista(DatabaseManager.getAllMobili(MainActivity.database));
+                            ((MobiliActivity)getActivity()).aggiornaLista(DatabaseManager.getAllMobili(MainActivity.database), true);
 
                             Toast.makeText(getActivity(), "Eliminazione effettuata con successo", Toast.LENGTH_SHORT).show();
                         }
@@ -161,7 +161,7 @@ public class MobileDialog extends DialogFragment {
                                 MobileDao dao = new MobileDao(id, nome, "", stanza.getId(), stanza.getNome());
                                 DatabaseManager.insertMobile(MainActivity.database, dao);
 
-                                ((MobiliActivity)getActivity()).aggiornaLista(DatabaseManager.getAllMobili(MainActivity.database));
+                                ((MobiliActivity)getActivity()).aggiornaLista(DatabaseManager.getAllMobili(MainActivity.database), true);
 
                                 Toast.makeText(getActivity(), "Inserimento avvenuto con successo", Toast.LENGTH_SHORT).show();
 

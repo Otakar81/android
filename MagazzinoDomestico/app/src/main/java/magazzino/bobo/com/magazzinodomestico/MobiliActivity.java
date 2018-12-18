@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ public class MobiliActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     ListView listaMobiliView;
+    SearchView searchView;
     ArrayList<MobileDao> elencoMobili;
 
     @Override
@@ -41,7 +43,7 @@ public class MobiliActivity extends AppCompatActivity
         super.onResume();
 
         //Aggiorno la lista
-        aggiornaLista(DatabaseManager.getAllMobili(MainActivity.database));
+        aggiornaLista(DatabaseManager.getAllMobili(MainActivity.database), true);
     }
 
     @Override
@@ -80,7 +82,7 @@ public class MobiliActivity extends AppCompatActivity
         elencoMobili = DatabaseManager.getAllMobili(MainActivity.database);
 
         //Popolo la lista
-        aggiornaLista(elencoMobili);
+        aggiornaLista(elencoMobili, true);
 
         listaMobiliView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -117,6 +119,29 @@ public class MobiliActivity extends AppCompatActivity
                 dialog.valorizzaDialog(dao.getId(), dao.getNome(), dao.getId_stanza());
 
                 return true;
+            }
+        });
+
+        //Inzializzo la search view
+        searchView = findViewById(R.id.searchMobili);
+        searchView.setActivated(true);
+        searchView.setQueryHint("Type your keyword here");
+        searchView.onActionViewExpanded();
+        searchView.setIconified(false);
+        searchView.clearFocus();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                //Effettuo la ricerca
+                search(newText);
+
+                return false;
             }
         });
     }
@@ -196,15 +221,16 @@ public class MobiliActivity extends AppCompatActivity
      * Aggiorna la lista
      * @param elencoNew
      */
-    public void aggiornaLista(ArrayList<MobileDao> elencoNew)
+    public void aggiornaLista(ArrayList<MobileDao> elencoNew, boolean aggiornaDaDB)
     {
         /*
         ArrayAdapter<CategoriaDao> adapter = new LocationAdapter(elencoPostiMemorabili, this);
         listaPostiView.setAdapter(adapter);
         */
 
-        //La variabile globale deve essere aggiornata
-        elencoMobili = elencoNew;
+        //La variabile globale deve essere aggiornata, ma solo se sto aggiornando la lista dopo una modifica su DB
+        if(aggiornaDaDB)
+            elencoMobili = elencoNew;
 
         //Per ora stampo solo una lista di stringhe
         ArrayList<String> elencoString = new ArrayList<String>();
@@ -216,4 +242,23 @@ public class MobiliActivity extends AppCompatActivity
         ArrayAdapter<String> valori = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, elencoString);
         listaMobiliView.setAdapter(valori);
     }
+
+    /***
+     * Effettuo la ricerca nella lista
+     *
+     * @param searchText
+     */
+    private void search(String searchText)
+    {
+        ArrayList<MobileDao> elencoRistretto = new ArrayList<MobileDao>();
+
+        for (MobileDao dao: elencoMobili) {
+            if(dao.searchItem(searchText))
+                elencoRistretto.add(dao);
+        }
+
+        //Aggiorno la lista in visualizzazione
+        aggiornaLista(elencoRistretto, false);
+    }
+
 }
