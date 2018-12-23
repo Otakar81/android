@@ -140,6 +140,26 @@ public class ContenitoreDao {
         return nome_mobile;
     }
 
+    /***
+     * Restituisce true se la stringa passata come argomento "trova" l'oggetto
+     *
+     * @param searchString
+     * @return
+     */
+    public boolean searchItem(String searchString)
+    {
+        if(nome.toUpperCase().contains(searchString.toUpperCase()))
+            return true;
+        else if(nome_stanza.toUpperCase().contains(searchString.toUpperCase()))
+            return true;
+        else if(nome_categoria.toUpperCase().contains(searchString.toUpperCase()))
+            return true;
+        else if(nome_mobile.toUpperCase().contains(searchString.toUpperCase()))
+            return true;
+        else
+            return false;
+    }
+
     @Override
     public String toString() {
 

@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteStatement;
 
 import java.util.ArrayList;
 
-import magazzino.bobo.com.magazzinodomestico.R;
 import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.ContenitoreDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.MobileDao;
@@ -643,6 +642,78 @@ public class DatabaseManager {
         return result;
     }
 
+    /***
+     * Restituisce tutti i contenitori presenti nel luogo specificato
+     *
+     * @param database
+     * @param id_stanza
+     * @param id_mobile
+     * @return
+     */
+    public static ArrayList<ContenitoreDao> getAllContenitoriByLocation(SQLiteDatabase database, long id_stanza, long id_mobile)
+    {
+        ArrayList<ContenitoreDao> result = new ArrayList<ContenitoreDao>();
+
+        String sql = "SELECT c.id, c.nome, c.immagine, c.id_categoria, c.id_stanza, c.id_mobile, " +
+                "m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
+                "FROM contenitori c " +
+                "LEFT JOIN mobili m ON c.id_mobile = m.id " +
+                "LEFT JOIN stanze s ON c.id_stanza = s.id " +
+                "LEFT JOIN categorie cat ON c.id_stanza = cat.id " +
+                "WHERE " +
+                "(c.id_stanza = -1 OR c.id_stanza = " + id_stanza + " ) AND " +
+                "(c.id_mobile = -1 OR c.id_mobile = " + id_mobile + " ) " +
+                "ORDER BY c.nome";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        int idIndex = c.getColumnIndex("id");
+        int nomeIndex = c.getColumnIndex("nome");
+        int immagineIndex = c.getColumnIndex("immagine");
+        int idMobileIndex = c.getColumnIndex("id_mobile");
+        int nomeMobileIndex = c.getColumnIndex("nome_mobile");
+        int idStanzaIndex = c.getColumnIndex("id_stanza");
+        int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
+        int idCategoriaIndex = c.getColumnIndex("id_categoria");
+        int nomeCategoriaIndex = c.getColumnIndex("nome_categoria");
+
+        while (c.moveToNext())
+        {
+            long id = c.getLong(idIndex);
+            long idStanza = c.getLong(idStanzaIndex);
+            long idMobile = c.getLong(idMobileIndex);
+            long idCategoria = c.getLong(idCategoriaIndex);
+
+            String nome = c.getString(nomeIndex);
+            String immagine = c.getString(immagineIndex);
+
+            String nomeMobile = "";
+
+            if(!c.isNull(nomeMobileIndex))
+                nomeMobile = c.getString(nomeMobileIndex);
+
+            String nomeStanza = "";
+
+            if(!c.isNull(nomeStanzaIndex))
+                nomeStanza = c.getString(nomeStanzaIndex);
+
+            String nomeCategoria = "";
+
+            if(!c.isNull(nomeCategoriaIndex))
+                nomeCategoria = c.getString(nomeCategoriaIndex);
+
+
+            ContenitoreDao dao = new ContenitoreDao(id, nome, immagine, idCategoria, nomeCategoria,
+                    idStanza, nomeStanza, idMobile, nomeMobile);
+
+            result.add(dao);
+        }
+
+        c.close();
+
+        return result;
+    }
+
 
     /***
      * Restituisce il contenitore passato come argomento
@@ -763,6 +834,244 @@ public class DatabaseManager {
     public static void deleteOggetto(SQLiteDatabase database, long id)
     {
         database.execSQL("DELETE FROM oggetti where id = " + id);
+    }
+
+    /***
+     * Restituisce tutti gli oggetti presenti nel sistema
+     *
+     * @param database
+     * @return
+     */
+    public static ArrayList<OggettoDao> getAllOggetti(SQLiteDatabase database)
+    {
+        ArrayList<OggettoDao> result = new ArrayList<OggettoDao>();
+
+        String sql = "SELECT o.id, o.nome, o.immagine, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
+                "c.nome as nome_contenitore, m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
+                "FROM oggetti o " +
+                "LEFT JOIN contenitori c ON o.id_contenitore = c.id " +
+                "LEFT JOIN mobili m ON c.id_mobile = m.id " +
+                "LEFT JOIN stanze s ON c.id_stanza = s.id " +
+                "LEFT JOIN categorie cat ON c.id_stanza = cat.id " +
+                "ORDER BY o.nome";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        int idIndex = c.getColumnIndex("id");
+        int nomeIndex = c.getColumnIndex("nome");
+        int immagineIndex = c.getColumnIndex("immagine");
+        int idContenitoreIndex = c.getColumnIndex("id_contenitore");
+        int nomeContenitoreIndex = c.getColumnIndex("nome_contenitore");
+        int idMobileIndex = c.getColumnIndex("id_mobile");
+        int nomeMobileIndex = c.getColumnIndex("nome_mobile");
+        int idStanzaIndex = c.getColumnIndex("id_stanza");
+        int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
+        int idCategoriaIndex = c.getColumnIndex("id_categoria");
+        int nomeCategoriaIndex = c.getColumnIndex("nome_categoria");
+
+        while (c.moveToNext())
+        {
+            long id = c.getLong(idIndex);
+            long idStanza = c.getLong(idStanzaIndex);
+            long idContenitore = c.getLong(idContenitoreIndex);
+            long idMobile = c.getLong(idMobileIndex);
+            long idCategoria = c.getLong(idCategoriaIndex);
+
+            String nome = c.getString(nomeIndex);
+            String immagine = c.getString(immagineIndex);
+
+            String nomeContenitore = "";
+
+            if(!c.isNull(nomeContenitoreIndex))
+                nomeContenitore = c.getString(nomeContenitoreIndex);
+
+            String nomeMobile = "";
+
+            if(!c.isNull(nomeMobileIndex))
+                nomeMobile = c.getString(nomeMobileIndex);
+
+            String nomeStanza = "";
+
+            if(!c.isNull(nomeStanzaIndex))
+                nomeStanza = c.getString(nomeStanzaIndex);
+
+            String nomeCategoria = "";
+
+            if(!c.isNull(nomeCategoriaIndex))
+                nomeCategoria = c.getString(nomeCategoriaIndex);
+
+
+            OggettoDao dao = new OggettoDao(id, nome, immagine, idCategoria, nomeCategoria, idStanza, nomeStanza,
+                idMobile, nomeMobile, idContenitore, nomeContenitore);
+
+            result.add(dao);
+        }
+
+        c.close();
+
+        return result;
+    }
+
+    /***
+     * Restituisce tutti gli oggetti che si trovano nel posto specificato
+     *
+     * @param database
+     * @param id_categoria
+     * @param id_stanza
+     * @param id_mobile
+     * @param id_contenitore
+     * @return
+     */
+    public static ArrayList<OggettoDao> getAllOggettiByLocation(SQLiteDatabase database,
+                                                                long id_categoria, long id_stanza, long id_mobile, long id_contenitore)
+    {
+        ArrayList<OggettoDao> result = new ArrayList<OggettoDao>();
+
+        String sql = "SELECT o.id, o.nome, o.immagine, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
+                "c.nome as nome_contenitore, m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
+                "FROM oggetti o " +
+                "LEFT JOIN contenitori c ON o.id_contenitore = c.id " +
+                "LEFT JOIN mobili m ON c.id_mobile = m.id " +
+                "LEFT JOIN stanze s ON c.id_stanza = s.id " +
+                "LEFT JOIN categorie cat ON c.id_stanza = cat.id " +
+                "WHERE " +
+                "(o.id_categoria = -1 OR o.id_categoria = " + id_categoria + " ) AND " +
+                "(o.id_stanza = -1 OR o.id_stanza = " + id_stanza + " ) AND " +
+                "(o.id_mobile = -1 OR o.id_mobile = " + id_mobile + " ) AND " +
+                "(o.id_contenitore = -1 OR o.id_contenitore = " + id_contenitore + " ) " +
+                "ORDER BY o.nome";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        int idIndex = c.getColumnIndex("id");
+        int nomeIndex = c.getColumnIndex("nome");
+        int immagineIndex = c.getColumnIndex("immagine");
+        int idContenitoreIndex = c.getColumnIndex("id_contenitore");
+        int nomeContenitoreIndex = c.getColumnIndex("nome_contenitore");
+        int idMobileIndex = c.getColumnIndex("id_mobile");
+        int nomeMobileIndex = c.getColumnIndex("nome_mobile");
+        int idStanzaIndex = c.getColumnIndex("id_stanza");
+        int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
+        int idCategoriaIndex = c.getColumnIndex("id_categoria");
+        int nomeCategoriaIndex = c.getColumnIndex("nome_categoria");
+
+        while (c.moveToNext())
+        {
+            long id = c.getLong(idIndex);
+            long idStanza = c.getLong(idStanzaIndex);
+            long idContenitore = c.getLong(idContenitoreIndex);
+            long idMobile = c.getLong(idMobileIndex);
+            long idCategoria = c.getLong(idCategoriaIndex);
+
+            String nome = c.getString(nomeIndex);
+            String immagine = c.getString(immagineIndex);
+
+            String nomeContenitore = "";
+
+            if(!c.isNull(nomeContenitoreIndex))
+                nomeContenitore = c.getString(nomeContenitoreIndex);
+
+            String nomeMobile = "";
+
+            if(!c.isNull(nomeMobileIndex))
+                nomeMobile = c.getString(nomeMobileIndex);
+
+            String nomeStanza = "";
+
+            if(!c.isNull(nomeStanzaIndex))
+                nomeStanza = c.getString(nomeStanzaIndex);
+
+            String nomeCategoria = "";
+
+            if(!c.isNull(nomeCategoriaIndex))
+                nomeCategoria = c.getString(nomeCategoriaIndex);
+
+
+            OggettoDao dao = new OggettoDao(id, nome, immagine, idCategoria, nomeCategoria, idStanza, nomeStanza,
+                    idMobile, nomeMobile, idContenitore, nomeContenitore);
+
+            result.add(dao);
+        }
+
+        c.close();
+
+        return result;
+    }
+
+    /***
+     * Restituisce l'oggetto passato come argomento
+     *
+     * @param database
+     * @param id
+     * @return
+     */
+    public static OggettoDao getOggetto(SQLiteDatabase database, long id)
+    {
+        OggettoDao result = null;
+
+        String sql = "SELECT o.id, o.nome, o.immagine, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
+                "c.nome as nome_contenitore, m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
+                "FROM oggetti o " +
+                "LEFT JOIN contenitori c ON o.id_contenitore = c.id " +
+                "LEFT JOIN mobili m ON c.id_mobile = m.id " +
+                "LEFT JOIN stanze s ON c.id_stanza = s.id " +
+                "LEFT JOIN categorie cat ON c.id_stanza = cat.id " +
+                "WHERE o.id = " + id +
+                " ORDER BY o.nome";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        int idIndex = c.getColumnIndex("id");
+        int nomeIndex = c.getColumnIndex("nome");
+        int immagineIndex = c.getColumnIndex("immagine");
+        int idContenitoreIndex = c.getColumnIndex("id_contenitore");
+        int nomeContenitoreIndex = c.getColumnIndex("nome_contenitore");
+        int idMobileIndex = c.getColumnIndex("id_mobile");
+        int nomeMobileIndex = c.getColumnIndex("nome_mobile");
+        int idStanzaIndex = c.getColumnIndex("id_stanza");
+        int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
+        int idCategoriaIndex = c.getColumnIndex("id_categoria");
+        int nomeCategoriaIndex = c.getColumnIndex("nome_categoria");
+
+        if (c.moveToNext())
+        {
+            long idStanza = c.getLong(idStanzaIndex);
+            long idContenitore = c.getLong(idContenitoreIndex);
+            long idMobile = c.getLong(idMobileIndex);
+            long idCategoria = c.getLong(idCategoriaIndex);
+
+            String nome = c.getString(nomeIndex);
+            String immagine = c.getString(immagineIndex);
+
+            String nomeContenitore = "";
+
+            if(!c.isNull(nomeContenitoreIndex))
+                nomeContenitore = c.getString(nomeContenitoreIndex);
+
+            String nomeMobile = "";
+
+            if(!c.isNull(nomeMobileIndex))
+                nomeMobile = c.getString(nomeMobileIndex);
+
+            String nomeStanza = "";
+
+            if(!c.isNull(nomeStanzaIndex))
+                nomeStanza = c.getString(nomeStanzaIndex);
+
+            String nomeCategoria = "";
+
+            if(!c.isNull(nomeCategoriaIndex))
+                nomeCategoria = c.getString(nomeCategoriaIndex);
+
+
+            result = new OggettoDao(id, nome, immagine, idCategoria, nomeCategoria, idStanza, nomeStanza,
+                    idMobile, nomeMobile, idContenitore, nomeContenitore);
+
+        }
+
+        c.close();
+
+        return result;
     }
 //endregion
 

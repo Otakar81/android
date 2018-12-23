@@ -109,7 +109,7 @@ public class MobiliActivity extends AppCompatActivity
 
 
                 //Apre il dialog personalizzato, per modifica e cancellazione
-                MobileDao dao = elencoMobili.get(position);
+                MobileDao dao = (MobileDao) parent.getItemAtPosition(position); //elencoMobili.get(position);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MobiliActivity.this);
                 MobileDialog dialog = MobileDialog.newInstance(builder, true);
@@ -232,14 +232,9 @@ public class MobiliActivity extends AppCompatActivity
         if(aggiornaDaDB)
             elencoMobili = elencoNew;
 
-        //Per ora stampo solo una lista di stringhe
-        ArrayList<String> elencoString = new ArrayList<String>();
 
-        for (MobileDao mobile: elencoNew) {
-            elencoString.add(mobile.toString());
-        }
+        ArrayAdapter<MobileDao> valori = new ArrayAdapter<MobileDao>(this, android.R.layout.simple_list_item_1, elencoNew);
 
-        ArrayAdapter<String> valori = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, elencoString);
         listaMobiliView.setAdapter(valori);
     }
 

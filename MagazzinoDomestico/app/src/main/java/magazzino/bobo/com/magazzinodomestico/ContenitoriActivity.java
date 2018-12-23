@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class ContenitoriActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     ListView listaContenitoriView;
+    SearchView searchView;
     ArrayList<ContenitoreDao> elencoContenitori;
 
     @Override
@@ -43,7 +45,7 @@ public class ContenitoriActivity extends AppCompatActivity
         super.onResume();
 
         //Aggiorno la lista
-        aggiornaLista(DatabaseManager.getAllContenitori(MainActivity.database));
+        aggiornaLista(DatabaseManager.getAllContenitori(MainActivity.database), true);
     }
 
     @Override
@@ -83,7 +85,7 @@ public class ContenitoriActivity extends AppCompatActivity
         elencoContenitori = DatabaseManager.getAllContenitori(MainActivity.database);
 
         //Popolo la lista
-        aggiornaLista(elencoContenitori);
+        aggiornaLista(elencoContenitori, true);
 
         listaContenitoriView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -110,7 +112,7 @@ public class ContenitoriActivity extends AppCompatActivity
 
 
                 //Apre il dialog personalizzato, per modifica e cancellazione
-                ContenitoreDao dao = elencoContenitori.get(position);
+                ContenitoreDao dao = (ContenitoreDao) parent.getItemAtPosition(position); // elencoContenitori.get(position);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(ContenitoriActivity.this);
                 ContenitoreDialog dialog = ContenitoreDialog.newInstance(builder, true);
@@ -120,6 +122,30 @@ public class ContenitoriActivity extends AppCompatActivity
                 dialog.valorizzaDialog(dao.getId(), dao.getNome(), dao.getId_stanza(), dao.getId_mobile(), dao.getId_categoria());
 
                 return true;
+            }
+        });
+
+
+        //Inzializzo la search view
+        searchView = findViewById(R.id.searchContenitori);
+        searchView.setActivated(true);
+        searchView.setQueryHint("Type your keyword here");
+        searchView.onActionViewExpanded();
+        searchView.setIconified(false);
+        searchView.clearFocus();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                //Effettuo la ricerca
+                search(newText);
+
+                return false;
             }
         });
 
@@ -201,24 +227,36 @@ public class ContenitoriActivity extends AppCompatActivity
      * Aggiorna la lista
      * @param elencoNew
      */
-    public void aggiornaLista(ArrayList<ContenitoreDao> elencoNew)
+    public void aggiornaLista(ArrayList<ContenitoreDao> elencoNew, boolean aggiornaDaDB)
     {
         /*
         ArrayAdapter<CategoriaDao> adapter = new LocationAdapter(elencoPostiMemorabili, this);
         listaPostiView.setAdapter(adapter);
         */
 
-        //La variabile globale deve essere aggiornata
-        elencoContenitori = elencoNew;
+        //La variabile globale deve essere aggiornata, ma solo se sto aggiornando la lista dopo una modifica su DB
+        if(aggiornaDaDB)
+            elencoContenitori = elencoNew;
 
-        //Per ora stampo solo una lista di stringhe
-        ArrayList<String> elencoString = new ArrayList<String>();
+        ArrayAdapter<ContenitoreDao> valori = new ArrayAdapter<ContenitoreDao>(this, android.R.layout.simple_list_item_1, elencoNew);
+        listaContenitoriView.setAdapter(valori);
+    }
 
-        for (ContenitoreDao contenitore: elencoNew) {
-            elencoString.add(contenitore.toString());
+    /***
+     * Effettuo la ricerca nella lista
+     *
+     * @param searchText
+     */
+    private void search(String searchText)
+    {
+        ArrayList<ContenitoreDao> elencoRistretto = new ArrayList<ContenitoreDao>();
+
+        for (ContenitoreDao dao: elencoContenitori) {
+            if(dao.searchItem(searchText))
+                elencoRistretto.add(dao);
         }
 
-        ArrayAdapter<String> valori = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, elencoString);
-        listaContenitoriView.setAdapter(valori);
+        //Aggiorno la lista in visualizzazione
+        aggiornaLista(elencoRistretto, false);
     }
 }

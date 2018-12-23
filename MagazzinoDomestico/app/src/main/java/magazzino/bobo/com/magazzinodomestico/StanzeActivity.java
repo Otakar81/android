@@ -107,7 +107,7 @@ public class StanzeActivity extends AppCompatActivity
 
 
                 //Apre il dialog personalizzato, per modifica e cancellazione
-                StanzaDao dao = elencoStanze.get(position);
+                StanzaDao dao = (StanzaDao) parent.getItemAtPosition(position); //elencoStanze.get(position);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(StanzeActivity.this);
                 StanzaDialog dialog = StanzaDialog.newInstance(builder, true);
@@ -204,14 +204,7 @@ public class StanzeActivity extends AppCompatActivity
         //La variabile globale deve essere aggiornata
         elencoStanze = elencoStanzeNew;
 
-        //Per ora stampo solo una lista di stringhe
-        ArrayList<String> elencoString = new ArrayList<String>();
-
-        for (StanzaDao stanza: elencoStanzeNew) {
-            elencoString.add(stanza.getNome());
-        }
-
-        ArrayAdapter<String> valori = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, elencoString);
+        ArrayAdapter<StanzaDao> valori = new ArrayAdapter<StanzaDao>(this, android.R.layout.simple_list_item_1, elencoStanzeNew);
         listaStanzeView.setAdapter(valori);
     }
 }

@@ -108,7 +108,7 @@ public class CategorieActivity extends AppCompatActivity
 
 
                 //Apre il dialog personalizzato, per modifica e cancellazione del luogo
-                CategoriaDao dao = elencoCategorie.get(position);
+                CategoriaDao dao = (CategoriaDao) parent.getItemAtPosition(position); //elencoCategorie.get(position);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(CategorieActivity.this);
                 CategoriaDialog categoriaDialog = CategoriaDialog.newInstance(builder, true);
@@ -210,14 +210,7 @@ public class CategorieActivity extends AppCompatActivity
         //La variabile globale deve essere aggiornata
         elencoCategorie = elencoCategorieNew;
 
-        //Per ora stampo solo una lista di stringhe
-        ArrayList<String> elencoCategorieString = new ArrayList<String>();
-
-        for (CategoriaDao categoria: elencoCategorieNew) {
-            elencoCategorieString.add(categoria.getNome());
-        }
-
-        ArrayAdapter<String> valori = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, elencoCategorieString);
+        ArrayAdapter<CategoriaDao> valori = new ArrayAdapter<CategoriaDao>(this, android.R.layout.simple_list_item_1, elencoCategorieNew);
         listaCategorieView.setAdapter(valori);
     }
 }

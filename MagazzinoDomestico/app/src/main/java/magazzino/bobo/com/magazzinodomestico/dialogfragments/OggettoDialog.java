@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -39,7 +38,7 @@ import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
  */
 
 
-public class ContenitoreDialog extends DialogFragment {
+public class OggettoDialog extends DialogFragment {
 
     //Specifica se il dialog da aprire sarà in modalità "edit" oppure "nuova istanza"
     boolean isEditMode;
@@ -50,10 +49,14 @@ public class ContenitoreDialog extends DialogFragment {
     private long id_stanza;
     private long id_mobile;
     private long id_categoria;
+    private long id_contenitore;
+
 
     private ArrayList<StanzaDao> elencoStanze;
     private ArrayList<MobileDao> elencoMobili;
     private ArrayList<CategoriaDao> elencoCategorie;
+    private ArrayList<ContenitoreDao> elencoContenitori;
+
 
 
     //Elementi view del dialog
@@ -61,14 +64,15 @@ public class ContenitoreDialog extends DialogFragment {
     private Spinner elencoStanzeView;
     private Spinner elencoMobiliView;
     private Spinner elencoCategorieView;
+    private Spinner elencoContenitoriView;
 
 
     //Dialog builder
     private AlertDialog.Builder mBuilder;
 
-    public static ContenitoreDialog newInstance(AlertDialog.Builder builder, boolean isEditMode){
+    public static OggettoDialog newInstance(AlertDialog.Builder builder, boolean isEditMode){
 
-        ContenitoreDialog dialogFragment = new ContenitoreDialog();
+        OggettoDialog dialogFragment = new OggettoDialog();
         dialogFragment.isEditMode = isEditMode;
         dialogFragment.mBuilder = builder;
         return dialogFragment;
@@ -79,12 +83,13 @@ public class ContenitoreDialog extends DialogFragment {
 
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_contenitore, null);
+        View view = inflater.inflate(R.layout.dialog_oggetto, null);
 
         //Valorizzo le view del layout
-        nomeView = view.findViewById(R.id.nomeContenitore);
+        nomeView = view.findViewById(R.id.nomeOggetto);
         elencoStanzeView = view.findViewById(R.id.elencoStanze);
         elencoMobiliView = view.findViewById(R.id.elencoMobili);
+        elencoContenitoriView = view.findViewById(R.id.elencoContenitori);
         elencoCategorieView = view.findViewById(R.id.elencoCategorie);
 
 

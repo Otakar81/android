@@ -2,8 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_add_mobile"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/mobile_nuovo"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_add_contenitore"
+        android:orderInCategory="100"
+        android:title="@string/contenitore_nuovo"
         app:showAsAction="never" />
 </menu>

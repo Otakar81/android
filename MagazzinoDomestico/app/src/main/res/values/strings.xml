@@ -27,8 +27,22 @@
     <string name="categoria_modifica">Modifica Categoria</string>
     <string name="categoria_nuova">Nuova Categoria</string>
 
+    <!-- Stanze -->
+    <string name="stanza_nome">Nome Stanza</string>
+    <string name="stanza_modifica">Modifica Stanza</string>
+    <string name="stanza_nuovo">Nuova Stanza</string>
+
     <!-- Mobili -->
     <string name="mobile_nessuno">- Nessun Mobile -</string>
+    <string name="mobile_nome">Nome Mobile</string>
+    <string name="mobile_modifica">Modifica Mobile</string>
+    <string name="mobile_nuovo">Nuovo Mobile</string>
 
+    <!-- Contenitori -->
+    <string name="contenitore_nessuno">- Nessun Contenitore -</string>
+    <string name="contenitore_nome">Nome Contenitore</string>
+    <string name="contenitore_modifica">Modifica Contenitore</string>
+    <string name="contenitore_nuovo">Nuovo Contenitore</string>
+    <string name="title_activity_contenitori__dettaglio">Contenitori_DettaglioActivity</string>
 
 </resources>
