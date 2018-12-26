@@ -935,10 +935,10 @@ public class DatabaseManager {
                 "LEFT JOIN stanze s ON c.id_stanza = s.id " +
                 "LEFT JOIN categorie cat ON c.id_stanza = cat.id " +
                 "WHERE " +
-                "(o.id_categoria = -1 OR o.id_categoria = " + id_categoria + " ) AND " +
-                "(o.id_stanza = -1 OR o.id_stanza = " + id_stanza + " ) AND " +
-                "(o.id_mobile = -1 OR o.id_mobile = " + id_mobile + " ) AND " +
-                "(o.id_contenitore = -1 OR o.id_contenitore = " + id_contenitore + " ) " +
+                "(" + id_categoria + " = -1 OR o.id_categoria = " + id_categoria + " ) AND " +
+                "(" + id_stanza + " = -1 OR o.id_stanza = " + id_stanza + " ) AND " +
+                "(" + id_mobile + " = -1 OR o.id_mobile = " + id_mobile + " ) AND " +
+                "(" + id_contenitore + " = -1 OR o.id_contenitore = " + id_contenitore + " ) " +
                 "ORDER BY o.nome";
 
         Cursor c = database.rawQuery(sql, null);

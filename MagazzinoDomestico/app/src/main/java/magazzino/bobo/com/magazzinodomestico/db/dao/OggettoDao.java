@@ -48,6 +48,36 @@ public class OggettoDao {
         this.nome_contenitore = nome_contenitore;
     }
 
+    public OggettoDao(String nome, String immagine, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
+                      long id_mobile, String nome_mobile, long id_contenitore, String nome_contenitore) {
+        this.id = -1;
+        this.nome = nome;
+        this.immagine = immagine;
+        this.id_categoria = id_categoria;
+        this.nome_categoria = nome_categoria;
+        this.id_stanza = id_stanza;
+        this.nome_stanza = nome_stanza;
+        this.id_mobile = id_mobile;
+        this.nome_mobile = nome_mobile;
+        this.id_contenitore = id_contenitore;
+        this.nome_contenitore = nome_contenitore;
+    }
+
+    public OggettoDao(String nome, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
+                      long id_mobile, String nome_mobile, long id_contenitore, String nome_contenitore) {
+        this.id = -1;
+        this.nome = nome;
+        //this.immagine = immagine;
+        this.id_categoria = id_categoria;
+        this.nome_categoria = nome_categoria;
+        this.id_stanza = id_stanza;
+        this.nome_stanza = nome_stanza;
+        this.id_mobile = id_mobile;
+        this.nome_mobile = nome_mobile;
+        this.id_contenitore = id_contenitore;
+        this.nome_contenitore = nome_contenitore;
+    }
+
     public long getId() {
         return id;
     }

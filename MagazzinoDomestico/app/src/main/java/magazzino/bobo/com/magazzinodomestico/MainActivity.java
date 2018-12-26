@@ -1,5 +1,6 @@
 package magazzino.bobo.com.magazzinodomestico;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,9 +16,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
+import magazzino.bobo.com.magazzinodomestico.db.dao.LocationDao;
+import magazzino.bobo.com.magazzinodomestico.db.dao.OggettoDao;
+import magazzino.bobo.com.magazzinodomestico.dialogfragments.OggettoDialog;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -25,12 +35,21 @@ public class MainActivity extends AppCompatActivity
     //Database
     public static SQLiteDatabase database;
 
+    //Elementi della pagina
+    ListView listaOggettiView;
+    SearchView searchView;
+    ArrayList<OggettoDao> elencoOggetti;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        //Creo il location
+        final LocationDao location = new LocationDao(-1, -1, -1, -1);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -39,8 +58,10 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                //Creo il dialog per il nuovo inserimento
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                OggettoDialog dialog = OggettoDialog.newInstance(builder, false, location);
+                dialog.show(getSupportFragmentManager(),"oggetto_dialog");
             }
         });
 
@@ -60,6 +81,57 @@ public class MainActivity extends AppCompatActivity
 
         //Se non esistono, creo le tabelle
         DatabaseManager.createTables(database);
+
+        //Inizializzo la ListView
+        listaOggettiView = findViewById(R.id.listaOggettiView);
+        elencoOggetti = DatabaseManager.getAllOggetti(MainActivity.database);
+
+        //Popolo la lista
+        aggiornaLista(elencoOggetti, true);
+
+
+        listaOggettiView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+
+
+                //Apre il dialog personalizzato, per modifica e cancellazione
+                OggettoDao dao = (OggettoDao) parent.getItemAtPosition(position); // elencoContenitori.get(position);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                OggettoDialog dialog = OggettoDialog.newInstance(builder, true, location);
+                dialog.show(getSupportFragmentManager(),"oggetto_dialog");
+
+                //E lo valorizza con gli attributi dell'oggetto su cui abbiamo cliccato
+                dialog.valorizzaDialog(dao.getId(), dao.getNome(), dao.getId_stanza(), dao.getId_mobile(), dao.getId_contenitore(), dao.getId_categoria());
+
+                return true;
+            }
+        });
+
+
+        //Inzializzo la search view
+        searchView = findViewById(R.id.searchOggetti);
+        searchView.setActivated(true);
+        searchView.setQueryHint("Type your keyword here");
+        searchView.onActionViewExpanded();
+        searchView.setIconified(false);
+        searchView.clearFocus();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                //Effettuo la ricerca
+                search(newText);
+
+                return false;
+            }
+        });
     }
 
     @Override
@@ -130,5 +202,37 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /***
+     * Aggiorna la lista
+     * @param elencoNew
+     */
+    public void aggiornaLista(ArrayList<OggettoDao> elencoNew, boolean aggiornaDaDB)
+    {
+        //La variabile globale deve essere aggiornata, ma solo se sto aggiornando la lista dopo una modifica su DB
+        if(aggiornaDaDB)
+            elencoOggetti = elencoNew;
+
+        ArrayAdapter<OggettoDao> valori = new ArrayAdapter<OggettoDao>(this, android.R.layout.simple_list_item_1, elencoNew);
+        listaOggettiView.setAdapter(valori);
+    }
+
+    /***
+     * Effettuo la ricerca nella lista
+     *
+     * @param searchText
+     */
+    private void search(String searchText)
+    {
+        ArrayList<OggettoDao> elencoRistretto = new ArrayList<OggettoDao>();
+
+        for (OggettoDao dao: elencoOggetti) {
+            if(dao.searchItem(searchText))
+                elencoRistretto.add(dao);
+        }
+
+        //Aggiorno la lista in visualizzazione
+        aggiornaLista(elencoRistretto, false);
     }
 }
