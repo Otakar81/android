@@ -32,13 +32,17 @@
             android:label="@string/title_activity_mobili"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".Mobili_DettaglioActivity"
+            android:label="@string/title_activity_mobili__dettaglio"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ContenitoriActivity"
             android:label="@string/title_activity_contenitori"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Contenitori_DettaglioActivity"
             android:label="@string/title_activity_contenitori__dettaglio"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

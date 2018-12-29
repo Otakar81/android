@@ -15,9 +15,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import magazzino.bobo.com.magazzinodomestico.ContenitoriActivity;
 import magazzino.bobo.com.magazzinodomestico.Contenitori_DettaglioActivity;
 import magazzino.bobo.com.magazzinodomestico.MainActivity;
+import magazzino.bobo.com.magazzinodomestico.Mobili_DettaglioActivity;
 import magazzino.bobo.com.magazzinodomestico.R;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
 import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
@@ -81,6 +81,9 @@ public class OggettoDialog extends DialogFragment {
 
     public static OggettoDialog newInstance(AlertDialog.Builder builder, boolean isEditMode, LocationDao location){
 
+        if(location == null)
+            location = new LocationDao(-1, -1, -1, -1);
+
         OggettoDialog dialogFragment = new OggettoDialog();
         dialogFragment.isEditMode = isEditMode;
         dialogFragment.isCreazioneDialog = true;
@@ -97,7 +100,7 @@ public class OggettoDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_oggetto, null);
 
         //Valorizzo le view del layout
-        nomeView = view.findViewById(R.id.nomeOggetto);
+        nomeView = view.findViewById(R.id.nome);
         elencoStanzeView = view.findViewById(R.id.elencoStanze);
         elencoMobiliView = view.findViewById(R.id.elencoMobili);
         elencoContenitoriView = view.findViewById(R.id.elencoContenitori);
@@ -151,7 +154,9 @@ public class OggettoDialog extends DialogFragment {
                         MobileDao mobileSelezionato = elencoMobili.get(posizioneMobile);
 
                         //Mostro i contenitori presenti nel mobile
-                        elencoContenitori = DatabaseManager.getAllContenitoriByLocation(MainActivity.database, mobileSelezionato.getId_stanza(), mobileSelezionato.getId());
+                        LocationDao locationMobile = new LocationDao(-1, mobileSelezionato.getId_stanza(), mobileSelezionato.getId(), -1);
+
+                        elencoContenitori = DatabaseManager.getAllContenitoriByLocation(MainActivity.database, locationMobile);
                         ArrayAdapter<ContenitoreDao> valoriContenitori = new ArrayAdapter<ContenitoreDao>(getActivity(), android.R.layout.simple_list_item_1, elencoContenitori);
                         elencoContenitoriView.setAdapter(valoriContenitori);
                     }
@@ -163,7 +168,9 @@ public class OggettoDialog extends DialogFragment {
                 });
 
                 //Mostro solo i contenitori direttamente presenti in una stanza
-                elencoContenitori = DatabaseManager.getAllContenitoriByLocation(MainActivity.database, stanzaSelezionata.getId(), -1);
+                LocationDao locationStanza = new LocationDao(-1, stanzaSelezionata.getId(), -1, -1);
+
+                elencoContenitori = DatabaseManager.getAllContenitoriByLocation(MainActivity.database, locationStanza);
                 ArrayAdapter<ContenitoreDao> valoriContenitori = new ArrayAdapter<ContenitoreDao>(getActivity(), android.R.layout.simple_list_item_1, elencoContenitori);
                 elencoContenitoriView.setAdapter(valoriContenitori);
 
@@ -412,15 +419,14 @@ public class OggettoDialog extends DialogFragment {
 
         }else if(location.getLocationType() == LocationDao.MOBILE)
         {
+            ((Mobili_DettaglioActivity)getActivity()).aggiornaListaOggetti(DatabaseManager.getAllOggettiByLocation(MainActivity.database, location), true);
 
         }else if(location.getLocationType() == LocationDao.CONTENITORE) //Dettaglio contenitore
         {
-            ((Contenitori_DettaglioActivity)getActivity()).aggiornaLista(DatabaseManager.getAllOggettiByLocation(
-                    MainActivity.database, location.getId_categoria(), location.getId_stanza(), location.getId_mobile(), location.getId_contenitore()), true);
+            ((Contenitori_DettaglioActivity)getActivity()).aggiornaLista(DatabaseManager.getAllOggettiByLocation(MainActivity.database, location), true);
         }else{ //Main activity
             ((MainActivity)getActivity()).aggiornaLista(DatabaseManager.getAllOggetti(MainActivity.database), true);
         }
-
     }
 
 

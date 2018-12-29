@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.ContenitoreDao;
+import magazzino.bobo.com.magazzinodomestico.db.dao.LocationDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.MobileDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.OggettoDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
@@ -646,24 +647,30 @@ public class DatabaseManager {
      * Restituisce tutti i contenitori presenti nel luogo specificato
      *
      * @param database
-     * @param id_stanza
-     * @param id_mobile
+     * @param location
      * @return
      */
-    public static ArrayList<ContenitoreDao> getAllContenitoriByLocation(SQLiteDatabase database, long id_stanza, long id_mobile)
+    public static ArrayList<ContenitoreDao> getAllContenitoriByLocation(SQLiteDatabase database, LocationDao location)
     {
         ArrayList<ContenitoreDao> result = new ArrayList<ContenitoreDao>();
+
+        long id_stanza = location.getId_stanza();
+        long id_mobile = location.getId_mobile();
+        long id_categoria = location.getId_categoria();
 
         String sql = "SELECT c.id, c.nome, c.immagine, c.id_categoria, c.id_stanza, c.id_mobile, " +
                 "m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
                 "FROM contenitori c " +
                 "LEFT JOIN mobili m ON c.id_mobile = m.id " +
                 "LEFT JOIN stanze s ON c.id_stanza = s.id " +
-                "LEFT JOIN categorie cat ON c.id_stanza = cat.id " +
+                "LEFT JOIN categorie cat ON c.id_categoria = cat.id " +
                 "WHERE " +
-                "(c.id_stanza = -1 OR c.id_stanza = " + id_stanza + " ) AND " +
-                "(c.id_mobile = -1 OR c.id_mobile = " + id_mobile + " ) " +
+                "(" + id_categoria + " = -1 OR c.id_categoria = " + id_categoria + " ) AND " +
+                "(" + id_stanza + " = -1 OR c.id_stanza = " + id_stanza + " ) AND " +
+                "(" + id_mobile + " = -1 OR c.id_mobile = " + id_mobile + " ) " +
                 "ORDER BY c.nome";
+
+
 
         Cursor c = database.rawQuery(sql, null);
 
@@ -916,16 +923,18 @@ public class DatabaseManager {
      * Restituisce tutti gli oggetti che si trovano nel posto specificato
      *
      * @param database
-     * @param id_categoria
-     * @param id_stanza
-     * @param id_mobile
-     * @param id_contenitore
+     * @param location
      * @return
      */
-    public static ArrayList<OggettoDao> getAllOggettiByLocation(SQLiteDatabase database,
-                                                                long id_categoria, long id_stanza, long id_mobile, long id_contenitore)
+    public static ArrayList<OggettoDao> getAllOggettiByLocation(SQLiteDatabase database, LocationDao location)
     {
         ArrayList<OggettoDao> result = new ArrayList<OggettoDao>();
+
+        long id_categoria = location.getId_categoria();
+        long id_stanza = location.getId_stanza();
+        long id_mobile = location.getId_mobile();
+        long id_contenitore = location.getId_contenitore();
+
 
         String sql = "SELECT o.id, o.nome, o.immagine, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
                 "c.nome as nome_contenitore, m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +

@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,10 +17,12 @@ import java.util.ArrayList;
 
 import magazzino.bobo.com.magazzinodomestico.ContenitoriActivity;
 import magazzino.bobo.com.magazzinodomestico.MainActivity;
+import magazzino.bobo.com.magazzinodomestico.Mobili_DettaglioActivity;
 import magazzino.bobo.com.magazzinodomestico.R;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
 import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.ContenitoreDao;
+import magazzino.bobo.com.magazzinodomestico.db.dao.LocationDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.MobileDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
 
@@ -43,6 +44,12 @@ public class ContenitoreDialog extends DialogFragment {
 
     //Specifica se il dialog da aprire sarà in modalità "edit" oppure "nuova istanza"
     boolean isEditMode;
+
+    //Specifica se sono in fase di creazione del dialog
+    boolean isCreazioneDialog;
+
+    //Specifica l'eventuale location da cui arriva la chiamata
+    LocationDao location;
 
     //Variabili di istanza
     private long id;
@@ -66,10 +73,15 @@ public class ContenitoreDialog extends DialogFragment {
     //Dialog builder
     private AlertDialog.Builder mBuilder;
 
-    public static ContenitoreDialog newInstance(AlertDialog.Builder builder, boolean isEditMode){
+    public static ContenitoreDialog newInstance(AlertDialog.Builder builder, boolean isEditMode, LocationDao location){
+
+        if(location == null)
+            location = new LocationDao(-1, -1, -1, -1);
 
         ContenitoreDialog dialogFragment = new ContenitoreDialog();
         dialogFragment.isEditMode = isEditMode;
+        dialogFragment.isCreazioneDialog = true;
+        dialogFragment.location = location;
         dialogFragment.mBuilder = builder;
         return dialogFragment;
     }
@@ -89,9 +101,21 @@ public class ContenitoreDialog extends DialogFragment {
 
 
         //Setto l'adapter per gli spinner
+
+        //Mostro sempre tutte le categorie
+        elencoCategorie = DatabaseManager.getAllCategorie(MainActivity.database, true);
+        ArrayAdapter<CategoriaDao> valoriCategorie = new ArrayAdapter<CategoriaDao>(getActivity(), android.R.layout.simple_list_item_1, elencoCategorie);
+        elencoCategorieView.setAdapter(valoriCategorie);
+
+        //Mostro sempre tutte le stanze
         elencoStanze = DatabaseManager.getAllStanze(MainActivity.database);
         ArrayAdapter<StanzaDao> valoriStanze = new ArrayAdapter<StanzaDao>(getActivity(), android.R.layout.simple_list_item_1, elencoStanze);
         elencoStanzeView.setAdapter(valoriStanze);
+
+        //Di default, mostro tutti i mobili (poi saranno eventualmente filtrati per stanza)
+        elencoMobili = DatabaseManager.getAllMobili(MainActivity.database);
+        ArrayAdapter<MobileDao> valoriMobili = new ArrayAdapter<MobileDao>(getActivity(), android.R.layout.simple_list_item_1, elencoMobili);
+        elencoMobiliView.setAdapter(valoriMobili);
 
         elencoStanzeView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -102,6 +126,23 @@ public class ContenitoreDialog extends DialogFragment {
                 elencoMobili = DatabaseManager.getAllMobiliByStanza(MainActivity.database, stanzaSelezionata.getId(), true);
                 ArrayAdapter<MobileDao> valoriMobili = new ArrayAdapter<MobileDao>(getActivity(), android.R.layout.simple_list_item_1, elencoMobili);
                 elencoMobiliView.setAdapter(valoriMobili);
+
+                //Se sono al primo giro in edit, valorizzo gli spinner con gli attributi dell'istanza
+                if(isEditMode)
+                {
+                    if(isCreazioneDialog)
+                    {
+                        settaValoriIstanza(nome, id_stanza, id_mobile, id_categoria);
+                        isCreazioneDialog = false;
+                    }
+
+                }else //Altrimenti valorizzo con i valori "imposti" dalla location
+                {
+                    settaValoriIstanza(null, location.getId_stanza(), location.getId_mobile(), location.getId_categoria());
+
+                    //E disabilito gli spinner già valorizzati
+                    disabilitaSpinner();
+                }
             }
 
             @Override
@@ -110,13 +151,7 @@ public class ContenitoreDialog extends DialogFragment {
             }
         });
 
-        //Di default creo la lista vuota. Poi saranno filtrati per stanza
-        elencoMobili = new ArrayList<MobileDao>();
 
-
-        elencoCategorie = DatabaseManager.getAllCategorie(MainActivity.database, true);
-        ArrayAdapter<CategoriaDao> valoriCategorie = new ArrayAdapter<CategoriaDao>(getActivity(), android.R.layout.simple_list_item_1, elencoCategorie);
-        elencoCategorieView.setAdapter(valoriCategorie);
 
         //E costruisco il builder
         if(isEditMode) //Finestra per edit di un elemento esistente
@@ -142,7 +177,8 @@ public class ContenitoreDialog extends DialogFragment {
                             DatabaseManager.updateContenitore(MainActivity.database, dao);
 
                             //Avverto la lista che i dati sono cambiati
-                            ((ContenitoriActivity)getActivity()).aggiornaLista(DatabaseManager.getAllContenitori(MainActivity.database), true);
+                            //((ContenitoriActivity)getActivity()).aggiornaLista(DatabaseManager.getAllContenitori(MainActivity.database), true);
+                            updateAdapterLocation();
 
                             Toast.makeText(getActivity(), "Modifica effettuata con successo", Toast.LENGTH_SHORT).show();
                         }
@@ -155,7 +191,8 @@ public class ContenitoreDialog extends DialogFragment {
                             DatabaseManager.deleteContenitore(MainActivity.database, id);
 
                             //Avverto la lista che i dati sono cambiati
-                            ((ContenitoriActivity)getActivity()).aggiornaLista(DatabaseManager.getAllContenitori(MainActivity.database), true);
+                            //((ContenitoriActivity)getActivity()).aggiornaLista(DatabaseManager.getAllContenitori(MainActivity.database), true);
+                            updateAdapterLocation();
 
                             Toast.makeText(getActivity(), "Eliminazione effettuata con successo", Toast.LENGTH_SHORT).show();
                         }
@@ -165,7 +202,7 @@ public class ContenitoreDialog extends DialogFragment {
 
             //Se le variabili sono già state valorizzate, le uso per riempire la finestra
             if(this.nome != null)
-                settaValoriIstanza(id, nome, id_stanza, id_mobile, id_categoria);
+                settaValoriIstanza(nome, id_stanza, id_mobile, id_categoria);
 
         }else{ //Finestra per nuovo inserimento
 
@@ -199,7 +236,8 @@ public class ContenitoreDialog extends DialogFragment {
                                 DatabaseManager.insertContenitore(MainActivity.database, dao);
 
                                 //Avverto la lista che i dati sono cambiati
-                                ((ContenitoriActivity)getActivity()).aggiornaLista(DatabaseManager.getAllContenitori(MainActivity.database), true);
+                                //((ContenitoriActivity)getActivity()).aggiornaLista(DatabaseManager.getAllContenitori(MainActivity.database), true);
+                                updateAdapterLocation();
 
                                 Toast.makeText(getActivity(), "Inserimento avvenuto con successo", Toast.LENGTH_SHORT).show();
                             }
@@ -233,29 +271,29 @@ public class ContenitoreDialog extends DialogFragment {
 
         //Se la view è stata crata, la valorizzo con i dati passati
         if(nomeView != null)
-            settaValoriIstanza(id, nome, idStanza, idMobile, idCategoria);
+            settaValoriIstanza(nome, idStanza, idMobile, idCategoria);
     }
 
 
     /***
      * Valorizza i campi mostrati nel dialog con gli attributi dell'istanza
      *
-     * @param id
      * @param nome
      * @param idStanza
      * @param idMobile
      * @param idCategoria
      */
-    private void settaValoriIstanza(long id, String nome, long idStanza, long idMobile, long idCategoria)
+    private void settaValoriIstanza(String nome, long idStanza, long idMobile, long idCategoria)
     {
-        nomeView.setText(nome);
+        if(nome != null)
+            nomeView.setText(nome);
 
         //Verifico quale elemento della lista è selezionato per tutti gli spinner
         int posizioneCorrenteInLista = 0;
 
         //Stanze
         for (StanzaDao stanza:elencoStanze) {
-            if(stanza.getId() == id_stanza)
+            if(stanza.getId() == idStanza)
             {
                 elencoStanzeView.setSelection(posizioneCorrenteInLista);
                 break;
@@ -268,7 +306,7 @@ public class ContenitoreDialog extends DialogFragment {
 
         //Mobili
         for (MobileDao mobile:elencoMobili) {
-            if(mobile.getId() == id_mobile)
+            if(mobile.getId() == idMobile)
             {
                 elencoMobiliView.setSelection(posizioneCorrenteInLista);
                 break;
@@ -281,7 +319,7 @@ public class ContenitoreDialog extends DialogFragment {
 
         //Categorie
         for (CategoriaDao categoria:elencoCategorie) {
-            if(categoria.getId() == id_categoria)
+            if(categoria.getId() == idCategoria)
             {
                 elencoCategorieView.setSelection(posizioneCorrenteInLista);
                 break;
@@ -291,5 +329,39 @@ public class ContenitoreDialog extends DialogFragment {
         }
     }
 
+    /***
+     * Se sono in creazione da una precisa location, disabilito gli spinner già valorizzati
+     */
+    private void disabilitaSpinner()
+    {
+        if(location.getId_categoria() != -1)
+            elencoCategorieView.setEnabled(false);
 
+        if(location.getId_stanza() != -1)
+            elencoStanzeView.setEnabled(false);
+
+        if(location.getId_mobile() != -1)
+            elencoMobiliView.setEnabled(false);
+    }
+
+    /***
+     * Fa l'update delle liste nell'activity da cui il dialog è stato chiamato
+     */
+    private void updateAdapterLocation()
+    {
+        if(location.getLocationType() == LocationDao.CATEGORIA)
+        {
+
+        }else if(location.getLocationType() == LocationDao.STANZA)
+        {
+
+        }else if(location.getLocationType() == LocationDao.MOBILE) //Mobili_DettaglioActivity
+        {
+            ((Mobili_DettaglioActivity)getActivity()).aggiornaListaContenitori(DatabaseManager.getAllContenitori(MainActivity.database), true);
+
+        }else //ContenitoriActivity
+        {
+            ((ContenitoriActivity)getActivity()).aggiornaLista(DatabaseManager.getAllContenitori(MainActivity.database), true);
+        }
+    }
 }

@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import magazzino.bobo.com.magazzinodomestico.adapters.OggettoAdapter;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
 import magazzino.bobo.com.magazzinodomestico.db.dao.ContenitoreDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.LocationDao;
@@ -93,7 +94,7 @@ public class Contenitori_DettaglioActivity extends AppCompatActivity
 
         //Inizializzo la ListView
         listaOggettiView = findViewById(R.id.listaOggettiView);
-        elencoOggetti = DatabaseManager.getAllOggettiByLocation(MainActivity.database, -1, -1, -1, ID_CONTENITORE_SELEZIONATO);
+        elencoOggetti = DatabaseManager.getAllOggettiByLocation(MainActivity.database, location);
 
         //Popolo la lista
         aggiornaLista(elencoOggetti, true);
@@ -202,7 +203,9 @@ public class Contenitori_DettaglioActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_contenitori) {
 
-            // Nulla, sono già qui
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), ContenitoriActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_categorie) {
 
@@ -226,7 +229,8 @@ public class Contenitori_DettaglioActivity extends AppCompatActivity
         if(aggiornaDaDB)
             elencoOggetti = elencoNew;
 
-        ArrayAdapter<OggettoDao> valori = new ArrayAdapter<OggettoDao>(this, android.R.layout.simple_list_item_1, elencoNew);
+        //ArrayAdapter<OggettoDao> valori = new ArrayAdapter<OggettoDao>(this, android.R.layout.simple_list_item_1, elencoNew);
+        ArrayAdapter<OggettoDao> valori = new OggettoAdapter(elencoNew, this);
         listaOggettiView.setAdapter(valori);
     }
 

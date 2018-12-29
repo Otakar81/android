@@ -24,9 +24,11 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import magazzino.bobo.com.magazzinodomestico.adapters.OggettoAdapter;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
 import magazzino.bobo.com.magazzinodomestico.db.dao.LocationDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.OggettoDao;
+import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
 import magazzino.bobo.com.magazzinodomestico.dialogfragments.OggettoDialog;
 
 public class MainActivity extends AppCompatActivity
@@ -44,9 +46,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        //Creo il location
-        final LocationDao location = new LocationDao(-1, -1, -1, -1);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 //Creo il dialog per il nuovo inserimento
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                OggettoDialog dialog = OggettoDialog.newInstance(builder, false, location);
+                OggettoDialog dialog = OggettoDialog.newInstance(builder, false, null);
                 dialog.show(getSupportFragmentManager(),"oggetto_dialog");
             }
         });
@@ -82,6 +81,15 @@ public class MainActivity extends AppCompatActivity
         //Se non esistono, creo le tabelle
         DatabaseManager.createTables(database);
 
+        //Se non ci sono ancora stanze su database, faccio redirect sull'activity relativa
+        ArrayList<StanzaDao> elencoStanze = DatabaseManager.getAllStanze(database);
+
+        if(elencoStanze.size() == 0)
+        {
+            Intent intent = new Intent(getApplicationContext(), StanzeActivity.class);
+            startActivity(intent);
+        }
+
         //Inizializzo la ListView
         listaOggettiView = findViewById(R.id.listaOggettiView);
         elencoOggetti = DatabaseManager.getAllOggetti(MainActivity.database);
@@ -99,7 +107,7 @@ public class MainActivity extends AppCompatActivity
                 OggettoDao dao = (OggettoDao) parent.getItemAtPosition(position); // elencoContenitori.get(position);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                OggettoDialog dialog = OggettoDialog.newInstance(builder, true, location);
+                OggettoDialog dialog = OggettoDialog.newInstance(builder, true, null);
                 dialog.show(getSupportFragmentManager(),"oggetto_dialog");
 
                 //E lo valorizza con gli attributi dell'oggetto su cui abbiamo cliccato
@@ -214,7 +222,7 @@ public class MainActivity extends AppCompatActivity
         if(aggiornaDaDB)
             elencoOggetti = elencoNew;
 
-        ArrayAdapter<OggettoDao> valori = new ArrayAdapter<OggettoDao>(this, android.R.layout.simple_list_item_1, elencoNew);
+        ArrayAdapter<OggettoDao> valori = new OggettoAdapter(elencoNew, this);
         listaOggettiView.setAdapter(valori);
     }
 

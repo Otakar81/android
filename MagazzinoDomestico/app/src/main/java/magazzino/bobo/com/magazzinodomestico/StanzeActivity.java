@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
@@ -34,6 +35,7 @@ public class StanzeActivity extends AppCompatActivity
 
     ListView listaStanzeView;
     ArrayList<StanzaDao> elencoStanze;
+    ConstraintLayout layout;
 
 
     @Override
@@ -75,7 +77,8 @@ public class StanzeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //Inizializzo la ListView
+        //Inizializzo la ListView ed il layout
+        layout = findViewById(R.id.layout);
         listaStanzeView = findViewById(R.id.listaStanzeView);
         elencoStanze = DatabaseManager.getAllStanze(MainActivity.database);
 
@@ -119,6 +122,18 @@ public class StanzeActivity extends AppCompatActivity
                 return true;
             }
         });
+
+
+        //Se non ci sono ancora stanze, avverto l'utente di crearne una ed apro il dialog di creazione
+        if(elencoStanze.size() == 0) {
+
+            Snackbar.make(layout, R.string.stanza_devi_creare_prima, Snackbar.LENGTH_LONG).show();
+
+            //Creo il dialog per l'inserimento
+            AlertDialog.Builder builder = new AlertDialog.Builder(StanzeActivity.this);
+            StanzaDialog dialog = StanzaDialog.newInstance(builder, false);
+            dialog.show(getSupportFragmentManager(),"stanza_dialog");
+        }
     }
 
     @Override

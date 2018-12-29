@@ -12,6 +12,7 @@ public class LocationDao {
     public static final int MOBILE = 2;
     public static final int CONTENITORE = 3;
     public static final int CATEGORIA = 4;
+    public static final int OGGETTO = 10; //Non è un vero tipo di location, ma viene usato come valore di utilità in altre parti dell'applicazione
 
     //Variabili di istanza
     private long id_categoria;

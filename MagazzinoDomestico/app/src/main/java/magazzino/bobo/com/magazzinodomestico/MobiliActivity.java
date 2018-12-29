@@ -88,18 +88,14 @@ public class MobiliActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                /*
-                LocationDao locationDao = elencoPostiMemorabili.get(position);
+                MobileDao dao = (MobileDao) parent.getItemAtPosition(position);
 
-                //Creo un intent e vado sulla mappa
-                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-                intent.putExtra("latitudine", locationDao.getLatitudine());
-                intent.putExtra("longitudine", locationDao.getLongitudine());
+                //Creo un intent e vado sul dettaglio
+                Intent intent = new Intent(getApplicationContext(), Mobili_DettaglioActivity.class);
+                intent.putExtra("id_mobile", dao.getId());
+                intent.putExtra("id_stanza", dao.getId_stanza());
+                intent.putExtra("nome_mobile", dao.getNome());
                 startActivity(intent);
-                */
-
-                //Dovrei saltare alla pagina con l'elenco degli elementi associati a questa categoria
-                Toast.makeText(MobiliActivity.this, "Click", Toast.LENGTH_SHORT).show();
             };
         });
 

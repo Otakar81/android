@@ -1,13 +1,9 @@
 package magazzino.bobo.com.magazzinodomestico;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,22 +12,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import magazzino.bobo.com.magazzinodomestico.adapters.ContenitoreAdapter;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
 import magazzino.bobo.com.magazzinodomestico.db.dao.ContenitoreDao;
-import magazzino.bobo.com.magazzinodomestico.db.dao.MobileDao;
-import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
 import magazzino.bobo.com.magazzinodomestico.dialogfragments.ContenitoreDialog;
-import magazzino.bobo.com.magazzinodomestico.dialogfragments.MobileDialog;
 
 public class ContenitoriActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -63,7 +55,7 @@ public class ContenitoriActivity extends AppCompatActivity
 
                 //Creo il dialog per il nuovo inserimento
                 AlertDialog.Builder builder = new AlertDialog.Builder(ContenitoriActivity.this);
-                ContenitoreDialog dialog = ContenitoreDialog.newInstance(builder, false);
+                ContenitoreDialog dialog = ContenitoreDialog.newInstance(builder, false, null);
                 dialog.show(getSupportFragmentManager(),"contenitore_dialog");
 
             }
@@ -112,7 +104,7 @@ public class ContenitoriActivity extends AppCompatActivity
                 ContenitoreDao dao = (ContenitoreDao) parent.getItemAtPosition(position); // elencoContenitori.get(position);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(ContenitoriActivity.this);
-                ContenitoreDialog dialog = ContenitoreDialog.newInstance(builder, true);
+                ContenitoreDialog dialog = ContenitoreDialog.newInstance(builder, true, null);
                 dialog.show(getSupportFragmentManager(),"stanza_dialog");
 
                 //E lo valorizza con gli attributi dell'oggetto su cui abbiamo cliccato
@@ -226,16 +218,11 @@ public class ContenitoriActivity extends AppCompatActivity
      */
     public void aggiornaLista(ArrayList<ContenitoreDao> elencoNew, boolean aggiornaDaDB)
     {
-        /*
-        ArrayAdapter<CategoriaDao> adapter = new LocationAdapter(elencoPostiMemorabili, this);
-        listaPostiView.setAdapter(adapter);
-        */
-
         //La variabile globale deve essere aggiornata, ma solo se sto aggiornando la lista dopo una modifica su DB
         if(aggiornaDaDB)
             elencoContenitori = elencoNew;
 
-        ArrayAdapter<ContenitoreDao> valori = new ArrayAdapter<ContenitoreDao>(this, android.R.layout.simple_list_item_1, elencoNew);
+        ArrayAdapter<ContenitoreDao> valori = new ContenitoreAdapter(elencoNew, this);
         listaContenitoriView.setAdapter(valori);
     }
 
