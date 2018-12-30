@@ -18,7 +18,9 @@ import java.util.ArrayList;
 import magazzino.bobo.com.magazzinodomestico.MainActivity;
 import magazzino.bobo.com.magazzinodomestico.MobiliActivity;
 import magazzino.bobo.com.magazzinodomestico.R;
+import magazzino.bobo.com.magazzinodomestico.Stanze_DettaglioActivity;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
+import magazzino.bobo.com.magazzinodomestico.db.dao.LocationDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.MobileDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
 
@@ -41,6 +43,9 @@ public class MobileDialog extends DialogFragment {
     //Specifica se il dialog da aprire sarà in modalità "edit" oppure "nuova istanza"
     boolean isEditMode;
 
+    //Specifica l'eventuale location da cui arriva la chiamata
+    LocationDao location;
+
     //Variabili di istanza
     private long id;
     private String nome;
@@ -56,10 +61,14 @@ public class MobileDialog extends DialogFragment {
     //Dialog builder
     private AlertDialog.Builder mBuilder;
 
-    public static MobileDialog newInstance(AlertDialog.Builder builder, boolean isEditMode){
+    public static MobileDialog newInstance(AlertDialog.Builder builder, boolean isEditMode, LocationDao location){
+
+        if(location == null)
+            location = new LocationDao(-1, -1, -1, -1);
 
         MobileDialog dialogFragment = new MobileDialog();
         dialogFragment.isEditMode = isEditMode;
+        dialogFragment.location = location;
         dialogFragment.mBuilder = builder;
         return dialogFragment;
     }
@@ -112,8 +121,8 @@ public class MobileDialog extends DialogFragment {
                             //Elimino il posto dall'elenco di quelli memorizzati
                             DatabaseManager.deleteMobile(MainActivity.database, id);
 
-                            //Avverto la lista che i dati sono cambiati
-                            ((MobiliActivity)getActivity()).aggiornaLista(DatabaseManager.getAllMobili(MainActivity.database), true);
+                            ///Aggiorno l'adapter dell'activity da cui sono stato chiamato
+                            updateAdapterLocation();
 
                             Toast.makeText(getActivity(), "Eliminazione effettuata con successo", Toast.LENGTH_SHORT).show();
                         }
@@ -122,22 +131,8 @@ public class MobileDialog extends DialogFragment {
 
 
             //Se le variabili sono già state valorizzate, le uso per riempire la finestra
-            if(this.nome != null) {
-                nomeView.setText(nome);
-
-                //Verifico quale elemento della lista è selezionato
-                int posizioneCorrenteInLista = 0;
-
-                for (StanzaDao stanza:elencoStanze) {
-                    if(stanza.getId() == id_stanza)
-                    {
-                        elencoStanzeView.setSelection(posizioneCorrenteInLista);
-                        break;
-                    }else{
-                        posizioneCorrenteInLista++;
-                    }
-                }
-            }
+            if(this.nome != null)
+                settaValoriIstanza(nome, id_stanza);
 
         }else{ //Finestra per inserimento di un nuovo Mobile
 
@@ -161,7 +156,8 @@ public class MobileDialog extends DialogFragment {
                                 MobileDao dao = new MobileDao(id, nome, "", stanza.getId(), stanza.getNome());
                                 DatabaseManager.insertMobile(MainActivity.database, dao);
 
-                                ((MobiliActivity)getActivity()).aggiornaLista(DatabaseManager.getAllMobili(MainActivity.database), true);
+                                //Aggiorno l'adapter dell'activity da cui sono stato chiamato
+                                updateAdapterLocation();
 
                                 Toast.makeText(getActivity(), "Inserimento avvenuto con successo", Toast.LENGTH_SHORT).show();
 
@@ -169,6 +165,13 @@ public class MobileDialog extends DialogFragment {
                         }
                     })
                     .setNegativeButton("Cancella", null);
+
+            //Valorizzo eventualmente i campi necessari del dialog, se sto creando un nuovo elemento da una location specifica
+            settaValoriIstanza(null, location.getId_stanza());
+
+            //E disabilito gli spinner già valorizzati
+            disabilitaSpinner();
+
         }
 
         // Create the AlertDialog object and return it
@@ -190,23 +193,56 @@ public class MobileDialog extends DialogFragment {
 
         //Se la view è stata crata, la valorizzo con i dati passati
         if(nomeView != null)
-        {
+            settaValoriIstanza(nome, idStanza);
+    }
+
+    /***
+     * Valorizza i campi mostrati nel dialog con gli attributi dell'istanza
+     *
+     * @param nome
+     * @param idStanza
+     */
+    private void settaValoriIstanza(String nome, long idStanza) {
+
+        if (nome != null)
             nomeView.setText(nome);
 
-            //Verifico quale elemento della lista è selezionato
-            int posizioneCorrenteInLista = 0;
+        //Verifico quale elemento della lista è selezionato per tutti gli spinner
+        int posizioneCorrenteInLista = 0;
 
-            for (StanzaDao stanza:elencoStanze) {
-                if(stanza.getId() == idStanza)
-                {
-                    elencoStanzeView.setSelection(posizioneCorrenteInLista);
-                    break;
-                }else{
-                    posizioneCorrenteInLista++;
-                }
+        //Stanze
+        for (StanzaDao stanza : elencoStanze) {
+            if (stanza.getId() == idStanza) {
+                elencoStanzeView.setSelection(posizioneCorrenteInLista);
+                break;
+            } else {
+                posizioneCorrenteInLista++;
             }
+        }
+    }
 
-            //TODO -> Vedere come si setta uno specifico id
+    /***
+     * Se sono in creazione da una precisa location, disabilito gli spinner già valorizzati
+     */
+    private void disabilitaSpinner()
+    {
+        if(location.getId_stanza() != -1)
+            elencoStanzeView.setEnabled(false);
+    }
+
+    /***
+     * Fa l'update delle liste nell'activity da cui il dialog è stato chiamato
+     */
+    private void updateAdapterLocation()
+    {
+        if(location.getLocationType() == LocationDao.STANZA)
+        {
+            ((Stanze_DettaglioActivity)getActivity()).aggiornaListaMobili(
+                    DatabaseManager.getAllMobiliByStanza(MainActivity.database, location.getId_stanza(), false), true);
+
+        }else if(location.getLocationType() == -1) //Mobili_DettaglioActivity
+        {
+            ((MobiliActivity)getActivity()).aggiornaLista(DatabaseManager.getAllMobili(MainActivity.database), true);
         }
     }
 

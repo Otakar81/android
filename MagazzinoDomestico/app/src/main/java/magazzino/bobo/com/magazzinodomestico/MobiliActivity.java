@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import magazzino.bobo.com.magazzinodomestico.adapters.MobileAdapter;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
 import magazzino.bobo.com.magazzinodomestico.db.dao.MobileDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
@@ -61,7 +62,7 @@ public class MobiliActivity extends AppCompatActivity
 
                 //Mostro il dialog per l'inserimento
                 AlertDialog.Builder builder = new AlertDialog.Builder(MobiliActivity.this);
-                MobileDialog dialog = MobileDialog.newInstance(builder, false);
+                MobileDialog dialog = MobileDialog.newInstance(builder, false, null);
                 dialog.show(getSupportFragmentManager(),"mobile_dialog");
             }
         });
@@ -108,7 +109,7 @@ public class MobiliActivity extends AppCompatActivity
                 MobileDao dao = (MobileDao) parent.getItemAtPosition(position); //elencoMobili.get(position);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MobiliActivity.this);
-                MobileDialog dialog = MobileDialog.newInstance(builder, true);
+                MobileDialog dialog = MobileDialog.newInstance(builder, true, null);
                 dialog.show(getSupportFragmentManager(),"mobile_dialog");
 
                 //E lo valorizza con gli attributi dell'oggetto su cui abbiamo cliccato
@@ -229,7 +230,8 @@ public class MobiliActivity extends AppCompatActivity
             elencoMobili = elencoNew;
 
 
-        ArrayAdapter<MobileDao> valori = new ArrayAdapter<MobileDao>(this, android.R.layout.simple_list_item_1, elencoNew);
+        ArrayAdapter<MobileDao> valori = new MobileAdapter(elencoNew, this); //new ArrayAdapter<MobileDao>(this, android.R.layout.simple_list_item_1, elencoNew);
+
 
         listaMobiliView.setAdapter(valori);
     }

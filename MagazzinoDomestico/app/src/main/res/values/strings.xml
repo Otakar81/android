@@ -10,6 +10,9 @@
     <string name="title_activity_stanze">Stanze</string>
     <string name="title_activity_mobili">Mobili</string>
     <string name="title_activity_contenitori">Contenitori</string>
+    <string name="title_activity_contenitori__dettaglio">Contenitori_DettaglioActivity</string>
+    <string name="title_activity_mobili__dettaglio">Mobili_DettaglioActivity</string>
+    <string name="title_activity_stanze__dettaglio">Mobili_DettaglioActivity</string>
 
     <!-- Generale -->
     <string name="aggiungi">Aggiungi</string>
@@ -46,8 +49,9 @@
     <string name="contenitore_nome">Nome Contenitore</string>
     <string name="contenitore_modifica">Modifica Contenitore</string>
     <string name="contenitore_nuovo">Nuovo Contenitore</string>
-    <string name="title_activity_contenitori__dettaglio">Contenitori_DettaglioActivity</string>
-    <string name="title_activity_mobili__dettaglio">Mobili_DettaglioActivity</string>
+
+
+
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>

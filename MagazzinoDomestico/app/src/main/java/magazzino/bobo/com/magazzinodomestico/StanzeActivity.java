@@ -1,15 +1,12 @@
 package magazzino.bobo.com.magazzinodomestico;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,16 +14,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import magazzino.bobo.com.magazzinodomestico.adapters.StanzaAdapter;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
-import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
 import magazzino.bobo.com.magazzinodomestico.dialogfragments.StanzaDialog;
 
@@ -89,18 +85,13 @@ public class StanzeActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                /*
-                LocationDao locationDao = elencoPostiMemorabili.get(position);
+                StanzaDao dao = (StanzaDao) parent.getItemAtPosition(position);
 
-                //Creo un intent e vado sulla mappa
-                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-                intent.putExtra("latitudine", locationDao.getLatitudine());
-                intent.putExtra("longitudine", locationDao.getLongitudine());
+                //Creo un intent e vado sul dettaglio
+                Intent intent = new Intent(getApplicationContext(), Stanze_DettaglioActivity.class);
+                intent.putExtra("id_stanza", dao.getId());
+                intent.putExtra("nome_stanza", dao.getNome());
                 startActivity(intent);
-                */
-
-                //Dovrei saltare alla pagina con l'elenco degli elementi associati a questa categoria
-                Toast.makeText(StanzeActivity.this, "Click", Toast.LENGTH_SHORT).show();
             };
         });
 
@@ -219,7 +210,7 @@ public class StanzeActivity extends AppCompatActivity
         //La variabile globale deve essere aggiornata
         elencoStanze = elencoStanzeNew;
 
-        ArrayAdapter<StanzaDao> valori = new ArrayAdapter<StanzaDao>(this, android.R.layout.simple_list_item_1, elencoStanzeNew);
+        ArrayAdapter<StanzaDao> valori = new StanzaAdapter(elencoStanze, this);
         listaStanzeView.setAdapter(valori);
     }
 }

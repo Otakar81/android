@@ -19,6 +19,7 @@ import magazzino.bobo.com.magazzinodomestico.ContenitoriActivity;
 import magazzino.bobo.com.magazzinodomestico.MainActivity;
 import magazzino.bobo.com.magazzinodomestico.Mobili_DettaglioActivity;
 import magazzino.bobo.com.magazzinodomestico.R;
+import magazzino.bobo.com.magazzinodomestico.Stanze_DettaglioActivity;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
 import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.ContenitoreDao;
@@ -245,7 +246,6 @@ public class ContenitoreDialog extends DialogFragment {
                         }
                     })
                     .setNegativeButton("Cancella", null);
-
         }
 
 
@@ -354,14 +354,18 @@ public class ContenitoreDialog extends DialogFragment {
 
         }else if(location.getLocationType() == LocationDao.STANZA)
         {
+            ((Stanze_DettaglioActivity)getActivity()).aggiornaListaContenitori(
+                    DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location), true);
 
         }else if(location.getLocationType() == LocationDao.MOBILE) //Mobili_DettaglioActivity
         {
-            ((Mobili_DettaglioActivity)getActivity()).aggiornaListaContenitori(DatabaseManager.getAllContenitori(MainActivity.database), true);
+            ((Mobili_DettaglioActivity)getActivity()).aggiornaListaContenitori(
+                    DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location), true);
 
         }else //ContenitoriActivity
         {
-            ((ContenitoriActivity)getActivity()).aggiornaLista(DatabaseManager.getAllContenitori(MainActivity.database), true);
+            ((ContenitoriActivity)getActivity()).aggiornaLista(
+                    DatabaseManager.getAllContenitori(MainActivity.database), true);
         }
     }
 }

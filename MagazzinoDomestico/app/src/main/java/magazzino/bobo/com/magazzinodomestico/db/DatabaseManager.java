@@ -857,9 +857,9 @@ public class DatabaseManager {
                 "c.nome as nome_contenitore, m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
                 "FROM oggetti o " +
                 "LEFT JOIN contenitori c ON o.id_contenitore = c.id " +
-                "LEFT JOIN mobili m ON c.id_mobile = m.id " +
-                "LEFT JOIN stanze s ON c.id_stanza = s.id " +
-                "LEFT JOIN categorie cat ON c.id_stanza = cat.id " +
+                "LEFT JOIN mobili m ON o.id_mobile = m.id " +
+                "LEFT JOIN stanze s ON o.id_stanza = s.id " +
+                "LEFT JOIN categorie cat ON o.id_categoria = cat.id " +
                 "ORDER BY o.nome";
 
         Cursor c = database.rawQuery(sql, null);
@@ -940,9 +940,9 @@ public class DatabaseManager {
                 "c.nome as nome_contenitore, m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
                 "FROM oggetti o " +
                 "LEFT JOIN contenitori c ON o.id_contenitore = c.id " +
-                "LEFT JOIN mobili m ON c.id_mobile = m.id " +
-                "LEFT JOIN stanze s ON c.id_stanza = s.id " +
-                "LEFT JOIN categorie cat ON c.id_stanza = cat.id " +
+                "LEFT JOIN mobili m ON o.id_mobile = m.id " +
+                "LEFT JOIN stanze s ON o.id_stanza = s.id " +
+                "LEFT JOIN categorie cat ON o.id_categoria = cat.id " +
                 "WHERE " +
                 "(" + id_categoria + " = -1 OR o.id_categoria = " + id_categoria + " ) AND " +
                 "(" + id_stanza + " = -1 OR o.id_stanza = " + id_stanza + " ) AND " +
@@ -1024,7 +1024,7 @@ public class DatabaseManager {
                 "LEFT JOIN contenitori c ON o.id_contenitore = c.id " +
                 "LEFT JOIN mobili m ON c.id_mobile = m.id " +
                 "LEFT JOIN stanze s ON c.id_stanza = s.id " +
-                "LEFT JOIN categorie cat ON c.id_stanza = cat.id " +
+                "LEFT JOIN categorie cat ON c.id_categoria = cat.id " +
                 "WHERE o.id = " + id +
                 " ORDER BY o.nome";
 

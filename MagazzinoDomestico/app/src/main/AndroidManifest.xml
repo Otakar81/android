@@ -28,6 +28,10 @@
             android:label="@string/title_activity_stanze"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".Stanze_DettaglioActivity"
+            android:label="@string/title_activity_stanze__dettaglio"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".MobiliActivity"
             android:label="@string/title_activity_mobili"
             android:theme="@style/AppTheme.NoActionBar" />

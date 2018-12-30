@@ -19,6 +19,7 @@ import magazzino.bobo.com.magazzinodomestico.Contenitori_DettaglioActivity;
 import magazzino.bobo.com.magazzinodomestico.MainActivity;
 import magazzino.bobo.com.magazzinodomestico.Mobili_DettaglioActivity;
 import magazzino.bobo.com.magazzinodomestico.R;
+import magazzino.bobo.com.magazzinodomestico.Stanze_DettaglioActivity;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
 import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.ContenitoreDao;
@@ -416,14 +417,19 @@ public class OggettoDialog extends DialogFragment {
 
         }else if(location.getLocationType() == LocationDao.STANZA)
         {
+            ((Stanze_DettaglioActivity)getActivity()).aggiornaListaOggetti(
+                    DatabaseManager.getAllOggettiByLocation(MainActivity.database, location), true);
 
         }else if(location.getLocationType() == LocationDao.MOBILE)
         {
-            ((Mobili_DettaglioActivity)getActivity()).aggiornaListaOggetti(DatabaseManager.getAllOggettiByLocation(MainActivity.database, location), true);
+            ((Mobili_DettaglioActivity)getActivity()).aggiornaListaOggetti(
+                    DatabaseManager.getAllOggettiByLocation(MainActivity.database, location), true);
 
         }else if(location.getLocationType() == LocationDao.CONTENITORE) //Dettaglio contenitore
         {
-            ((Contenitori_DettaglioActivity)getActivity()).aggiornaLista(DatabaseManager.getAllOggettiByLocation(MainActivity.database, location), true);
+            ((Contenitori_DettaglioActivity)getActivity()).aggiornaLista(
+                    DatabaseManager.getAllOggettiByLocation(MainActivity.database, location), true);
+
         }else{ //Main activity
             ((MainActivity)getActivity()).aggiornaLista(DatabaseManager.getAllOggetti(MainActivity.database), true);
         }
