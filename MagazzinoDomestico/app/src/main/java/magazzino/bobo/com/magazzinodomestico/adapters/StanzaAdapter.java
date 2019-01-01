@@ -20,7 +20,7 @@ public class StanzaAdapter extends ArrayAdapter {
 
     //Costruttore
     public StanzaAdapter(ArrayList<StanzaDao> data, Context context) {
-        super(context, R.layout.row_oggetto, data);
+        super(context, R.layout.row_stanza, data);
         this.dataSet = data;
         this.mContext=context;
     }

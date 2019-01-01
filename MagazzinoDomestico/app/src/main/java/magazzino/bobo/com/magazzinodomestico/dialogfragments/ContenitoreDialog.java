@@ -355,12 +355,12 @@ public class ContenitoreDialog extends DialogFragment {
         }else if(location.getLocationType() == LocationDao.STANZA)
         {
             ((Stanze_DettaglioActivity)getActivity()).aggiornaListaContenitori(
-                    DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location), true);
+                    DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location, false), true);
 
         }else if(location.getLocationType() == LocationDao.MOBILE) //Mobili_DettaglioActivity
         {
             ((Mobili_DettaglioActivity)getActivity()).aggiornaListaContenitori(
-                    DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location), true);
+                    DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location, false), true);
 
         }else //ContenitoriActivity
         {

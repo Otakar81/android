@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -48,6 +49,8 @@ public class Stanze_DettaglioActivity extends AppCompatActivity
 
     int tipoElementiDaMostrare;
 
+    ActionBar actionBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +67,12 @@ public class Stanze_DettaglioActivity extends AppCompatActivity
 
         location = new LocationDao(-1, ID_STANZA_SELEZIONATA, -1, -1);
 
-        //Setto il titolo
-        setTitle(NOME_STANZA_SELEZIONATA);
-
         //Flag usato per filtrare la tipologia di oggetti da mostrare
         tipoElementiDaMostrare = LocationDao.MOBILE; //Di default, mostrerò i mobili della stanza
+
+        //Setto il titolo
+        actionBar = getSupportActionBar();
+        cambiaTitolo();
 
         //Bottone fluttuante
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -243,11 +247,11 @@ public class Stanze_DettaglioActivity extends AppCompatActivity
 
             if(tipoElementiDaMostrare != LocationDao.MOBILE) //Faccio qualcosa solo se non sto già mostrando i mobili
             {
-                //TODO Cambio icone
-                //    item.setIcon(R.drawable.action_preferiti_no);
-
                 //Modifico il valore della variabile
                 tipoElementiDaMostrare = LocationDao.MOBILE;
+
+                //Cambio il sottotitolo
+                cambiaTitolo();
 
                 //Faccio refresh della lista, mostrando la tipologia di elementi richiesti dell'utente
                 if(elencoMobili == null)
@@ -263,15 +267,15 @@ public class Stanze_DettaglioActivity extends AppCompatActivity
 
             if(tipoElementiDaMostrare != LocationDao.CONTENITORE) //Faccio qualcosa solo se non sto già mostrando i contenitori
             {
-                //TODO Cambio icone
-                //    item.setIcon(R.drawable.action_preferiti_no);
-
                 //Modifico il valore della variabile
                 tipoElementiDaMostrare = LocationDao.CONTENITORE;
 
+                //Cambio il sottotitolo
+                cambiaTitolo();
+
                 //Faccio refresh della lista, mostrando la tipologia di elementi richiesti dell'utente
                 if(elencoContenitori == null)
-                    elencoContenitori = DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location);
+                    elencoContenitori = DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location, false);
 
                 //Popolo la lista
                 aggiornaListaContenitori(elencoContenitori, false);
@@ -283,11 +287,11 @@ public class Stanze_DettaglioActivity extends AppCompatActivity
 
             if(tipoElementiDaMostrare != LocationDao.OGGETTO) //Faccio qualcosa solo se non sto già mostrando i contenitori
             {
-                //TODO Cambio icone
-                //    item.setIcon(R.drawable.action_preferiti_no);
-
                 //Modifico il valore della variabile
                 tipoElementiDaMostrare = LocationDao.OGGETTO;
+
+                //Cambio il sottotitolo
+                cambiaTitolo();
 
                 //Faccio refresh della lista, mostrando la tipologia di elementi richiesti dell'utente
                 if(elencoOggetti == null)
@@ -432,5 +436,23 @@ public class Stanze_DettaglioActivity extends AppCompatActivity
             //Aggiorno la lista in visualizzazione
             aggiornaListaOggetti(elencoRistretto, false);
         }
+    }
+
+    /***
+     * Cambio il titolo dell'activity
+     */
+    private void cambiaTitolo()
+    {
+        String sottoTitolo = "";
+
+        if (tipoElementiDaMostrare == LocationDao.MOBILE)
+            sottoTitolo = getResources().getString(R.string.mobili);
+        else if (tipoElementiDaMostrare == LocationDao.CONTENITORE)
+            sottoTitolo = getResources().getString(R.string.contenitori);
+        else
+            sottoTitolo = getResources().getString(R.string.oggetti);
+
+        actionBar.setTitle(NOME_STANZA_SELEZIONATA);
+        actionBar.setSubtitle(sottoTitolo);
     }
 }

@@ -191,6 +191,7 @@ public class OggettoDao {
     @Override
     public String toString() {
 
+        /*
         String location = "";
 
         if(id_contenitore != -1)
@@ -201,5 +202,8 @@ public class OggettoDao {
 
 
         return nome + " ( " + location + nome_stanza + ")";
+        */
+
+        return nome;
     }
 }

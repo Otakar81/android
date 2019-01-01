@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -44,6 +45,8 @@ public class Mobili_DettaglioActivity extends AppCompatActivity
 
     int tipoElementiDaMostrare;
 
+    ActionBar actionBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +64,12 @@ public class Mobili_DettaglioActivity extends AppCompatActivity
 
         location = new LocationDao(-1, stanzaSelezionata, ID_MOBILE_SELEZIONATO, -1);
 
-        //Setto il titolo
-        setTitle(NOME_MOBILE_SELEZIONATO);
-
         //Flag usato per filtrare la tipologia di oggetti da mostrare
         tipoElementiDaMostrare = LocationDao.CONTENITORE; //Di default, mostrerò i contenitori presenti nel mobile
+
+        //Setto il titolo
+        actionBar = getSupportActionBar();
+        cambiaTitolo();
 
         //Bottone fluttuante
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -103,7 +107,7 @@ public class Mobili_DettaglioActivity extends AppCompatActivity
 
         //Inizializzo la ListView e l'elenco con i valori di default
         listaView = findViewById(R.id.listaView);
-        elencoContenitori = DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location);
+        elencoContenitori = DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location, false);
         aggiornaListaContenitori(elencoContenitori, true);
 
         listaView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -213,15 +217,15 @@ public class Mobili_DettaglioActivity extends AppCompatActivity
 
             if(tipoElementiDaMostrare != LocationDao.CONTENITORE) //Faccio qualcosa solo se non sto già mostrando i contenitori
             {
-                //TODO Cambio icone
-                //    item.setIcon(R.drawable.action_preferiti_no);
-
                 //Modifico il valore della variabile
                 tipoElementiDaMostrare = LocationDao.CONTENITORE;
 
+                //Cambio il sottotitolo
+                cambiaTitolo();
+
                 //Faccio refresh della lista, mostrando la tipologia di elementi richiesti dell'utente
                 if(elencoContenitori == null)
-                    elencoContenitori = DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location);
+                    elencoContenitori = DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location, false);
 
                 //Popolo la lista
                 aggiornaListaContenitori(elencoContenitori, false);
@@ -233,11 +237,11 @@ public class Mobili_DettaglioActivity extends AppCompatActivity
 
             if(tipoElementiDaMostrare != LocationDao.OGGETTO) //Faccio qualcosa solo se non sto già mostrando i contenitori
             {
-                //TODO Cambio icone
-                //    item.setIcon(R.drawable.action_preferiti_no);
-
                 //Modifico il valore della variabile
                 tipoElementiDaMostrare = LocationDao.OGGETTO;
+
+                //Cambio il sottotitolo
+                cambiaTitolo();
 
                 //Faccio refresh della lista, mostrando la tipologia di elementi richiesti dell'utente
                 if(elencoOggetti == null)
@@ -355,5 +359,21 @@ public class Mobili_DettaglioActivity extends AppCompatActivity
             //Aggiorno la lista in visualizzazione
             aggiornaListaOggetti(elencoRistretto, false);
         }
+    }
+
+    /***
+     * Cambio il titolo dell'activity
+     */
+    private void cambiaTitolo()
+    {
+        String sottoTitolo = "";
+
+        if (tipoElementiDaMostrare == LocationDao.CONTENITORE)
+            sottoTitolo = getResources().getString(R.string.contenitori);
+        else
+            sottoTitolo = getResources().getString(R.string.oggetti);
+
+        actionBar.setTitle(NOME_MOBILE_SELEZIONATO);
+        actionBar.setSubtitle(sottoTitolo);
     }
 }

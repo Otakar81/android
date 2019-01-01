@@ -83,10 +83,14 @@ public class MobileDao {
     @Override
     public String toString() {
 
+        /*
         if(id_stanza != -1)
             return nome + " (" + nomeStanza + ")";
         else
             return nome;
+        */
+
+        return nome;
     }
 
     /***

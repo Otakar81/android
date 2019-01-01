@@ -163,6 +163,7 @@ public class ContenitoreDao {
     @Override
     public String toString() {
 
-        return nome + " ( " + nome_mobile + " - " + nome_stanza + ")";
+        //return nome + " ( " + nome_mobile + " - " + nome_stanza + ")";
+        return nome;
     }
 }

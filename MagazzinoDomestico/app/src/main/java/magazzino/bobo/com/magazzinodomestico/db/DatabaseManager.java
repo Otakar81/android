@@ -650,7 +650,7 @@ public class DatabaseManager {
      * @param location
      * @return
      */
-    public static ArrayList<ContenitoreDao> getAllContenitoriByLocation(SQLiteDatabase database, LocationDao location)
+    public static ArrayList<ContenitoreDao> getAllContenitoriByLocation(SQLiteDatabase database, LocationDao location, boolean showDefaultElement)
     {
         ArrayList<ContenitoreDao> result = new ArrayList<ContenitoreDao>();
 
@@ -670,6 +670,80 @@ public class DatabaseManager {
                 "(" + id_mobile + " = -1 OR c.id_mobile = " + id_mobile + " ) " +
                 "ORDER BY c.nome";
 
+
+        if(showDefaultElement) //Se true, inserisco il record di default
+            result.add(new ContenitoreDao(-1, "-", "", -1, "", -1, ""));
+
+
+        Cursor c = database.rawQuery(sql, null);
+
+        int idIndex = c.getColumnIndex("id");
+        int nomeIndex = c.getColumnIndex("nome");
+        int immagineIndex = c.getColumnIndex("immagine");
+        int idMobileIndex = c.getColumnIndex("id_mobile");
+        int nomeMobileIndex = c.getColumnIndex("nome_mobile");
+        int idStanzaIndex = c.getColumnIndex("id_stanza");
+        int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
+        int idCategoriaIndex = c.getColumnIndex("id_categoria");
+        int nomeCategoriaIndex = c.getColumnIndex("nome_categoria");
+
+        while (c.moveToNext())
+        {
+            long id = c.getLong(idIndex);
+            long idStanza = c.getLong(idStanzaIndex);
+            long idMobile = c.getLong(idMobileIndex);
+            long idCategoria = c.getLong(idCategoriaIndex);
+
+            String nome = c.getString(nomeIndex);
+            String immagine = c.getString(immagineIndex);
+
+            String nomeMobile = "";
+
+            if(!c.isNull(nomeMobileIndex))
+                nomeMobile = c.getString(nomeMobileIndex);
+
+            String nomeStanza = "";
+
+            if(!c.isNull(nomeStanzaIndex))
+                nomeStanza = c.getString(nomeStanzaIndex);
+
+            String nomeCategoria = "";
+
+            if(!c.isNull(nomeCategoriaIndex))
+                nomeCategoria = c.getString(nomeCategoriaIndex);
+
+
+            ContenitoreDao dao = new ContenitoreDao(id, nome, immagine, idCategoria, nomeCategoria,
+                    idStanza, nomeStanza, idMobile, nomeMobile);
+
+            result.add(dao);
+        }
+
+        c.close();
+
+        return result;
+    }
+
+    /***
+     * Mostra SOLO i contenitori direttamente presenti in una stanza (quindi non contenuti in un mobile)
+     * @param database
+     * @param id_stanza
+     * @return
+     */
+    public static ArrayList<ContenitoreDao> getAllContenitoriByStanza(SQLiteDatabase database, long id_stanza)
+    {
+        ArrayList<ContenitoreDao> result = new ArrayList<ContenitoreDao>();
+
+        String sql = "SELECT c.id, c.nome, c.immagine, c.id_categoria, c.id_stanza, c.id_mobile, " +
+                "m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
+                "FROM contenitori c " +
+                "LEFT JOIN mobili m ON c.id_mobile = m.id " +
+                "LEFT JOIN stanze s ON c.id_stanza = s.id " +
+                "LEFT JOIN categorie cat ON c.id_categoria = cat.id " +
+                "WHERE " +
+                "(" + id_stanza + " = -1 OR c.id_stanza = " + id_stanza + " ) AND " +
+                "c.id_mobile = -1 " +
+                "ORDER BY c.nome";
 
 
         Cursor c = database.rawQuery(sql, null);

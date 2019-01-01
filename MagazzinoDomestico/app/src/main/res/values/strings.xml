@@ -21,6 +21,8 @@
     <string name="annulla">Annulla</string>
     <string name="operazione_successo">Operazione effettuata con successo</string>
 
+    <string name="mobili">Mobili</string>
+    <string name="contenitori">Contenitori</string>
     <string name="oggetti">Oggetti</string>
 
     <string name="errore_nome">Nome non valido</string>

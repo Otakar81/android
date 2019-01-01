@@ -157,9 +157,28 @@ public class OggettoDialog extends DialogFragment {
                         //Mostro i contenitori presenti nel mobile
                         LocationDao locationMobile = new LocationDao(-1, mobileSelezionato.getId_stanza(), mobileSelezionato.getId(), -1);
 
-                        elencoContenitori = DatabaseManager.getAllContenitoriByLocation(MainActivity.database, locationMobile);
+                        elencoContenitori = DatabaseManager.getAllContenitoriByLocation(MainActivity.database, locationMobile, true);
                         ArrayAdapter<ContenitoreDao> valoriContenitori = new ArrayAdapter<ContenitoreDao>(getActivity(), android.R.layout.simple_list_item_1, elencoContenitori);
                         elencoContenitoriView.setAdapter(valoriContenitori);
+
+
+
+                        if(isEditMode)
+                        {
+                            if(isCreazioneDialog && id_mobile != -1)
+                            {
+                                settaValoriIstanza(nome, id_stanza, id_mobile, id_contenitore, id_categoria);
+                                isCreazioneDialog = false;
+                            }
+
+                        }else if(location.getLocationType() == LocationDao.CONTENITORE) //Altrimenti valorizzo con i valori "imposti" dalla location, ma solo se sto a livello dei contenitori
+                        {
+                            settaValoriIstanza(null, location.getId_stanza(), location.getId_mobile(), location.getId_contenitore(), location.getId_categoria());
+
+                            //E disabilito gli spinner già valorizzati
+                            disabilitaSpinner();
+                        }
+
                     }
 
                     @Override
@@ -169,22 +188,22 @@ public class OggettoDialog extends DialogFragment {
                 });
 
                 //Mostro solo i contenitori direttamente presenti in una stanza
-                LocationDao locationStanza = new LocationDao(-1, stanzaSelezionata.getId(), -1, -1);
+                //LocationDao locationStanza = new LocationDao(-1, stanzaSelezionata.getId(), -1, -1);
 
-                elencoContenitori = DatabaseManager.getAllContenitoriByLocation(MainActivity.database, locationStanza);
+                elencoContenitori = DatabaseManager.getAllContenitoriByStanza(MainActivity.database, stanzaSelezionata.getId());
                 ArrayAdapter<ContenitoreDao> valoriContenitori = new ArrayAdapter<ContenitoreDao>(getActivity(), android.R.layout.simple_list_item_1, elencoContenitori);
                 elencoContenitoriView.setAdapter(valoriContenitori);
 
                 //Se sono al primo giro in edit, valorizzo gli spinner con gli attributi dell'istanza
                 if(isEditMode)
                 {
-                    if(isCreazioneDialog)
+                    if(isCreazioneDialog && id_mobile == -1) //E' settata solo la stanza, eventualmente
                     {
                         settaValoriIstanza(nome, id_stanza, id_mobile, id_contenitore, id_categoria);
                         isCreazioneDialog = false;
                     }
 
-                }else //Altrimenti valorizzo con i valori "imposti" dalla location
+                }else if(location.getLocationType() == LocationDao.STANZA) //Altrimenti valorizzo con i valori "imposti" dalla location
                 {
                     settaValoriIstanza(null, location.getId_stanza(), location.getId_mobile(), location.getId_contenitore(), location.getId_categoria());
 

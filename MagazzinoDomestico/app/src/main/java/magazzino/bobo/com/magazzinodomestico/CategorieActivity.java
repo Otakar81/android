@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import magazzino.bobo.com.magazzinodomestico.adapters.CategoriaAdapter;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
 import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
 import magazzino.bobo.com.magazzinodomestico.dialogfragments.CategoriaDialog;
@@ -87,18 +88,13 @@ public class CategorieActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                /*
-                LocationDao locationDao = elencoPostiMemorabili.get(position);
+                CategoriaDao dao = (CategoriaDao) parent.getItemAtPosition(position);
 
                 //Creo un intent e vado sulla mappa
-                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-                intent.putExtra("latitudine", locationDao.getLatitudine());
-                intent.putExtra("longitudine", locationDao.getLongitudine());
+                Intent intent = new Intent(getApplicationContext(), Categorie_DettaglioActivity.class);
+                intent.putExtra("id_categoria", dao.getId());
+                intent.putExtra("nome_categoria", dao.getNome());
                 startActivity(intent);
-                */
-
-                //Dovrei saltare alla pagina con l'elenco degli elementi associati a questa categoria
-                Toast.makeText(CategorieActivity.this, "Click", Toast.LENGTH_SHORT).show();
             };
         });
 
@@ -138,7 +134,7 @@ public class CategorieActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.categorie, menu);
+        //getMenuInflater().inflate(R.menu.categorie, menu);
         return true;
     }
 
@@ -202,15 +198,10 @@ public class CategorieActivity extends AppCompatActivity
      */
     public void aggiornaLista(ArrayList<CategoriaDao> elencoCategorieNew)
     {
-        /*
-        ArrayAdapter<CategoriaDao> adapter = new LocationAdapter(elencoPostiMemorabili, this);
-        listaPostiView.setAdapter(adapter);
-        */
-
         //La variabile globale deve essere aggiornata
         elencoCategorie = elencoCategorieNew;
 
-        ArrayAdapter<CategoriaDao> valori = new ArrayAdapter<CategoriaDao>(this, android.R.layout.simple_list_item_1, elencoCategorieNew);
+        ArrayAdapter<CategoriaDao> valori = new CategoriaAdapter(elencoCategorie, this);
         listaCategorieView.setAdapter(valori);
     }
 }
