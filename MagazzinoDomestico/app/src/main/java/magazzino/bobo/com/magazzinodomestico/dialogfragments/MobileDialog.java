@@ -109,7 +109,7 @@ public class MobileDialog extends DialogFragment {
                             DatabaseManager.updateMobile(MainActivity.database, dao);
 
                             //Avverto la lista che i dati sono cambiati
-                            ((MobiliActivity)getActivity()).aggiornaLista(DatabaseManager.getAllMobili(MainActivity.database), true);
+                            updateAdapterLocation();
 
                             Toast.makeText(getActivity(), "Modifica effettuata con successo", Toast.LENGTH_SHORT).show();
                         }

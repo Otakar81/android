@@ -371,12 +371,23 @@ public class DatabaseManager {
      */
     public static void updateMobile(SQLiteDatabase database, MobileDao mobileDao)
     {
+        //Update del mobile
         SQLiteStatement stmt = database.compileStatement("UPDATE mobili SET nome = ?, immagine = ?, id_stanza = ? WHERE id = ?");
         stmt.bindString(1, mobileDao.getNome());
         stmt.bindString(2, mobileDao.getImmagine());
         stmt.bindLong(3, mobileDao.getId_stanza());
         stmt.bindLong(4, mobileDao.getId());
+        stmt.execute();
 
+        //Devo fare update della stanza anche di tutti i contenitori ed oggetti presenti nel mobile, altrimenti potrei avere dati incongruenti
+        stmt = database.compileStatement("UPDATE contenitori SET id_stanza = ? WHERE id_mobile = ?");
+        stmt.bindLong(1, mobileDao.getId_stanza());
+        stmt.bindLong(2, mobileDao.getId());
+        stmt.execute();
+
+        stmt = database.compileStatement("UPDATE oggetti SET id_stanza = ? WHERE id_mobile = ?");
+        stmt.bindLong(1, mobileDao.getId_stanza());
+        stmt.bindLong(2, mobileDao.getId());
         stmt.execute();
     }
 
@@ -558,7 +569,17 @@ public class DatabaseManager {
         stmt.bindLong(4, contenitoreDao.getId_stanza());
         stmt.bindLong(5, contenitoreDao.getId_mobile());
         stmt.bindLong(6, contenitoreDao.getId());
+        stmt.execute();
 
+        //Devo fare update della stanza e del mobile anche di tutti gli oggetti presenti nel contenitore, altrimenti potrei avere dati incongruenti
+        stmt = database.compileStatement("UPDATE oggetti SET id_stanza = ? WHERE id_contenitore = ?");
+        stmt.bindLong(1, contenitoreDao.getId_stanza());
+        stmt.bindLong(2, contenitoreDao.getId());
+        stmt.execute();
+
+        stmt = database.compileStatement("UPDATE oggetti SET id_mobile = ? WHERE id_contenitore = ?");
+        stmt.bindLong(1, contenitoreDao.getId_mobile());
+        stmt.bindLong(2, contenitoreDao.getId());
         stmt.execute();
     }
 
