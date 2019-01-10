@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import magazzino.bobo.com.magazzinodomestico.Categorie_DettaglioActivity;
 import magazzino.bobo.com.magazzinodomestico.ContenitoriActivity;
 import magazzino.bobo.com.magazzinodomestico.MainActivity;
 import magazzino.bobo.com.magazzinodomestico.Mobili_DettaglioActivity;
@@ -351,6 +352,8 @@ public class ContenitoreDialog extends DialogFragment {
     {
         if(location.getLocationType() == LocationDao.CATEGORIA)
         {
+            ((Categorie_DettaglioActivity)getActivity()).aggiornaListaContenitori(
+                    DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location, false), true);
 
         }else if(location.getLocationType() == LocationDao.STANZA)
         {
