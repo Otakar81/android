@@ -62,7 +62,7 @@ public class LocationDao {
         if(id_stanza != -1)
             return STANZA;
 
-        return -1;
+        return OGGETTO;
     }
 
 }

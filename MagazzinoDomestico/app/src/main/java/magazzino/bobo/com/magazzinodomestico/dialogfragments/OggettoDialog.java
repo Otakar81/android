@@ -151,7 +151,7 @@ public class OggettoDialog extends DialogFragment {
 
                 StanzaDao stanzaSelezionata = elencoStanze.get(position);
 
-                Log.i("TEST", "Stanza: " + stanzaSelezionata.getNome());
+                //Log.i("TEST", "Stanza: " + stanzaSelezionata.getNome());
 
                 //Mostro solo i mobili della stanza
                 elencoMobili = DatabaseManager.getAllMobiliByStanza(MainActivity.database, stanzaSelezionata.getId(), true);
@@ -164,7 +164,7 @@ public class OggettoDialog extends DialogFragment {
 
                         MobileDao mobileSelezionato = elencoMobili.get(posizioneMobile);
 
-                        Log.i("TEST", "Mobile: " + mobileSelezionato.getNome());
+                  //      Log.i("TEST", "Mobile: " + mobileSelezionato.getNome());
 
                         //Mostro i contenitori presenti nel mobile
                         LocationDao locationMobile = new LocationDao(-1, mobileSelezionato.getId_stanza(), mobileSelezionato.getId(), -1);
@@ -173,14 +173,32 @@ public class OggettoDialog extends DialogFragment {
                         ArrayAdapter<ContenitoreDao> valoriContenitori = new ArrayAdapter<ContenitoreDao>(getActivity(), android.R.layout.simple_list_item_1, elencoContenitori);
                         elencoContenitoriView.setAdapter(valoriContenitori);
 
-                        int limite = 3;
+                        /***
+                         * Workaround.
+                         * Il fatto che in questo dialog esistano vari menù a tendina collegati tra loro crea problemi in fase di inserimento di un nuovo oggetto
+                         * da una precisa location (dovrebbe preselezionare alcune voci e disabilitarle) o in caso di edit di un oggetto.
+                         * Ad ogni cambio di valore dei menù a tendina di stanze e mobili parte l'evento "onItemSelected" che cancella le selezioni precedenti.
+                         * D'altra parte c'è la necessità di bloccare il "settaValoriIstanza", perchè altrimenti l'utente non potrebbe mai cambiare le voci che sono state
+                         * preselezionate dal sistema: ogni volta, lui tornerebbe a settarle ai valori precedenti.
+                         *
+                         * La presenza di più giri non rende sufficiente l'utilizzo della variabile "isCreazioneDialog" usata nel Dialog dei Contenitori, perchè quella
+                         * limita l'uso del "settaValoriIstanza" solo al primo giro, ma qui può essere necessario doverne fare di più per settare correttamente i campi del dialog
+                         *
+                         * Usiamo le variabili "numeroGiri" e "limiteGiri" per controllare il fenomeno, fermandoci al momento opportuno a seconda del punto dell'applicativo
+                         * in cui questa dialog è chiamata.
+                         *
+                         *
+                         * La soluzione ottimale sarebbe stata semplicemente quella di chiamare "settaValoriIstanza" alla fine di tutto, dopo la creazione e la visualizzazione
+                         * del dialog, ma non sono riuscito a trovare l'evento giusto.
+                         */
+                        int limiteGiri = 3;
 
                         if(isEditMode)
                         {
                             if(id_mobile == -1)
-                                limite = 2;
+                                limiteGiri = 2;
 
-                            if(numeroGiri < limite)//if(isCreazioneDialog)
+                            if(numeroGiri < limiteGiri)//if(isCreazioneDialog)
                             {
                                 settaValoriIstanza(nome, id_stanza, id_mobile, id_contenitore, id_categoria);
                                 isCreazioneDialog = false;
@@ -193,12 +211,13 @@ public class OggettoDialog extends DialogFragment {
                             int locationType = location.getLocationType();
 
                             if(locationType == LocationDao.STANZA)
-                                limite = 2;
+                                limiteGiri = 2;
+                            else if(locationType == LocationDao.CATEGORIA)
+                                limiteGiri = 1;
+                            else if (locationType == LocationDao.OGGETTO)
+                                limiteGiri = 0;
 
-                            if(locationType == LocationDao.OGGETTO || (locationType == LocationDao.CATEGORIA))
-                                limite = 1;
-
-                            if(numeroGiri < limite)//if(isCreazioneDialog)
+                            if(numeroGiri < limiteGiri)//if(isCreazioneDialog)
                             {
                                 settaValoriIstanza(null, location.getId_stanza(), location.getId_mobile(), location.getId_contenitore(), location.getId_categoria());
 
