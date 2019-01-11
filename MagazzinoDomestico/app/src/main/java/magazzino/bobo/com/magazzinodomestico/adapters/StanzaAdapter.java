@@ -35,13 +35,18 @@ public class StanzaAdapter extends ArrayAdapter {
         View view = inflater.inflate(R.layout.row_stanza, null);
 
         TextView nomeView = (TextView) view.findViewById(R.id.nome);
+        TextView numeroMobiliView = (TextView) view.findViewById(R.id.numeroMobili);
+        TextView numeroContenitoriView = (TextView) view.findViewById(R.id.numeroContenitori);
         TextView numeroOggettiView = (TextView) view.findViewById(R.id.numeroOggetti);
 
         //Valorizzo i campi
         nomeView.setText(dao.getNome());
+        numeroMobiliView.setText("("+ dao.getNumeroMobili() + ")");
+        numeroContenitoriView.setText("(" + dao.getNumeroContenitori() + ")");
+        numeroOggettiView.setText("(" + dao.getNumeroOggetti() + ")");
 
         //E nascondo quelli che non uso
-        numeroOggettiView.setVisibility(View.INVISIBLE);
+        //numeroOggettiView.setVisibility(View.INVISIBLE);
         //rating.setVisibility(View.INVISIBLE);
 
         return view;

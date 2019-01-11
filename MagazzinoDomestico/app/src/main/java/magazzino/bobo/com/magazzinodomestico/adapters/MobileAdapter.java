@@ -36,10 +36,15 @@ public class MobileAdapter extends ArrayAdapter {
 
         TextView nomeView = (TextView) view.findViewById(R.id.nome);
         TextView stanzaView = (TextView) view.findViewById(R.id.stanza);
+        TextView numeroContenitoriView = (TextView) view.findViewById(R.id.numeroContenitori);
+        TextView numeroOggettiView = (TextView) view.findViewById(R.id.numeroOggetti);
 
         //Valorizzo i campi
         nomeView.setText(dao.getNome());
-        stanzaView.setText(dao.getNomeStanza());
+        stanzaView.setText("(" + dao.getNomeStanza() + ")");
+
+        numeroContenitoriView.setText("(" + dao.getNumeroContenitori() + ")");
+        numeroOggettiView.setText("(" + dao.getNumeroOggetti() + ")");
 
         //E nascondo quelli che non uso
         //distanza.setVisibility(View.INVISIBLE);

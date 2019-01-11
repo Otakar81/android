@@ -15,6 +15,9 @@ public class ContenitoreDao {
     private long id_mobile;
     private String nome_mobile;
 
+    //Contatori per tener traccia del numero di elementi presenti nella stanza
+    private int numeroOggetti;
+
     public ContenitoreDao(long id, String nome, String immagine, long id_categoria, String nome_categoria,
                           long id_stanza, String nome_stanza, long id_mobile, String nome_mobile) {
         this.id = id;
@@ -29,6 +32,8 @@ public class ContenitoreDao {
 
         this.id_mobile = id_mobile;
         this.nome_mobile = nome_mobile;
+
+        this.numeroOggetti = -1;
     }
 
     public ContenitoreDao(long id, String nome, long id_categoria, String nome_categoria,
@@ -45,6 +50,8 @@ public class ContenitoreDao {
 
         this.id_mobile = id_mobile;
         this.nome_mobile = nome_mobile;
+
+        this.numeroOggetti = -1;
     }
 
     public ContenitoreDao(long id, String nome, String immagine,
@@ -61,6 +68,8 @@ public class ContenitoreDao {
 
         this.id_mobile = id_mobile;
         this.nome_mobile = nome_mobile;
+
+        this.numeroOggetti = -1;
     }
 
     public ContenitoreDao(long id, String nome, long id_stanza, String nome_stanza, long id_mobile, String nome_mobile) {
@@ -76,6 +85,8 @@ public class ContenitoreDao {
 
         this.id_mobile = id_mobile;
         this.nome_mobile = nome_mobile;
+
+        this.numeroOggetti = -1;
     }
 
 
@@ -138,6 +149,14 @@ public class ContenitoreDao {
 
     public String getNome_mobile() {
         return nome_mobile;
+    }
+
+    public int getNumeroOggetti() {
+        return numeroOggetti;
+    }
+
+    public void setNumeroOggetti(int numeroOggetti) {
+        this.numeroOggetti = numeroOggetti;
     }
 
     /***

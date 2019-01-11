@@ -268,7 +268,13 @@ public class DatabaseManager {
     {
         ArrayList<StanzaDao> result = new ArrayList<StanzaDao>();
 
-        String sql = "SELECT id, nome FROM stanze ORDER BY nome";
+        //String sql = "SELECT id, nome FROM stanze ORDER BY nome";
+        String sql = "SELECT s.id, s.nome, " +
+                        "(select count(*) from mobili where id_stanza=s.id) as numero_mobili, " +
+                        "(select count(*) from contenitori where id_stanza=s.id) as numero_contenitori, " +
+                        "(select count(*) from oggetti where id_stanza=s.id) as numero_oggetti " +
+                    "FROM stanze s " +
+                    "ORDER BY s.nome";
 
         Cursor c = database.rawQuery(sql, null);
 
@@ -280,7 +286,15 @@ public class DatabaseManager {
             long id = c.getLong(idIndex);
             String nome = c.getString(nomeIndex);
 
+            int numeroMobili = c.getInt(c.getColumnIndex("numero_mobili"));
+            int numeroContenitori = c.getInt(c.getColumnIndex("numero_contenitori"));
+            int numeroOggetti = c.getInt(c.getColumnIndex("numero_oggetti"));
+
             StanzaDao dao = new StanzaDao(id, nome);
+            dao.setNumeroMobili(numeroMobili);
+            dao.setNumeroContenitori(numeroContenitori);
+            dao.setNumeroOggetti(numeroOggetti);
+
             result.add(dao);
         }
 
@@ -416,8 +430,10 @@ public class DatabaseManager {
     {
         ArrayList<MobileDao> result = new ArrayList<MobileDao>();
 
-        String sql = "SELECT m.id, m.nome, m.immagine, m.id_stanza, s.nome as nome_stanza " +
-                "FROM mobili m LEFT JOIN stanze s ON m.id_stanza = s.id ORDER BY m.nome";
+        String sql = "SELECT m.id, m.nome, m.immagine, m.id_stanza, s.nome as nome_stanza, " +
+                        "(select count(*) from contenitori where id_mobile=m.id) as numero_contenitori, " +
+                        "(select count(*) from oggetti where id_mobile=m.id) as numero_oggetti " +
+                     "FROM mobili m LEFT JOIN stanze s ON m.id_stanza = s.id ORDER BY m.nome";
 
         Cursor c = database.rawQuery(sql, null);
 
@@ -439,7 +455,13 @@ public class DatabaseManager {
             if(!c.isNull(nomeStanzaIndex))
                 nomeStanza = c.getString(nomeStanzaIndex);
 
+            int numeroContenitori = c.getInt(c.getColumnIndex("numero_contenitori"));
+            int numeroOggetti = c.getInt(c.getColumnIndex("numero_oggetti"));
+
             MobileDao dao = new MobileDao(id, nome, immagine, idStanza, nomeStanza);
+            dao.setNumeroContenitori(numeroContenitori);
+            dao.setNumeroOggetti(numeroOggetti);
+
             result.add(dao);
         }
 
@@ -459,9 +481,11 @@ public class DatabaseManager {
     {
         ArrayList<MobileDao> result = new ArrayList<MobileDao>();
 
-        String sql = "SELECT m.id, m.nome, m.immagine, m.id_stanza, s.nome as nome_stanza " +
-                "FROM mobili m LEFT JOIN stanze s ON m.id_stanza = s.id " +
-                "WHERE m.id_stanza = " + id_stanza + " ORDER BY m.nome";
+        String sql = "SELECT m.id, m.nome, m.immagine, m.id_stanza, s.nome as nome_stanza, " +
+                        "(select count(*) from contenitori where id_mobile=m.id) as numero_contenitori, " +
+                        "(select count(*) from oggetti where id_mobile=m.id) as numero_oggetti " +
+                     "FROM mobili m LEFT JOIN stanze s ON m.id_stanza = s.id " +
+                     "WHERE m.id_stanza = " + id_stanza + " ORDER BY m.nome";
 
         Cursor c = database.rawQuery(sql, null);
 
@@ -486,7 +510,13 @@ public class DatabaseManager {
             if(!c.isNull(nomeStanzaIndex))
                 nomeStanza = c.getString(nomeStanzaIndex);
 
+            int numeroContenitori = c.getInt(c.getColumnIndex("numero_contenitori"));
+            int numeroOggetti = c.getInt(c.getColumnIndex("numero_oggetti"));
+
             MobileDao dao = new MobileDao(id, nome, immagine, idStanza, nomeStanza);
+            dao.setNumeroContenitori(numeroContenitori);
+            dao.setNumeroOggetti(numeroOggetti);
+
             result.add(dao);
         }
 
@@ -608,7 +638,8 @@ public class DatabaseManager {
         ArrayList<ContenitoreDao> result = new ArrayList<ContenitoreDao>();
 
         String sql = "SELECT c.id, c.nome, c.immagine, c.id_categoria, c.id_stanza, c.id_mobile, " +
-                        "m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
+                        "m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria, " +
+                        "(select count(*) from oggetti where id_contenitore=c.id) as numero_oggetti " +
                         "FROM contenitori c " +
                         "LEFT JOIN mobili m ON c.id_mobile = m.id " +
                         "LEFT JOIN stanze s ON c.id_stanza = s.id " +
@@ -652,9 +683,12 @@ public class DatabaseManager {
             if(!c.isNull(nomeCategoriaIndex))
                 nomeCategoria = c.getString(nomeCategoriaIndex);
 
+            int numeroOggetti = c.getInt(c.getColumnIndex("numero_oggetti"));
 
             ContenitoreDao dao = new ContenitoreDao(id, nome, immagine, idCategoria, nomeCategoria,
                     idStanza, nomeStanza, idMobile, nomeMobile);
+
+            dao.setNumeroOggetti(numeroOggetti);
 
             result.add(dao);
         }
@@ -680,7 +714,8 @@ public class DatabaseManager {
         long id_categoria = location.getId_categoria();
 
         String sql = "SELECT c.id, c.nome, c.immagine, c.id_categoria, c.id_stanza, c.id_mobile, " +
-                "m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
+                "m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria, " +
+                "(select count(*) from oggetti where id_contenitore=c.id) as numero_oggetti " +
                 "FROM contenitori c " +
                 "LEFT JOIN mobili m ON c.id_mobile = m.id " +
                 "LEFT JOIN stanze s ON c.id_stanza = s.id " +
@@ -733,9 +768,12 @@ public class DatabaseManager {
             if(!c.isNull(nomeCategoriaIndex))
                 nomeCategoria = c.getString(nomeCategoriaIndex);
 
+            int numeroOggetti = c.getInt(c.getColumnIndex("numero_oggetti"));
 
             ContenitoreDao dao = new ContenitoreDao(id, nome, immagine, idCategoria, nomeCategoria,
                     idStanza, nomeStanza, idMobile, nomeMobile);
+
+            dao.setNumeroOggetti(numeroOggetti);
 
             result.add(dao);
         }

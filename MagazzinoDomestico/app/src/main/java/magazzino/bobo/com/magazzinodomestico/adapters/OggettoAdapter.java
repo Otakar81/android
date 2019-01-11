@@ -43,7 +43,7 @@ public class OggettoAdapter extends ArrayAdapter {
         //Valorizzo i campi
         nomeView.setText(dao.getNome());
         categoriaView.setText(dao.getNome_categoria());
-        stanzaView.setText(dao.getNome_stanza());
+        stanzaView.setText("(" + dao.getNome_stanza() + ")");
         mobileView.setText(dao.getNome_mobile());
         contenitoreView.setText(dao.getNome_contenitore());
 
