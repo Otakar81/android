@@ -94,13 +94,41 @@ public class StanzaDialog extends DialogFragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            //Elimino il posto dall'elenco di quelli memorizzati
-                            DatabaseManager.deleteStanza(MainActivity.database, id);
+                            //Verifico se la stanza è vuota
+                            int numeroAssociazioniStanza = DatabaseManager.numeroAssociazioniStanza(MainActivity.database, id);
 
-                            //Avverto la lista che i dati sono cambiati
-                            ((StanzeActivity)getActivity()).aggiornaLista(DatabaseManager.getAllStanze(MainActivity.database));
+                            if(numeroAssociazioniStanza > 0)
+                            {
+                                /* TODO -> TEST da inserire come conferma nella cancellazione degli altri contenitori
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                builder.setMessage("Stocazzo")
+                                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                // FIRE ZE MISSILES!
+                                            }
+                                        })
+                                        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                // User cancelled the dialog
+                                            }
+                                        });
+                                // Create the AlertDialog object and return it
+                                builder.show();
+                                */
 
-                            Toast.makeText(getActivity(), "Eliminazione effettuata con successo", Toast.LENGTH_SHORT).show();
+
+
+                                Toast.makeText(getActivity(), "Impossibile cancellare la stanza: occorre svuotarla prima di procedere", Toast.LENGTH_SHORT).show();
+
+                            }else{
+                                //Elimino il posto dall'elenco di quelli memorizzati
+                                DatabaseManager.deleteStanza(MainActivity.database, id);
+
+                                //Avverto la lista che i dati sono cambiati
+                                ((StanzeActivity)getActivity()).aggiornaLista(DatabaseManager.getAllStanze(MainActivity.database));
+
+                                Toast.makeText(getActivity(), "Eliminazione effettuata con successo", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     })
                     .setNeutralButton("Cancella", null);

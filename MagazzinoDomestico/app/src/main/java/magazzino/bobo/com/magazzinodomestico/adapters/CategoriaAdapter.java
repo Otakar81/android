@@ -36,14 +36,14 @@ public class CategoriaAdapter extends ArrayAdapter {
         View view = inflater.inflate(R.layout.row_categoria, null);
 
         TextView nomeView = (TextView) view.findViewById(R.id.nome);
+        TextView numeroContenitoriView = (TextView) view.findViewById(R.id.numeroContenitori);
         TextView numeroOggettiView = (TextView) view.findViewById(R.id.numeroOggetti);
 
         //Valorizzo i campi
         nomeView.setText(dao.getNome());
 
-        //E nascondo quelli che non uso
-        numeroOggettiView.setVisibility(View.INVISIBLE);
-        //rating.setVisibility(View.INVISIBLE);
+        numeroContenitoriView.setText("(" + dao.getNumeroContenitori() + ")");
+        numeroOggettiView.setText("(" + dao.getNumeroOggetti() + ")");
 
         return view;
     }

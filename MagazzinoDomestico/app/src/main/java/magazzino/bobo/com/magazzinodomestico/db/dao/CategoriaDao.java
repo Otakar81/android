@@ -6,28 +6,44 @@ public class CategoriaDao {
     private String nome;
     private String colore;
 
+    //Contatori per tener traccia del numero di elementi presenti nella stanza
+    private int numeroContenitori;
+    private int numeroOggetti;
+
     public CategoriaDao(long id, String nome, String colore) {
         this.id = id;
         this.nome = nome;
         this.colore = colore;
+
+        this.numeroContenitori = -1;
+        this.numeroOggetti = -1;
     }
 
     public CategoriaDao(long id, String nome) {
         this.id = id;
         this.nome = nome;
         this.colore = "";
+
+        this.numeroContenitori = -1;
+        this.numeroOggetti = -1;
     }
 
     public CategoriaDao(String nome) {
         this.id = -1;
         this.nome = nome;
         this.colore = "";
+
+        this.numeroContenitori = -1;
+        this.numeroOggetti = -1;
     }
 
     public CategoriaDao(String nome, String colore) {
         this.id = -1;
         this.nome = nome;
         this.colore = colore;
+
+        this.numeroContenitori = -1;
+        this.numeroOggetti = -1;
     }
 
     public long getId() {
@@ -52,6 +68,22 @@ public class CategoriaDao {
 
     public void setColore(String colore) {
         this.colore = colore;
+    }
+
+    public int getNumeroContenitori() {
+        return numeroContenitori;
+    }
+
+    public void setNumeroContenitori(int numeroContenitori) {
+        this.numeroContenitori = numeroContenitori;
+    }
+
+    public int getNumeroOggetti() {
+        return numeroOggetti;
+    }
+
+    public void setNumeroOggetti(int numeroOggetti) {
+        this.numeroOggetti = numeroOggetti;
     }
 
 

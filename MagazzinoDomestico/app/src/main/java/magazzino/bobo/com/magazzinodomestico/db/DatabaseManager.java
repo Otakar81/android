@@ -122,7 +122,10 @@ public class DatabaseManager {
     {
         ArrayList<CategoriaDao> result = new ArrayList<CategoriaDao>();
 
-        String sql = "SELECT id, nome, colore FROM categorie ORDER BY nome";
+        String sql = "SELECT c.id, c.nome, c.colore, " +
+                        "(select count(*) from contenitori where id_categoria=c.id) as numero_contenitori, " +
+                        "(select count(*) from oggetti where id_categoria=c.id) as numero_oggetti " +
+                    "FROM categorie c ORDER BY c.nome";
 
         Cursor c = database.rawQuery(sql, null);
 
@@ -139,7 +142,13 @@ public class DatabaseManager {
             String nome = c.getString(nomeIndex);
             String colore = c.getString(coloreIndex);
 
+            int numeroContenitori = c.getInt(c.getColumnIndex("numero_contenitori"));
+            int numeroOggetti = c.getInt(c.getColumnIndex("numero_oggetti"));
+
+
             CategoriaDao dao = new CategoriaDao(id, nome, colore);
+            dao.setNumeroContenitori(numeroContenitori);
+            dao.setNumeroOggetti(numeroOggetti);
             result.add(dao);
         }
 
@@ -256,6 +265,40 @@ public class DatabaseManager {
         database.execSQL("UPDATE mobili SET id_stanza = -1 WHERE id_stanza = " + id_stanza);
         database.execSQL("UPDATE contenitori SET id_stanza = -1 WHERE id_stanza = " + id_stanza);
         database.execSQL("UPDATE oggetti SET id_stanza = -1 WHERE id_stanza = " + id_stanza);
+    }
+
+    /***
+     * Restituisce il numero di associazioni con altri elementi per la stanza passata come argomento
+     *
+     * @param database
+     * @param idStanza
+     * @return
+     */
+    public static int numeroAssociazioniStanza(SQLiteDatabase database, long idStanza)
+    {
+        int numeroAssociazioni = 0;
+
+        String sql = "SELECT s.id, s.nome, " +
+                        "(select count(*) from mobili where id_stanza=s.id) as numero_mobili, " +
+                        "(select count(*) from contenitori where id_stanza=s.id) as numero_contenitori, " +
+                        "(select count(*) from oggetti where id_stanza=s.id) as numero_oggetti " +
+                        "FROM stanze s WHERE s.id = " + idStanza + " " +
+                        "ORDER BY s.nome";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        if (c.moveToNext())
+        {
+            int numeroMobili = c.getInt(c.getColumnIndex("numero_mobili"));
+            int numeroContenitori = c.getInt(c.getColumnIndex("numero_contenitori"));
+            int numeroOggetti = c.getInt(c.getColumnIndex("numero_oggetti"));
+
+            numeroAssociazioni = numeroMobili + numeroContenitori + numeroOggetti;
+        }
+
+        c.close();
+
+        return numeroAssociazioni;
     }
 
     /***
