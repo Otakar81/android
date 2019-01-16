@@ -20,6 +20,8 @@
     <string name="elimina">Elimina</string>
     <string name="annulla">Annulla</string>
     <string name="operazione_successo">Operazione effettuata con successo</string>
+    <string name="eliminazione_successo">Eliminazione effettuata con successo</string>
+
 
     <string name="mobili">Mobili</string>
     <string name="contenitori">Contenitori</string>
@@ -39,6 +41,7 @@
     <string name="stanza_modifica">Modifica Stanza</string>
     <string name="stanza_nuovo">Nuova Stanza</string>
     <string name="stanza_devi_creare_prima">Devi creare la tua prima stanza</string>
+    <string name="stanza_errore_non_vuota">Impossibile cancellare la stanza: occorre svuotarla prima di procedere</string>
 
     <!-- Mobili -->
     <string name="mobile_nessuno">- Nessun Mobile -</string>

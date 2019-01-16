@@ -50,6 +50,9 @@ public class LocationDao {
      */
     public int getLocationType()
     {
+        if(id_categoria == -1 && id_stanza == -1 && id_mobile == -1 && id_contenitore == -1)
+            return -1;
+
         if(id_categoria != -1 && id_stanza == -1 && id_mobile == -1 && id_contenitore == -1)
             return CATEGORIA;
 

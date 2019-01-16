@@ -99,26 +99,7 @@ public class StanzaDialog extends DialogFragment {
 
                             if(numeroAssociazioniStanza > 0)
                             {
-                                /* TODO -> TEST da inserire come conferma nella cancellazione degli altri contenitori
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                                builder.setMessage("Stocazzo")
-                                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                                // FIRE ZE MISSILES!
-                                            }
-                                        })
-                                        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                                // User cancelled the dialog
-                                            }
-                                        });
-                                // Create the AlertDialog object and return it
-                                builder.show();
-                                */
-
-
-
-                                Toast.makeText(getActivity(), "Impossibile cancellare la stanza: occorre svuotarla prima di procedere", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), R.string.stanza_errore_non_vuota, Toast.LENGTH_SHORT).show();
 
                             }else{
                                 //Elimino il posto dall'elenco di quelli memorizzati

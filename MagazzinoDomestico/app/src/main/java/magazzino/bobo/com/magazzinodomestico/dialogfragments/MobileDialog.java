@@ -1,10 +1,10 @@
 package magazzino.bobo.com.magazzinodomestico.dialogfragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +43,9 @@ public class MobileDialog extends DialogFragment {
     //Specifica se il dialog da aprire sarà in modalità "edit" oppure "nuova istanza"
     boolean isEditMode;
 
+    //Activity da cui viene chiamato il Dialog
+    Activity activityChiamante;
+
     //Specifica l'eventuale location da cui arriva la chiamata
     LocationDao location;
 
@@ -75,6 +78,8 @@ public class MobileDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        activityChiamante = getActivity();
 
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -118,13 +123,58 @@ public class MobileDialog extends DialogFragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            //Elimino il posto dall'elenco di quelli memorizzati
-                            DatabaseManager.deleteMobile(MainActivity.database, id);
 
-                            ///Aggiorno l'adapter dell'activity da cui sono stato chiamato
-                            updateAdapterLocation();
+                            int numeroAssociazioniMobile = DatabaseManager.numeroAssociazioniMobile(MainActivity.database, id);
+                            final long idEliminare = id;
 
-                            Toast.makeText(getActivity(), "Eliminazione effettuata con successo", Toast.LENGTH_SHORT).show();
+                            //Se il mobile non è vuoto, chiedo una ulteriore conferma
+                            if(numeroAssociazioniMobile > 0)
+                            {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                builder.setMessage("Il mobile selezionato non è vuoto. Come si vuole procedere?")
+                                        .setPositiveButton("Elimina il mobile ma non il contenuto", new DialogInterface.OnClickListener() {
+
+                                            public void onClick(DialogInterface dialog, int id) {
+
+                                                //Elimino il posto dall'elenco di quelli memorizzati
+                                                DatabaseManager.deleteMobile(MainActivity.database, idEliminare, false);
+
+                                                //Aggiorno l'adapter dell'activity da cui sono stato chiamato
+                                                updateAdapterLocation();
+
+                                                Toast.makeText(activityChiamante, R.string.eliminazione_successo, Toast.LENGTH_SHORT).show();
+
+                                            }
+                                        })
+                                        .setNegativeButton("Elimina il mobile ed il suo contenuto", new DialogInterface.OnClickListener() {
+
+                                            public void onClick(DialogInterface dialog, int id) {
+
+                                                //Elimino il posto dall'elenco di quelli memorizzati
+                                                DatabaseManager.deleteMobile(MainActivity.database, idEliminare, true);
+
+                                                //Aggiorno l'adapter dell'activity da cui sono stato chiamato
+                                                updateAdapterLocation();
+
+                                                Toast.makeText(activityChiamante, R.string.eliminazione_successo, Toast.LENGTH_SHORT).show();
+
+                                            }
+                                        })
+                                        .setNeutralButton("CANCELLA", null);
+
+                                builder.show();
+
+                            } else {
+
+                                //Elimino il posto dall'elenco di quelli memorizzati
+                                DatabaseManager.deleteMobile(MainActivity.database, id, false);
+
+                                ///Aggiorno l'adapter dell'activity da cui sono stato chiamato
+                                updateAdapterLocation();
+
+                                Toast.makeText(getActivity(), R.string.eliminazione_successo, Toast.LENGTH_SHORT).show();
+                            }
+
                         }
                     })
                     .setNeutralButton("Cancella", null);
@@ -237,12 +287,12 @@ public class MobileDialog extends DialogFragment {
     {
         if(location.getLocationType() == LocationDao.STANZA)
         {
-            ((Stanze_DettaglioActivity)getActivity()).aggiornaListaMobili(
+            ((Stanze_DettaglioActivity)activityChiamante).aggiornaListaMobili(
                     DatabaseManager.getAllMobiliByStanza(MainActivity.database, location.getId_stanza(), false), true);
 
         }else if(location.getLocationType() == -1) //Mobili_DettaglioActivity
         {
-            ((MobiliActivity)getActivity()).aggiornaLista(DatabaseManager.getAllMobili(MainActivity.database), true);
+            ((MobiliActivity)activityChiamante).aggiornaLista(DatabaseManager.getAllMobili(MainActivity.database), true);
         }
     }
 

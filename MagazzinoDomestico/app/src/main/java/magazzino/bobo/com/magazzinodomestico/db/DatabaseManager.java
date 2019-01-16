@@ -453,14 +453,53 @@ public class DatabaseManager {
      *
      * @param database
      * @param id_mobile
+     * @param eliminaContenuto
      */
-    public static void deleteMobile(SQLiteDatabase database, long id_mobile)
+    public static void deleteMobile(SQLiteDatabase database, long id_mobile, boolean eliminaContenuto)
     {
         database.execSQL("DELETE FROM mobili where id = " + id_mobile);
 
-        //Vanno azzerati gli eventuali puntamenti a questa categoria
-        database.execSQL("UPDATE contenitori SET id_mobile = -1 WHERE id_mobile = " + id_mobile);
-        database.execSQL("UPDATE oggetti SET id_mobile = -1 WHERE id_mobile = " + id_mobile);
+        //Vanno azzerati o eliminati gli eventuali puntamenti a questo mobile
+        if(eliminaContenuto)
+        {
+            database.execSQL("DELETE FROM contenitori WHERE id_mobile = " + id_mobile);
+            database.execSQL("DELETE FROM oggetti WHERE id_mobile = " + id_mobile);
+        }else{
+            database.execSQL("UPDATE contenitori SET id_mobile = -1 WHERE id_mobile = " + id_mobile);
+            database.execSQL("UPDATE oggetti SET id_mobile = -1 WHERE id_mobile = " + id_mobile);
+        }
+    }
+
+
+    /***
+     * Restituisce il numero di associazioni che riguardano il mobile passato come argomento
+     * @param database
+     * @param idMobile
+     * @return
+     */
+    public static int numeroAssociazioniMobile(SQLiteDatabase database, long idMobile)
+    {
+        int numeroAssociazioni = 0;
+
+        String sql = "SELECT m.id, m.nome, " +
+                "(select count(*) from contenitori where id_mobile=m.id) as numero_contenitori, " +
+                "(select count(*) from oggetti where id_mobile=m.id) as numero_oggetti " +
+                "FROM mobili m WHERE m.id = " + idMobile + " " +
+                "ORDER BY m.nome";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        if (c.moveToNext())
+        {
+            int numeroContenitori = c.getInt(c.getColumnIndex("numero_contenitori"));
+            int numeroOggetti = c.getInt(c.getColumnIndex("numero_oggetti"));
+
+            numeroAssociazioni = numeroContenitori + numeroOggetti;
+        }
+
+        c.close();
+
+        return numeroAssociazioni;
     }
 
     /***
@@ -662,12 +701,42 @@ public class DatabaseManager {
      * @param database
      * @param id_contenitore
      */
-    public static void deleteContenitore(SQLiteDatabase database, long id_contenitore)
+    public static void deleteContenitore(SQLiteDatabase database, long id_contenitore, boolean eliminaContenuto)
     {
         database.execSQL("DELETE FROM contenitori where id = " + id_contenitore);
 
-        //Vanno azzerati gli eventuali puntamenti a questa categoria
-        database.execSQL("UPDATE oggetti SET id_contenitore = -1 WHERE id_contenitore = " + id_contenitore);
+
+        //Vanno azzerati o eliminati gli eventuali puntamenti a questo contenitore
+        if(eliminaContenuto)
+            database.execSQL("DELETE FROM oggetti WHERE id_contenitore = " + id_contenitore);
+        else
+            database.execSQL("UPDATE oggetti SET id_contenitore = -1 WHERE id_contenitore = " + id_contenitore);
+    }
+
+
+    /**
+     * Restituisce il numero di oggetti che referenziano il contenitore passato come argomento
+     *
+     * @param database
+     * @param idContenitore
+     * @return
+     */
+    public static int numeroAssociazioniContenitore(SQLiteDatabase database, long idContenitore)
+    {
+        int numeroAssociazioni = 0;
+
+        String sql = "select count(*) as numero_oggetti from oggetti where id_contenitore=" + idContenitore;
+
+        Cursor c = database.rawQuery(sql, null);
+
+        if (c.moveToNext())
+        {
+            numeroAssociazioni = c.getInt(c.getColumnIndex("numero_oggetti"));
+        }
+
+        c.close();
+
+        return numeroAssociazioni;
     }
 
     /***

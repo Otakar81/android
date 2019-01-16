@@ -1,5 +1,6 @@
 package magazzino.bobo.com.magazzinodomestico.dialogfragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -47,6 +48,9 @@ public class ContenitoreDialog extends DialogFragment {
     //Specifica se il dialog da aprire sarà in modalità "edit" oppure "nuova istanza"
     boolean isEditMode;
 
+    //Activity da cui viene chiamato il Dialog
+    Activity activityChiamante;
+
     //Specifica se sono in fase di creazione del dialog
     boolean isCreazioneDialog;
 
@@ -90,6 +94,8 @@ public class ContenitoreDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        activityChiamante = getActivity();
 
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -189,14 +195,56 @@ public class ContenitoreDialog extends DialogFragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            //Elimino il posto dall'elenco di quelli memorizzati
-                            DatabaseManager.deleteContenitore(MainActivity.database, id);
+                            int numeroAssociazioni = DatabaseManager.numeroAssociazioniContenitore(MainActivity.database, id);
+                            final long idEliminare = id;
 
-                            //Avverto la lista che i dati sono cambiati
-                            //((ContenitoriActivity)getActivity()).aggiornaLista(DatabaseManager.getAllContenitori(MainActivity.database), true);
-                            updateAdapterLocation();
+                            //Se il mobile non è vuoto, chiedo una ulteriore conferma
+                            if(numeroAssociazioni > 0)
+                            {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                builder.setMessage("Il contenitore selezionato non è vuoto. Come si vuole procedere?")
+                                        .setPositiveButton("Elimina il contenitore ma non il contenuto", new DialogInterface.OnClickListener() {
 
-                            Toast.makeText(getActivity(), "Eliminazione effettuata con successo", Toast.LENGTH_SHORT).show();
+                                            public void onClick(DialogInterface dialog, int id) {
+
+                                                //Elimino il posto dall'elenco di quelli memorizzati
+                                                DatabaseManager.deleteContenitore(MainActivity.database, idEliminare, false);
+
+                                                //Aggiorno l'adapter dell'activity da cui sono stato chiamato
+                                                updateAdapterLocation();
+
+                                                Toast.makeText(activityChiamante, R.string.eliminazione_successo, Toast.LENGTH_SHORT).show();
+
+                                            }
+                                        })
+                                        .setNegativeButton("Elimina il contenitore ed il suo contenuto", new DialogInterface.OnClickListener() {
+
+                                            public void onClick(DialogInterface dialog, int id) {
+
+                                                //Elimino il posto dall'elenco di quelli memorizzati
+                                                DatabaseManager.deleteContenitore(MainActivity.database, idEliminare, true);
+
+                                                //Aggiorno l'adapter dell'activity da cui sono stato chiamato
+                                                updateAdapterLocation();
+
+                                                Toast.makeText(activityChiamante, R.string.eliminazione_successo, Toast.LENGTH_SHORT).show();
+
+                                            }
+                                        })
+                                        .setNeutralButton("CANCELLA", null);
+
+                                builder.show();
+
+                            } else {
+
+                                //Elimino il posto dall'elenco di quelli memorizzati
+                                DatabaseManager.deleteContenitore(MainActivity.database, id, false);
+
+                                //Avverto la lista che i dati sono cambiati
+                                updateAdapterLocation();
+
+                                Toast.makeText(getActivity(), "Eliminazione effettuata con successo", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     })
                     .setNeutralButton("Cancella", null);
@@ -352,22 +400,22 @@ public class ContenitoreDialog extends DialogFragment {
     {
         if(location.getLocationType() == LocationDao.CATEGORIA)
         {
-            ((Categorie_DettaglioActivity)getActivity()).aggiornaListaContenitori(
+            ((Categorie_DettaglioActivity)activityChiamante).aggiornaListaContenitori(
                     DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location, false), true);
 
         }else if(location.getLocationType() == LocationDao.STANZA)
         {
-            ((Stanze_DettaglioActivity)getActivity()).aggiornaListaContenitori(
+            ((Stanze_DettaglioActivity)activityChiamante).aggiornaListaContenitori(
                     DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location, false), true);
 
         }else if(location.getLocationType() == LocationDao.MOBILE) //Mobili_DettaglioActivity
         {
-            ((Mobili_DettaglioActivity)getActivity()).aggiornaListaContenitori(
+            ((Mobili_DettaglioActivity)activityChiamante).aggiornaListaContenitori(
                     DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location, false), true);
 
         }else //ContenitoriActivity
         {
-            ((ContenitoriActivity)getActivity()).aggiornaLista(
+            ((ContenitoriActivity)activityChiamante).aggiornaLista(
                     DatabaseManager.getAllContenitori(MainActivity.database), true);
         }
     }
