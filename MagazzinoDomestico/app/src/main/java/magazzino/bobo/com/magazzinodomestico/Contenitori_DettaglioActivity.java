@@ -123,7 +123,7 @@ public class Contenitori_DettaglioActivity extends AppCompatActivity
         //Inzializzo la search view
         searchView = findViewById(R.id.searchOggetti);
         searchView.setActivated(true);
-        searchView.setQueryHint("Type your keyword here");
+        searchView.setQueryHint(getResources().getString(R.string.search_query_hint));
         searchView.onActionViewExpanded();
         searchView.setIconified(false);
         searchView.clearFocus();

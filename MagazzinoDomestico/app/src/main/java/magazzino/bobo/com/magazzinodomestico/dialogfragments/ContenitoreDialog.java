@@ -165,9 +165,9 @@ public class ContenitoreDialog extends DialogFragment {
         if(isEditMode) //Finestra per edit di un elemento esistente
         {
             mBuilder.setView(view)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("Modifica contenitore")
-                    .setPositiveButton("Modifica", new DialogInterface.OnClickListener() {
+                    .setIcon(R.drawable.nav_contenitori)
+                    .setTitle(R.string.contenitore_modifica)
+                    .setPositiveButton(R.string.modifica, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -188,10 +188,10 @@ public class ContenitoreDialog extends DialogFragment {
                             //((ContenitoriActivity)getActivity()).aggiornaLista(DatabaseManager.getAllContenitori(MainActivity.database), true);
                             updateAdapterLocation();
 
-                            Toast.makeText(getActivity(), "Modifica effettuata con successo", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
                         }
                     })
-                    .setNegativeButton("Elimina", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(R.string.elimina, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -202,8 +202,8 @@ public class ContenitoreDialog extends DialogFragment {
                             if(numeroAssociazioni > 0)
                             {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                                builder.setMessage("Il contenitore selezionato non è vuoto. Come si vuole procedere?")
-                                        .setPositiveButton("Elimina il contenitore ma non il contenuto", new DialogInterface.OnClickListener() {
+                                builder.setMessage(R.string.contenitore_non_vuoto)
+                                        .setPositiveButton(R.string.elimina_ma_mantieni_contenuto, new DialogInterface.OnClickListener() {
 
                                             public void onClick(DialogInterface dialog, int id) {
 
@@ -217,7 +217,7 @@ public class ContenitoreDialog extends DialogFragment {
 
                                             }
                                         })
-                                        .setNegativeButton("Elimina il contenitore ed il suo contenuto", new DialogInterface.OnClickListener() {
+                                        .setNegativeButton(R.string.elimina_insieme_al_contenuto, new DialogInterface.OnClickListener() {
 
                                             public void onClick(DialogInterface dialog, int id) {
 
@@ -231,7 +231,7 @@ public class ContenitoreDialog extends DialogFragment {
 
                                             }
                                         })
-                                        .setNeutralButton("CANCELLA", null);
+                                        .setNeutralButton(R.string.annulla, null);
 
                                 builder.show();
 
@@ -243,11 +243,11 @@ public class ContenitoreDialog extends DialogFragment {
                                 //Avverto la lista che i dati sono cambiati
                                 updateAdapterLocation();
 
-                                Toast.makeText(getActivity(), "Eliminazione effettuata con successo", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), R.string.eliminazione_successo, Toast.LENGTH_SHORT).show();
                             }
                         }
                     })
-                    .setNeutralButton("Cancella", null);
+                    .setNeutralButton(R.string.annulla, null);
 
 
             //Se le variabili sono già state valorizzate, le uso per riempire la finestra
@@ -257,9 +257,10 @@ public class ContenitoreDialog extends DialogFragment {
         }else{ //Finestra per nuovo inserimento
 
             mBuilder.setView(view)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("Aggiungi contenitore")
-                    .setPositiveButton("Aggiungi", new DialogInterface.OnClickListener() {
+                    .setIcon(R.drawable.nav_contenitori)
+                    .setTitle(R.string.contenitore_nuovo)
+                    .setMessage(R.string.contenitore_nome)
+                    .setPositiveButton(R.string.aggiungi, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -271,11 +272,11 @@ public class ContenitoreDialog extends DialogFragment {
 
                             if(nome == null || nome.trim().equals(""))
                             {
-                                Toast.makeText(getActivity(), "Specificare un nome valido", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), R.string.errore_nome, Toast.LENGTH_SHORT).show();
 
                             }else if(stanza == null || mobile == null || categoria == null){
 
-                                Toast.makeText(getActivity(), "Tutti i campi sono obbligatori", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), R.string.errore_campi_obbligatori, Toast.LENGTH_SHORT).show();
 
                             }else{
 
@@ -289,12 +290,12 @@ public class ContenitoreDialog extends DialogFragment {
                                 //((ContenitoriActivity)getActivity()).aggiornaLista(DatabaseManager.getAllContenitori(MainActivity.database), true);
                                 updateAdapterLocation();
 
-                                Toast.makeText(getActivity(), "Inserimento avvenuto con successo", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
                             }
 
                         }
                     })
-                    .setNegativeButton("Cancella", null);
+                    .setNegativeButton(R.string.annulla, null);
         }
 
 

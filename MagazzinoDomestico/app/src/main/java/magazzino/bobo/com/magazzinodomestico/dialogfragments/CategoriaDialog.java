@@ -70,7 +70,7 @@ public class CategoriaDialog extends DialogFragment {
         if(isEditMode) //Finestra per edit di un elemento esistente
         {
             mBuilder.setView(view)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setIcon(R.drawable.nav_categorie)
                     .setTitle(R.string.categoria_modifica)
                     .setPositiveButton(R.string.modifica, new DialogInterface.OnClickListener() {
                         @Override
@@ -87,6 +87,12 @@ public class CategoriaDialog extends DialogFragment {
                             ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database, false));
 
                             Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
+
+
+                            /*Se volessi usare la Snackbar
+                            View miaView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+                            Snackbar.make(miaView, R.string.operazione_successo, Snackbar.LENGTH_SHORT).show();
+                            */
                         }
                     })
                     .setNegativeButton(R.string.elimina, new DialogInterface.OnClickListener() {
@@ -112,7 +118,7 @@ public class CategoriaDialog extends DialogFragment {
         }else{ //Finestra per nuovo inserimento
 
             mBuilder.setView(view)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setIcon(R.drawable.nav_categorie)
                     .setTitle(R.string.categoria_nuova)
                     .setMessage(R.string.categoria_nome)
                     .setPositiveButton(R.string.aggiungi, new DialogInterface.OnClickListener() {

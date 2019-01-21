@@ -61,11 +61,16 @@ public class Mobili_DettaglioActivity extends AppCompatActivity
         ID_MOBILE_SELEZIONATO = intent.getLongExtra("id_mobile", -1);
         NOME_MOBILE_SELEZIONATO = intent.getStringExtra("nome_mobile");
         long stanzaSelezionata = intent.getLongExtra("id_stanza", -1);
+        int numero_contenitori = intent.getIntExtra("numero_contenitori", -1);
+        int numero_oggetti = intent.getIntExtra("numero_oggetti", -1);
 
         location = new LocationDao(-1, stanzaSelezionata, ID_MOBILE_SELEZIONATO, -1);
 
         //Flag usato per filtrare la tipologia di oggetti da mostrare
         tipoElementiDaMostrare = LocationDao.CONTENITORE; //Di default, mostrerò i contenitori presenti nel mobile
+
+        if(numero_contenitori == 0 && numero_oggetti > 0)
+            tipoElementiDaMostrare = LocationDao.OGGETTO; //Se non ho contenitori, mostro l'elenco degli oggetti
 
         //Setto il titolo
         actionBar = getSupportActionBar();
@@ -107,8 +112,17 @@ public class Mobili_DettaglioActivity extends AppCompatActivity
 
         //Inizializzo la ListView e l'elenco con i valori di default
         listaView = findViewById(R.id.listaView);
-        elencoContenitori = DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location, false);
-        aggiornaListaContenitori(elencoContenitori, true);
+
+        if(tipoElementiDaMostrare == LocationDao.CONTENITORE)
+        {
+            elencoContenitori = DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location, false);
+            aggiornaListaContenitori(elencoContenitori, true);
+
+        }else{
+
+            elencoOggetti = DatabaseManager.getAllOggettiByLocation(MainActivity.database, location);
+            aggiornaListaOggetti(elencoOggetti, true);
+        }
 
         listaView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -167,7 +181,7 @@ public class Mobili_DettaglioActivity extends AppCompatActivity
         //Inzializzo la search view
         searchView = findViewById(R.id.searchField);
         searchView.setActivated(true);
-        searchView.setQueryHint("Type your keyword here");
+        searchView.setQueryHint(getResources().getString(R.string.search_query_hint));
         searchView.onActionViewExpanded();
         searchView.setIconified(false);
         searchView.clearFocus();

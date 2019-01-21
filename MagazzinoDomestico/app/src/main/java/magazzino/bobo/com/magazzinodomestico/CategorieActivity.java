@@ -94,6 +94,8 @@ public class CategorieActivity extends AppCompatActivity
                 Intent intent = new Intent(getApplicationContext(), Categorie_DettaglioActivity.class);
                 intent.putExtra("id_categoria", dao.getId());
                 intent.putExtra("nome_categoria", dao.getNome());
+                intent.putExtra("numero_contenitori", dao.getNumeroContenitori());
+                intent.putExtra("numero_oggetti", dao.getNumeroOggetti());
                 startActivity(intent);
             };
         });

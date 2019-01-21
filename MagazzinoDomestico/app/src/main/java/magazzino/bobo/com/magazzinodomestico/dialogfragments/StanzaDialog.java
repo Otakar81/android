@@ -71,9 +71,9 @@ public class StanzaDialog extends DialogFragment {
         if(isEditMode) //Finestra per edit di un elemento esistente
         {
             mBuilder.setView(view)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("Modifica stanza")
-                    .setPositiveButton("Modifica", new DialogInterface.OnClickListener() {
+                    .setIcon(R.drawable.nav_stanze2)
+                    .setTitle(R.string.stanza_modifica)
+                    .setPositiveButton(R.string.modifica, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -87,10 +87,10 @@ public class StanzaDialog extends DialogFragment {
                             //Avverto la lista che i dati sono cambiati
                             ((StanzeActivity)getActivity()).aggiornaLista(DatabaseManager.getAllStanze(MainActivity.database));
 
-                            Toast.makeText(getActivity(), "Modifica effettuata con successo", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
                         }
                     })
-                    .setNegativeButton("Elimina", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(R.string.elimina, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -108,11 +108,11 @@ public class StanzaDialog extends DialogFragment {
                                 //Avverto la lista che i dati sono cambiati
                                 ((StanzeActivity)getActivity()).aggiornaLista(DatabaseManager.getAllStanze(MainActivity.database));
 
-                                Toast.makeText(getActivity(), "Eliminazione effettuata con successo", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), R.string.eliminazione_successo, Toast.LENGTH_SHORT).show();
                             }
                         }
                     })
-                    .setNeutralButton("Cancella", null);
+                    .setNeutralButton(R.string.annulla, null);
 
 
             //Se le variabili sono già state valorizzate, le uso per riempire la finestra
@@ -123,9 +123,10 @@ public class StanzaDialog extends DialogFragment {
         }else{ //Finestra per nuovo inserimento
 
             mBuilder.setView(view)
-                    .setTitle("Aggiunta stanza")
-                    .setMessage("Specificare il nome della stanza")
-                    .setPositiveButton("Aggiungi", new DialogInterface.OnClickListener() {
+                    .setIcon(R.drawable.nav_stanze2)
+                    .setTitle(R.string.stanza_nuovo)
+                    .setMessage(R.string.stanza_nome)
+                    .setPositiveButton(R.string.aggiungi, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -134,7 +135,7 @@ public class StanzaDialog extends DialogFragment {
 
                             if(nome == null || nome.trim().equals(""))
                             {
-                                Toast.makeText(getActivity(), "Specificare il nome di una stanza", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), R.string.errore_nome, Toast.LENGTH_SHORT).show();
 
                             }else{
 
@@ -143,7 +144,7 @@ public class StanzaDialog extends DialogFragment {
 
                                 if(stanza != null)
                                 {
-                                    Toast.makeText(getActivity(), "Nome già in uso", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), R.string.errore_nome_in_uso, Toast.LENGTH_SHORT).show();
                                 }else{
 
                                     //Creo e salvo la categoria
@@ -152,12 +153,12 @@ public class StanzaDialog extends DialogFragment {
 
                                     ((StanzeActivity)getActivity()).aggiornaLista(DatabaseManager.getAllStanze(MainActivity.database));
 
-                                    Toast.makeText(getActivity(), "Inserimento avvenuto con successo", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
                     })
-                    .setNegativeButton("Cancella", null);
+                    .setNegativeButton(R.string.annulla, null);
 
         }
 

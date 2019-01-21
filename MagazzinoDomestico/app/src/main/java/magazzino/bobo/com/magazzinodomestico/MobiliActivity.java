@@ -96,6 +96,8 @@ public class MobiliActivity extends AppCompatActivity
                 intent.putExtra("id_mobile", dao.getId());
                 intent.putExtra("id_stanza", dao.getId_stanza());
                 intent.putExtra("nome_mobile", dao.getNome());
+                intent.putExtra("numero_contenitori", dao.getNumeroContenitori());
+                intent.putExtra("numero_oggetti", dao.getNumeroOggetti());
                 startActivity(intent);
             };
         });
@@ -122,7 +124,7 @@ public class MobiliActivity extends AppCompatActivity
         //Inzializzo la search view
         searchView = findViewById(R.id.searchMobili);
         searchView.setActivated(true);
-        searchView.setQueryHint("Type your keyword here");
+        searchView.setQueryHint(getResources().getString(R.string.search_query_hint));
         searchView.onActionViewExpanded();
         searchView.setIconified(false);
         searchView.clearFocus();

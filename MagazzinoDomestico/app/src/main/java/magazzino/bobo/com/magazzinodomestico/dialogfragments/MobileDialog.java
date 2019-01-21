@@ -99,9 +99,9 @@ public class MobileDialog extends DialogFragment {
         if(isEditMode) //Finestra per edit di un elemento esistente
         {
             mBuilder.setView(view)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("Modifica mobile")
-                    .setPositiveButton("Modifica", new DialogInterface.OnClickListener() {
+                    .setIcon(R.drawable.nav_mobili)
+                    .setTitle(R.string.mobile_modifica)
+                    .setPositiveButton(R.string.modifica, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -116,10 +116,10 @@ public class MobileDialog extends DialogFragment {
                             //Avverto la lista che i dati sono cambiati
                             updateAdapterLocation();
 
-                            Toast.makeText(getActivity(), "Modifica effettuata con successo", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
                         }
                     })
-                    .setNegativeButton("Elimina", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(R.string.elimina, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -131,8 +131,8 @@ public class MobileDialog extends DialogFragment {
                             if(numeroAssociazioniMobile > 0)
                             {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                                builder.setMessage("Il mobile selezionato non è vuoto. Come si vuole procedere?")
-                                        .setPositiveButton("Elimina il mobile ma non il contenuto", new DialogInterface.OnClickListener() {
+                                builder.setMessage(R.string.mobile_non_vuoto)
+                                        .setPositiveButton(R.string.elimina_ma_mantieni_contenuto, new DialogInterface.OnClickListener() {
 
                                             public void onClick(DialogInterface dialog, int id) {
 
@@ -146,7 +146,7 @@ public class MobileDialog extends DialogFragment {
 
                                             }
                                         })
-                                        .setNegativeButton("Elimina il mobile ed il suo contenuto", new DialogInterface.OnClickListener() {
+                                        .setNegativeButton(R.string.elimina_insieme_al_contenuto, new DialogInterface.OnClickListener() {
 
                                             public void onClick(DialogInterface dialog, int id) {
 
@@ -160,7 +160,7 @@ public class MobileDialog extends DialogFragment {
 
                                             }
                                         })
-                                        .setNeutralButton("CANCELLA", null);
+                                        .setNeutralButton(R.string.annulla, null);
 
                                 builder.show();
 
@@ -177,7 +177,7 @@ public class MobileDialog extends DialogFragment {
 
                         }
                     })
-                    .setNeutralButton("Cancella", null);
+                    .setNeutralButton(R.string.annulla, null);
 
 
             //Se le variabili sono già state valorizzate, le uso per riempire la finestra
@@ -187,10 +187,10 @@ public class MobileDialog extends DialogFragment {
         }else{ //Finestra per inserimento di un nuovo Mobile
 
             mBuilder.setView(view)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("Aggiunta mobile")
-                    .setMessage("Specificare il nome del mobile")
-                    .setPositiveButton("Aggiungi", new DialogInterface.OnClickListener() {
+                    .setIcon(R.drawable.nav_mobili)
+                    .setTitle(R.string.mobile_nuovo)
+                    .setMessage(R.string.mobile_nome)
+                    .setPositiveButton(R.string.aggiungi, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -199,7 +199,7 @@ public class MobileDialog extends DialogFragment {
 
                             if(nome == null || nome.trim().equals(""))
                             {
-                                Toast.makeText(getActivity(), "Specificare un nome valido", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), R.string.errore_nome, Toast.LENGTH_SHORT).show();
                             }else{
 
                                 //Creo e salvo il nuovo elemento
@@ -209,12 +209,12 @@ public class MobileDialog extends DialogFragment {
                                 //Aggiorno l'adapter dell'activity da cui sono stato chiamato
                                 updateAdapterLocation();
 
-                                Toast.makeText(getActivity(), "Inserimento avvenuto con successo", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
 
                             }
                         }
                     })
-                    .setNegativeButton("Cancella", null);
+                    .setNegativeButton(R.string.annulla, null);
 
             //Valorizzo eventualmente i campi necessari del dialog, se sto creando un nuovo elemento da una location specifica
             settaValoriIstanza(null, location.getId_stanza());

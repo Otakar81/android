@@ -118,7 +118,7 @@ public class ContenitoriActivity extends AppCompatActivity
         //Inzializzo la search view
         searchView = findViewById(R.id.searchContenitori);
         searchView.setActivated(true);
-        searchView.setQueryHint("Type your keyword here");
+        searchView.setQueryHint(getResources().getString(R.string.search_query_hint));
         searchView.onActionViewExpanded();
         searchView.setIconified(false);
         searchView.clearFocus();

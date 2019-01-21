@@ -64,11 +64,19 @@ public class Stanze_DettaglioActivity extends AppCompatActivity
         Intent intent = getIntent();
         ID_STANZA_SELEZIONATA = intent.getLongExtra("id_stanza", -1);
         NOME_STANZA_SELEZIONATA = intent.getStringExtra("nome_stanza");
+        int numero_mobili = intent.getIntExtra("numero_mobili", -1);
+        int numero_contenitori = intent.getIntExtra("numero_contenitori", -1);
+        int numero_oggetti = intent.getIntExtra("numero_oggetti", -1);
 
         location = new LocationDao(-1, ID_STANZA_SELEZIONATA, -1, -1);
 
         //Flag usato per filtrare la tipologia di oggetti da mostrare
         tipoElementiDaMostrare = LocationDao.MOBILE; //Di default, mostrerò i mobili della stanza
+
+        if(numero_mobili == 0 && numero_contenitori > 0)
+            tipoElementiDaMostrare = LocationDao.CONTENITORE; //Se non ho mobili, mostro l'elenco dei contenitori
+        if(numero_mobili == 0 && numero_contenitori == 0 && numero_oggetti > 0)
+            tipoElementiDaMostrare = LocationDao.OGGETTO; //Se non ho neanche contenitori, mostro l'elenco degli oggetti
 
         //Setto il titolo
         actionBar = getSupportActionBar();
@@ -85,7 +93,7 @@ public class Stanze_DettaglioActivity extends AppCompatActivity
                 if(tipoElementiDaMostrare == LocationDao.MOBILE)
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(Stanze_DettaglioActivity.this);
-                    MobileDialog dialog = MobileDialog.newInstance(builder, false, location); //TODO -> Supporto location e chiamata da più activity, location);
+                    MobileDialog dialog = MobileDialog.newInstance(builder, false, location);
                     dialog.show(getSupportFragmentManager(),"mobile_dialog");
 
                 }else if(tipoElementiDaMostrare == LocationDao.CONTENITORE)
@@ -116,8 +124,22 @@ public class Stanze_DettaglioActivity extends AppCompatActivity
 
         //Inizializzo la ListView e l'elenco con i valori di default
         listaView = findViewById(R.id.listaView);
-        elencoMobili = DatabaseManager.getAllMobiliByStanza(MainActivity.database, ID_STANZA_SELEZIONATA, false);
-        aggiornaListaMobili(elencoMobili, true);
+
+        if(tipoElementiDaMostrare == LocationDao.MOBILE)
+        {
+            elencoMobili = DatabaseManager.getAllMobiliByStanza(MainActivity.database, ID_STANZA_SELEZIONATA, false);
+            aggiornaListaMobili(elencoMobili, true);
+
+        }else if(tipoElementiDaMostrare == LocationDao.CONTENITORE)
+        {
+            elencoContenitori = DatabaseManager.getAllContenitoriByLocation(MainActivity.database, location, false);
+            aggiornaListaContenitori(elencoContenitori, true);
+
+        }else{
+
+            elencoOggetti = DatabaseManager.getAllOggettiByLocation(MainActivity.database, location);
+            aggiornaListaOggetti(elencoOggetti, true);
+        }
 
         listaView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -132,6 +154,9 @@ public class Stanze_DettaglioActivity extends AppCompatActivity
                     intent.putExtra("id_mobile", dao.getId());
                     intent.putExtra("id_stanza", dao.getId_stanza());
                     intent.putExtra("nome_mobile", dao.getNome());
+                    intent.putExtra("numero_contenitori", dao.getNumeroContenitori());
+                    intent.putExtra("numero_oggetti", dao.getNumeroOggetti());
+
                     startActivity(intent);
 
                 }else if(tipoElementiDaMostrare == LocationDao.CONTENITORE) //Entro nel dettaglio del contenitore
@@ -144,6 +169,7 @@ public class Stanze_DettaglioActivity extends AppCompatActivity
                     intent.putExtra("id_mobile", dao.getId_mobile());
                     intent.putExtra("id_stanza", dao.getId_stanza());
                     intent.putExtra("nome_contenitore", dao.getNome());
+
                     startActivity(intent);
                 }
             };
@@ -197,7 +223,7 @@ public class Stanze_DettaglioActivity extends AppCompatActivity
         //Inzializzo la search view
         searchView = findViewById(R.id.searchField);
         searchView.setActivated(true);
-        searchView.setQueryHint("Type your keyword here");
+        searchView.setQueryHint(getResources().getString(R.string.search_query_hint));
         searchView.onActionViewExpanded();
         searchView.setIconified(false);
         searchView.clearFocus();

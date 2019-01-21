@@ -2,10 +2,14 @@
     <string name="app_name">Magazzino Domestico</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">G.Claudio</string>
-    <string name="nav_header_subtitle">g.claudio.dc@gmail.com</string>
+    <string name="nav_header_title">Magazzino Domestico</string>
+    <string name="nav_header_subtitle">Trova i tuoi oggetti in un attimo</string>
+    <string name="nav_header_autore">by G.Claudio</string>
+    <string name="nav_header_email">gc.decapp@gmail.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+
+    <string name="title_activity_main">I miei oggetti</string>
     <string name="title_activity_categorie">Categorie</string>
     <string name="title_activity_stanze">Stanze</string>
     <string name="title_activity_mobili">Mobili</string>
@@ -21,6 +25,10 @@
     <string name="annulla">Annulla</string>
     <string name="operazione_successo">Operazione effettuata con successo</string>
     <string name="eliminazione_successo">Eliminazione effettuata con successo</string>
+    <string name="search_query_hint">Cerca</string>
+
+    <string name="elimina_ma_mantieni_contenuto">Eliminalo, ma mantieni il suo contenuto</string>
+    <string name="elimina_insieme_al_contenuto">Eliminalo insieme al suo contenuto</string>
 
 
     <string name="mobili">Mobili</string>
@@ -29,6 +37,7 @@
 
     <string name="errore_nome">Nome non valido</string>
     <string name="errore_nome_in_uso">Nome non univoco</string>
+    <string name="errore_campi_obbligatori">Tutti i campi sono obbligatori</string>
 
     <!-- Categorie -->
     <string name="categoria_nessuna">- Nessuna Categoria -</string>
@@ -45,15 +54,22 @@
 
     <!-- Mobili -->
     <string name="mobile_nessuno">- Nessun Mobile -</string>
-    <string name="mobile_nome">Nome Mobile</string>
+    <string name="mobile_nome">Nome del Mobile</string>
     <string name="mobile_modifica">Modifica Mobile</string>
     <string name="mobile_nuovo">Nuovo Mobile</string>
+    <string name="mobile_non_vuoto">Il mobile selezionato non è vuoto. Come si vuole procedere?</string>
 
     <!-- Contenitori -->
     <string name="contenitore_nessuno">- Nessun Contenitore -</string>
     <string name="contenitore_nome">Nome Contenitore</string>
     <string name="contenitore_modifica">Modifica Contenitore</string>
     <string name="contenitore_nuovo">Nuovo Contenitore</string>
+    <string name="contenitore_non_vuoto">Il contenitore selezionato non è vuoto. Come si vuole procedere?</string>
+
+    <!-- Oggetti -->
+    <string name="oggetto_nome">Nome dell\'Oggetto</string>
+    <string name="oggetto_modifica">Modifica Oggetto</string>
+    <string name="oggetto_nuovo">Nuovo Oggetto</string>
 
 
 

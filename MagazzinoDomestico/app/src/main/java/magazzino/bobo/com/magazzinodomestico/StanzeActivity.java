@@ -91,6 +91,9 @@ public class StanzeActivity extends AppCompatActivity
                 Intent intent = new Intent(getApplicationContext(), Stanze_DettaglioActivity.class);
                 intent.putExtra("id_stanza", dao.getId());
                 intent.putExtra("nome_stanza", dao.getNome());
+                intent.putExtra("numero_mobili", dao.getNumeroMobili());
+                intent.putExtra("numero_contenitori", dao.getNumeroContenitori());
+                intent.putExtra("numero_oggetti", dao.getNumeroOggetti());
                 startActivity(intent);
             };
         });
