@@ -68,6 +68,20 @@ public class StanzaDao {
         this.numeroOggetti = numeroOggetti;
     }
 
+    /***
+     * Restituisce true se la stringa passata come argomento "trova" l'oggetto
+     *
+     * @param searchString
+     * @return
+     */
+    public boolean searchItem(String searchString)
+    {
+        if(nome.toUpperCase().contains(searchString.toUpperCase()))
+            return true;
+        else
+            return false;
+    }
+
     @Override
     public String toString() {
         return nome;

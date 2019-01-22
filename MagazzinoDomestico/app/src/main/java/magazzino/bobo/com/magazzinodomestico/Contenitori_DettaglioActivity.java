@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -66,7 +67,10 @@ public class Contenitori_DettaglioActivity extends AppCompatActivity
         final LocationDao location = new LocationDao(-1, stanzaSelezionata, mobileSelezionato, ID_CONTENITORE_SELEZIONATO);
 
         //Setto il titolo
-        setTitle(NOME_CONTENITORE_SELEZIONATO);
+        //setTitle(NOME_CONTENITORE_SELEZIONATO);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(NOME_CONTENITORE_SELEZIONATO);
+        actionBar.setSubtitle(getResources().getString(R.string.oggetti));
 
         //Bottone fluttuante
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

@@ -2,6 +2,7 @@ package magazzino.bobo.com.magazzinodomestico;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -15,9 +16,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import java.util.ArrayList;
 
@@ -32,6 +35,7 @@ public class StanzeActivity extends AppCompatActivity
     ListView listaStanzeView;
     ArrayList<StanzaDao> elencoStanze;
     ConstraintLayout layout;
+    SearchView searchView;
 
 
     @Override
@@ -39,14 +43,22 @@ public class StanzeActivity extends AppCompatActivity
         super.onResume();
 
         //Aggiorno la lista
-        aggiornaLista(DatabaseManager.getAllStanze(MainActivity.database));
+        aggiornaLista(DatabaseManager.getAllStanze(MainActivity.database), true);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_stanze);
+
+        //Recupero l'action bar e la status bar e cambio i loro colori
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setBackground(new ColorDrawable(getResources().getColor(R.color.colorStanze)));
+
+        Window window = getWindow();
+        window.setStatusBarColor(getResources().getColor(R.color.colorStanzeDark));
+
         setSupportActionBar(toolbar);
 
         //Bottone fluttuante
@@ -79,7 +91,7 @@ public class StanzeActivity extends AppCompatActivity
         elencoStanze = DatabaseManager.getAllStanze(MainActivity.database);
 
         //Popolo la lista
-        aggiornaLista(elencoStanze);
+        aggiornaLista(elencoStanze, true);
 
         listaStanzeView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -128,6 +140,29 @@ public class StanzeActivity extends AppCompatActivity
             StanzaDialog dialog = StanzaDialog.newInstance(builder, false);
             dialog.show(getSupportFragmentManager(),"stanza_dialog");
         }
+
+        //Inzializzo la search view
+        searchView = findViewById(R.id.searchStanze);
+        searchView.setActivated(true);
+        searchView.setQueryHint(getResources().getString(R.string.search_query_hint));
+        searchView.onActionViewExpanded();
+        searchView.setIconified(false);
+        searchView.clearFocus();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                //Effettuo la ricerca
+                search(newText);
+
+                return false;
+            }
+        });
     }
 
     @Override
@@ -201,19 +236,33 @@ public class StanzeActivity extends AppCompatActivity
 
     /***
      * Aggiorna la lista
-     * @param elencoStanzeNew
+     * @param elencoNew
      */
-    public void aggiornaLista(ArrayList<StanzaDao> elencoStanzeNew)
+    public void aggiornaLista(ArrayList<StanzaDao> elencoNew, boolean aggiornaDaDB)
     {
-        /*
-        ArrayAdapter<CategoriaDao> adapter = new LocationAdapter(elencoPostiMemorabili, this);
-        listaPostiView.setAdapter(adapter);
-        */
+        //La variabile globale deve essere aggiornata, ma solo se sto aggiornando la lista dopo una modifica su DB
+        if(aggiornaDaDB)
+            elencoStanze = elencoNew;
 
-        //La variabile globale deve essere aggiornata
-        elencoStanze = elencoStanzeNew;
-
-        ArrayAdapter<StanzaDao> valori = new StanzaAdapter(elencoStanze, this);
+        ArrayAdapter<StanzaDao> valori = new StanzaAdapter(elencoNew, this);
         listaStanzeView.setAdapter(valori);
+    }
+
+    /***
+     * Effettuo la ricerca nella lista
+     *
+     * @param searchText
+     */
+    private void search(String searchText)
+    {
+        ArrayList<StanzaDao> elencoRistretto = new ArrayList<StanzaDao>();
+
+        for (StanzaDao dao: elencoStanze) {
+            if(dao.searchItem(searchText))
+                elencoRistretto.add(dao);
+        }
+
+        //Aggiorno la lista in visualizzazione
+        aggiornaLista(elencoRistretto, false);
     }
 }

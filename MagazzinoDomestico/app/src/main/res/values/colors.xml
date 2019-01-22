@@ -3,4 +3,18 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="colorNames">#252525</color>
+
+    <color name="colorStanzeDark">#cc0000</color>
+    <color name="colorStanze">#e10000</color>
+
+    <color name="colorMobiliDark">#ef7f00</color>
+    <color name="colorMobili">#ffff8800</color>
+
+    <color name="colorContenitoriDark">#ff0099cc</color>
+    <color name="colorContenitori">#ff33b5e5</color>
+
+    <color name="colorCategorieDark">#ff669900</color>
+    <color name="colorCategorie">#ff99cc00</color>
 </resources>

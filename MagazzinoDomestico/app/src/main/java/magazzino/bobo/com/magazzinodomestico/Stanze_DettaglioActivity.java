@@ -2,6 +2,7 @@ package magazzino.bobo.com.magazzinodomestico;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -469,16 +470,36 @@ public class Stanze_DettaglioActivity extends AppCompatActivity
      */
     private void cambiaTitolo()
     {
+        //Colori di default: gli oggetti
+        int colorDark = R.color.colorPrimaryDark;
+        int color = R.color.colorPrimary;
+
         String sottoTitolo = "";
 
-        if (tipoElementiDaMostrare == LocationDao.MOBILE)
+        if (tipoElementiDaMostrare == LocationDao.MOBILE) {
             sottoTitolo = getResources().getString(R.string.mobili);
-        else if (tipoElementiDaMostrare == LocationDao.CONTENITORE)
+
+            //Setto i colori della barra superiore
+            colorDark = R.color.colorMobiliDark;
+            color = R.color.colorMobili;
+
+        }
+        else if (tipoElementiDaMostrare == LocationDao.CONTENITORE) {
             sottoTitolo = getResources().getString(R.string.contenitori);
-        else
+
+            //Setto i colori della barra superiore
+            colorDark = R.color.colorContenitoriDark;
+            color = R.color.colorContenitori;
+        }
+        else {
             sottoTitolo = getResources().getString(R.string.oggetti);
+        }
 
         actionBar.setTitle(NOME_STANZA_SELEZIONATA);
         actionBar.setSubtitle(sottoTitolo);
+
+        //Setto il colore di action e status bar in funzione della tipologia di elemento che sto osservando
+        getWindow().setStatusBarColor(getResources().getColor(colorDark));
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(color)));
     }
 }

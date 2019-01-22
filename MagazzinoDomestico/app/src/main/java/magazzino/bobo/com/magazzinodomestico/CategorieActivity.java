@@ -3,6 +3,7 @@ package magazzino.bobo.com.magazzinodomestico;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -16,10 +17,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ import java.util.ArrayList;
 import magazzino.bobo.com.magazzinodomestico.adapters.CategoriaAdapter;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
 import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
+import magazzino.bobo.com.magazzinodomestico.db.dao.ContenitoreDao;
 import magazzino.bobo.com.magazzinodomestico.dialogfragments.CategoriaDialog;
 
 public class CategorieActivity extends AppCompatActivity
@@ -34,6 +38,7 @@ public class CategorieActivity extends AppCompatActivity
 
     ListView listaCategorieView;
     ArrayList<CategoriaDao> elencoCategorie;
+    SearchView searchView;
 
 
 
@@ -42,7 +47,7 @@ public class CategorieActivity extends AppCompatActivity
         super.onResume();
 
         //Aggiorno la lista
-        aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database, false));
+        aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database, false), true);
     }
 
     @Override
@@ -50,7 +55,13 @@ public class CategorieActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categorie);
 
+        //Recupero l'action bar e la status bar e cambio i loro colori
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setBackground(new ColorDrawable(getResources().getColor(R.color.colorCategorie)));
+
+        Window window = getWindow();
+        window.setStatusBarColor(getResources().getColor(R.color.colorCategorieDark));
+
         setSupportActionBar(toolbar);
 
         //Bottone fluttuante
@@ -82,7 +93,7 @@ public class CategorieActivity extends AppCompatActivity
         elencoCategorie = DatabaseManager.getAllCategorie(MainActivity.database, false);
 
         //Popolo la lista delle categorie
-        aggiornaLista(elencoCategorie);
+        aggiornaLista(elencoCategorie, true);
 
         listaCategorieView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -119,6 +130,29 @@ public class CategorieActivity extends AppCompatActivity
                 //Toast.makeText(CategorieActivity.this, "LongClick", Toast.LENGTH_SHORT).show();
                 return true;
 
+            }
+        });
+
+        //Inzializzo la search view
+        searchView = findViewById(R.id.searchCategorie);
+        searchView.setActivated(true);
+        searchView.setQueryHint(getResources().getString(R.string.search_query_hint));
+        searchView.onActionViewExpanded();
+        searchView.setIconified(false);
+        searchView.clearFocus();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                //Effettuo la ricerca
+                search(newText);
+
+                return false;
             }
         });
     }
@@ -196,14 +230,33 @@ public class CategorieActivity extends AppCompatActivity
 
     /***
      * Aggiorna la lista delle categorie
-     * @param elencoCategorieNew
+     * @param elencoNew
      */
-    public void aggiornaLista(ArrayList<CategoriaDao> elencoCategorieNew)
+    public void aggiornaLista(ArrayList<CategoriaDao> elencoNew, boolean aggiornaDaDB)
     {
-        //La variabile globale deve essere aggiornata
-        elencoCategorie = elencoCategorieNew;
+        //La variabile globale deve essere aggiornata, ma solo se sto aggiornando la lista dopo una modifica su DB
+        if(aggiornaDaDB)
+            elencoCategorie = elencoNew;
 
-        ArrayAdapter<CategoriaDao> valori = new CategoriaAdapter(elencoCategorie, this);
+        ArrayAdapter<CategoriaDao> valori = new CategoriaAdapter(elencoNew, this);
         listaCategorieView.setAdapter(valori);
+    }
+
+    /***
+     * Effettuo la ricerca nella lista
+     *
+     * @param searchText
+     */
+    private void search(String searchText)
+    {
+        ArrayList<CategoriaDao> elencoRistretto = new ArrayList<CategoriaDao>();
+
+        for (CategoriaDao dao: elencoCategorie) {
+            if(dao.searchItem(searchText))
+                elencoRistretto.add(dao);
+        }
+
+        //Aggiorno la lista in visualizzazione
+        aggiornaLista(elencoRistretto, false);
     }
 }

@@ -85,7 +85,7 @@ public class StanzaDialog extends DialogFragment {
                             DatabaseManager.updateStanza(MainActivity.database, dao);
 
                             //Avverto la lista che i dati sono cambiati
-                            ((StanzeActivity)getActivity()).aggiornaLista(DatabaseManager.getAllStanze(MainActivity.database));
+                            ((StanzeActivity)getActivity()).aggiornaLista(DatabaseManager.getAllStanze(MainActivity.database), true);
 
                             Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
                         }
@@ -106,7 +106,7 @@ public class StanzaDialog extends DialogFragment {
                                 DatabaseManager.deleteStanza(MainActivity.database, id);
 
                                 //Avverto la lista che i dati sono cambiati
-                                ((StanzeActivity)getActivity()).aggiornaLista(DatabaseManager.getAllStanze(MainActivity.database));
+                                ((StanzeActivity)getActivity()).aggiornaLista(DatabaseManager.getAllStanze(MainActivity.database), true);
 
                                 Toast.makeText(getActivity(), R.string.eliminazione_successo, Toast.LENGTH_SHORT).show();
                             }
@@ -151,7 +151,7 @@ public class StanzaDialog extends DialogFragment {
                                     stanza = new StanzaDao(nome);
                                     DatabaseManager.insertStanza(MainActivity.database, stanza);
 
-                                    ((StanzeActivity)getActivity()).aggiornaLista(DatabaseManager.getAllStanze(MainActivity.database));
+                                    ((StanzeActivity)getActivity()).aggiornaLista(DatabaseManager.getAllStanze(MainActivity.database), true);
 
                                     Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
                                 }

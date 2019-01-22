@@ -84,7 +84,7 @@ public class CategoriaDialog extends DialogFragment {
                             DatabaseManager.updateCategoria(MainActivity.database, dao);
 
                             //Avverto la lista che i dati sono cambiati
-                            ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database, false));
+                            ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database, false), true);
 
                             Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
 
@@ -103,7 +103,7 @@ public class CategoriaDialog extends DialogFragment {
                             DatabaseManager.deleteCategoria(MainActivity.database, id);
 
                             //Avverto la lista che i dati sono cambiati
-                            ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database, false));
+                            ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database, false), true);
 
                             Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
                         }
@@ -144,7 +144,7 @@ public class CategoriaDialog extends DialogFragment {
                                     categoria = new CategoriaDao(nome);
                                     DatabaseManager.insertCategoria(MainActivity.database, categoria);
 
-                                    ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database, false));
+                                    ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database, false), true);
 
                                     Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
                                 }
@@ -159,7 +159,7 @@ public class CategoriaDialog extends DialogFragment {
                             DatabaseManager.deleteCategoria(MainActivity.database, id);
 
                             //Avverto la lista che i dati sono cambiati
-                            ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database, false));
+                            ((CategorieActivity)getActivity()).aggiornaLista(DatabaseManager.getAllCategorie(MainActivity.database, false), true);
 
                             Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
                         }
