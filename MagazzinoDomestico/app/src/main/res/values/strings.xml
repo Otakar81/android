@@ -1,75 +1,75 @@
-<resources>
-    <string name="app_name">Magazzino Domestico</string>
+﻿<resources>
+    <string name="app_name">Personal Warehouse</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Magazzino Domestico</string>
-    <string name="nav_header_subtitle">Trova i tuoi oggetti in un attimo</string>
+    <string name="nav_header_title">Personal Warehouse</string>
+    <string name="nav_header_subtitle">Find your items instantly</string>
     <string name="nav_header_autore">by G.Claudio</string>
     <string name="nav_header_email">gc.decapp@gmail.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="title_activity_main">I miei oggetti</string>
-    <string name="title_activity_categorie">Categorie</string>
-    <string name="title_activity_stanze">Stanze</string>
-    <string name="title_activity_mobili">Mobili</string>
-    <string name="title_activity_contenitori">Contenitori</string>
-    <string name="title_activity_contenitori__dettaglio">Contenitori_DettaglioActivity</string>
-    <string name="title_activity_mobili__dettaglio">Mobili_DettaglioActivity</string>
-    <string name="title_activity_stanze__dettaglio">Mobili_DettaglioActivity</string>
+    <string name="title_activity_main">My Items</string>
+    <string name="title_activity_categorie">Categories</string>
+    <string name="title_activity_stanze">Rooms</string>
+    <string name="title_activity_mobili">Furniture</string>
+    <string name="title_activity_contenitori">Container</string>
+    <string name="title_activity_contenitori__dettaglio">Container_ActivityDetail</string>
+    <string name="title_activity_mobili__dettaglio">Furniture_ActivityDetail</string>
+    <string name="title_activity_stanze__dettaglio">Rooms_ActivityDetail</string>
 
     <!-- Generale -->
-    <string name="aggiungi">Aggiungi</string>
-    <string name="modifica">Modifica</string>
-    <string name="elimina">Elimina</string>
-    <string name="annulla">Annulla</string>
-    <string name="operazione_successo">Operazione effettuata con successo</string>
-    <string name="eliminazione_successo">Eliminazione effettuata con successo</string>
-    <string name="search_query_hint">Cerca</string>
+    <string name="aggiungi">Add</string>
+    <string name="modifica">Modify</string>
+    <string name="elimina">Delete</string>
+    <string name="annulla">Undo</string>
+    <string name="operazione_successo">Operation completed successfully</string>
+    <string name="eliminazione_successo">Deletion successful</string>
+    <string name="search_query_hint">Search</string>
 
-    <string name="elimina_ma_mantieni_contenuto">Eliminalo, ma mantieni il suo contenuto</string>
-    <string name="elimina_insieme_al_contenuto">Eliminalo insieme al suo contenuto</string>
+    <string name="elimina_ma_mantieni_contenuto">Delete it, but keep its content</string>
+    <string name="elimina_insieme_al_contenuto">Delete it and its content</string>
 
 
-    <string name="mobili">Mobili</string>
-    <string name="contenitori">Contenitori</string>
-    <string name="oggetti">Oggetti</string>
+    <string name="mobili">Furniture</string>
+    <string name="contenitori">Containers</string>
+    <string name="oggetti">Items</string>
 
-    <string name="errore_nome">Nome non valido</string>
-    <string name="errore_nome_in_uso">Nome non univoco</string>
-    <string name="errore_campi_obbligatori">Tutti i campi sono obbligatori</string>
+    <string name="errore_nome">Name not valid</string>
+    <string name="errore_nome_in_uso">Name not unique</string>
+    <string name="errore_campi_obbligatori">All fields are mandatory</string>
 
     <!-- Categorie -->
-    <string name="categoria_nessuna">- Nessuna Categoria -</string>
-    <string name="categoria_nome">Nome Categoria</string>
-    <string name="categoria_modifica">Modifica Categoria</string>
-    <string name="categoria_nuova">Nuova Categoria</string>
+    <string name="categoria_nessuna">- No Categories -</string>
+    <string name="categoria_nome">Category Name</string>
+    <string name="categoria_modifica">Modify Category</string>
+    <string name="categoria_nuova">New Category</string>
 
     <!-- Stanze -->
-    <string name="stanza_nome">Nome Stanza</string>
-    <string name="stanza_modifica">Modifica Stanza</string>
-    <string name="stanza_nuovo">Nuova Stanza</string>
-    <string name="stanza_devi_creare_prima">Devi creare la tua prima stanza</string>
-    <string name="stanza_errore_non_vuota">Impossibile cancellare la stanza: occorre svuotarla prima di procedere</string>
+    <string name="stanza_nome">Room Name</string>
+    <string name="stanza_modifica">Modify Room</string>
+    <string name="stanza_nuovo">New Room</string>
+    <string name="stanza_devi_creare_prima">You must create your first room</string>
+    <string name="stanza_errore_non_vuota">Impossible to delete room: you must empty it to proceed</string>
 
     <!-- Mobili -->
-    <string name="mobile_nessuno">- Nessun Mobile -</string>
-    <string name="mobile_nome">Nome del Mobile</string>
-    <string name="mobile_modifica">Modifica Mobile</string>
-    <string name="mobile_nuovo">Nuovo Mobile</string>
-    <string name="mobile_non_vuoto">Il mobile selezionato non è vuoto. Come si vuole procedere?</string>
+    <string name="mobile_nessuno">- No Furniture -</string>
+    <string name="mobile_nome">Furniture Name</string>
+    <string name="mobile_modifica">Modify Furniture</string>
+    <string name="mobile_nuovo">New Furniture</string>
+    <string name="mobile_non_vuoto">Selected furniture is not empty. How do you want to proceed?</string>
 
     <!-- Contenitori -->
-    <string name="contenitore_nessuno">- Nessun Contenitore -</string>
-    <string name="contenitore_nome">Nome Contenitore</string>
-    <string name="contenitore_modifica">Modifica Contenitore</string>
-    <string name="contenitore_nuovo">Nuovo Contenitore</string>
-    <string name="contenitore_non_vuoto">Il contenitore selezionato non è vuoto. Come si vuole procedere?</string>
+    <string name="contenitore_nessuno">- No Container -</string>
+    <string name="contenitore_nome">Container Name</string>
+    <string name="contenitore_modifica">Modify Container</string>
+    <string name="contenitore_nuovo">New Container</string>
+    <string name="contenitore_non_vuoto">Selected container is not empty. How do you want to proceed?</string>
 
     <!-- Oggetti -->
-    <string name="oggetto_nome">Nome dell\'Oggetto</string>
-    <string name="oggetto_modifica">Modifica Oggetto</string>
-    <string name="oggetto_nuovo">Nuovo Oggetto</string>
+    <string name="oggetto_nome">Item Name</string>
+    <string name="oggetto_modifica">Modify Item</string>
+    <string name="oggetto_nuovo">New Item</string>
 
 
 
@@ -80,3 +80,4 @@
     <string name="action_example">Example action</string>
 
 </resources>
+

@@ -755,7 +755,7 @@ public class DatabaseManager {
                         "FROM contenitori c " +
                         "LEFT JOIN mobili m ON c.id_mobile = m.id " +
                         "LEFT JOIN stanze s ON c.id_stanza = s.id " +
-                        "LEFT JOIN categorie cat ON c.id_stanza = cat.id " +
+                        "LEFT JOIN categorie cat ON c.id_categoria = cat.id " +
                         "ORDER BY c.nome";
 
         Cursor c = database.rawQuery(sql, null);
@@ -982,7 +982,7 @@ public class DatabaseManager {
                 "FROM contenitori c " +
                 "LEFT JOIN mobili m ON c.id_mobile = m.id " +
                 "LEFT JOIN stanze s ON c.id_stanza = s.id " +
-                "LEFT JOIN categorie cat ON c.id_stanza = cat.id " +
+                "LEFT JOIN categorie cat ON c.id_categoria = cat.id " +
                 "WHERE c.id = " + id;
 
         Cursor c = database.rawQuery(sql, null);

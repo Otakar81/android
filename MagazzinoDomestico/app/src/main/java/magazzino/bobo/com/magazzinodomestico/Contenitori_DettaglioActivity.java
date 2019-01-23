@@ -61,6 +61,7 @@ public class Contenitori_DettaglioActivity extends AppCompatActivity
         Intent intent = getIntent();
         ID_CONTENITORE_SELEZIONATO = intent.getLongExtra("id_contenitore", -1);
         NOME_CONTENITORE_SELEZIONATO = intent.getStringExtra("nome_contenitore");
+        final long idCategoriaContenitoreSelezionato = intent.getLongExtra("id_categoria", -1);
         long mobileSelezionato = intent.getLongExtra("id_mobile", -1);
         long stanzaSelezionata = intent.getLongExtra("id_stanza", -1);
 
@@ -80,7 +81,7 @@ public class Contenitori_DettaglioActivity extends AppCompatActivity
 
                 //Creo il dialog per il nuovo inserimento
                 AlertDialog.Builder builder = new AlertDialog.Builder(Contenitori_DettaglioActivity.this);
-                OggettoDialog dialog = OggettoDialog.newInstance(builder, false, location);
+                OggettoDialog dialog = OggettoDialog.newInstance(builder, false, location, idCategoriaContenitoreSelezionato);
                 dialog.show(getSupportFragmentManager(),"oggetto_dialog");
             }
         });
@@ -113,7 +114,7 @@ public class Contenitori_DettaglioActivity extends AppCompatActivity
                 OggettoDao dao = (OggettoDao) parent.getItemAtPosition(position); // elencoContenitori.get(position);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(Contenitori_DettaglioActivity.this);
-                OggettoDialog dialog = OggettoDialog.newInstance(builder, true, location);
+                OggettoDialog dialog = OggettoDialog.newInstance(builder, true, location, idCategoriaContenitoreSelezionato);
                 dialog.show(getSupportFragmentManager(),"oggetto_dialog");
 
                 //E lo valorizza con gli attributi dell'oggetto su cui abbiamo cliccato

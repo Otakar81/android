@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 //Creo il dialog per il nuovo inserimento
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                OggettoDialog dialog = OggettoDialog.newInstance(builder, false, null);
+                OggettoDialog dialog = OggettoDialog.newInstance(builder, false, null, -1);
                 dialog.show(getSupportFragmentManager(),"oggetto_dialog");
             }
         });
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity
                 OggettoDao dao = (OggettoDao) parent.getItemAtPosition(position); // elencoContenitori.get(position);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                OggettoDialog dialog = OggettoDialog.newInstance(builder, true, null);
+                OggettoDialog dialog = OggettoDialog.newInstance(builder, true, null, -1);
                 dialog.show(getSupportFragmentManager(),"oggetto_dialog");
 
                 //E lo valorizza con gli attributi dell'oggetto su cui abbiamo cliccato

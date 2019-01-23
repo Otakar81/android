@@ -68,6 +68,8 @@ public class OggettoDialog extends DialogFragment {
     private long id_categoria;
     private long id_contenitore;
 
+    private long id_categoria_suggerita; //Se chiamo il dialog in nuova creazione da un oggetto che abbia la categoria valorizzata
+
 
     private ArrayList<StanzaDao> elencoStanze;
     private ArrayList<MobileDao> elencoMobili;
@@ -87,7 +89,7 @@ public class OggettoDialog extends DialogFragment {
     //Dialog builder
     private AlertDialog.Builder mBuilder;
 
-    public static OggettoDialog newInstance(AlertDialog.Builder builder, boolean isEditMode, LocationDao location){
+    public static OggettoDialog newInstance(AlertDialog.Builder builder, boolean isEditMode, LocationDao location, long id_categoria_suggerita){
 
         if(location == null)
             location = new LocationDao(-1, -1, -1, -1);
@@ -97,6 +99,7 @@ public class OggettoDialog extends DialogFragment {
         dialogFragment.isCreazioneDialog = true;
         dialogFragment.numeroGiri = 0;
         dialogFragment.location = location;
+        dialogFragment.id_categoria_suggerita = id_categoria_suggerita;
         dialogFragment.mBuilder = builder;
         return dialogFragment;
     }
@@ -396,52 +399,67 @@ public class OggettoDialog extends DialogFragment {
         int posizioneCorrenteInLista = 0;
 
         //Stanze
-        for (StanzaDao stanza:elencoStanze) {
-            if(stanza.getId() == idStanza)
-            {
-                elencoStanzeView.setSelection(posizioneCorrenteInLista);
-                break;
-            }else{
-                posizioneCorrenteInLista++;
+        if(idStanza != -1) {
+            for (StanzaDao stanza : elencoStanze) {
+                if (stanza.getId() == idStanza) {
+                    elencoStanzeView.setSelection(posizioneCorrenteInLista);
+                    break;
+                } else {
+                    posizioneCorrenteInLista++;
+                }
             }
         }
 
         posizioneCorrenteInLista = 0;
 
         //Mobili
-        for (MobileDao mobile:elencoMobili) {
-            if(mobile.getId() == idMobile)
-            {
-                elencoMobiliView.setSelection(posizioneCorrenteInLista);
-                break;
-            }else{
-                posizioneCorrenteInLista++;
+        if(idMobile != -1) {
+            for (MobileDao mobile : elencoMobili) {
+                if (mobile.getId() == idMobile) {
+                    elencoMobiliView.setSelection(posizioneCorrenteInLista);
+                    break;
+                } else {
+                    posizioneCorrenteInLista++;
+                }
             }
         }
 
         posizioneCorrenteInLista = 0;
 
         //Contenitori
-        for (ContenitoreDao contenitore:elencoContenitori) {
-            if(contenitore.getId() == idContenitore)
-            {
-                elencoContenitoriView.setSelection(posizioneCorrenteInLista);
-                break;
-            }else{
-                posizioneCorrenteInLista++;
+        if(idContenitore != -1) {
+            for (ContenitoreDao contenitore : elencoContenitori) {
+                if (contenitore.getId() == idContenitore) {
+                    elencoContenitoriView.setSelection(posizioneCorrenteInLista);
+                    break;
+                } else {
+                    posizioneCorrenteInLista++;
+                }
             }
         }
 
         posizioneCorrenteInLista = 0;
 
         //Categorie
-        for (CategoriaDao categoria:elencoCategorie) {
-            if(categoria.getId() == idCategoria)
-            {
-                elencoCategorieView.setSelection(posizioneCorrenteInLista);
-                break;
-            }else{
-                posizioneCorrenteInLista++;
+        if(id_categoria_suggerita != -1) {
+            for (CategoriaDao categoria : elencoCategorie) {
+                if (categoria.getId() == id_categoria_suggerita) {
+                    elencoCategorieView.setSelection(posizioneCorrenteInLista);
+                    break;
+                } else {
+                    posizioneCorrenteInLista++;
+                }
+            }
+        }
+
+        if(idCategoria != -1) {
+            for (CategoriaDao categoria : elencoCategorie) {
+                if (categoria.getId() == idCategoria) {
+                    elencoCategorieView.setSelection(posizioneCorrenteInLista);
+                    break;
+                } else {
+                    posizioneCorrenteInLista++;
+                }
             }
         }
     }

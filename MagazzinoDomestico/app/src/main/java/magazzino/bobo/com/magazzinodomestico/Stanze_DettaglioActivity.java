@@ -106,7 +106,7 @@ public class Stanze_DettaglioActivity extends AppCompatActivity
                 }else{
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(Stanze_DettaglioActivity.this);
-                    OggettoDialog dialog = OggettoDialog.newInstance(builder, false, location);
+                    OggettoDialog dialog = OggettoDialog.newInstance(builder, false, location, -1);
                     dialog.show(getSupportFragmentManager(),"oggetto_dialog");
                 }
             }
@@ -167,6 +167,7 @@ public class Stanze_DettaglioActivity extends AppCompatActivity
                     //Creo un intent e vado sul dettaglio
                     Intent intent = new Intent(getApplicationContext(), Contenitori_DettaglioActivity.class);
                     intent.putExtra("id_contenitore", dao.getId());
+                    intent.putExtra("id_categoria", dao.getId_categoria());
                     intent.putExtra("id_mobile", dao.getId_mobile());
                     intent.putExtra("id_stanza", dao.getId_stanza());
                     intent.putExtra("nome_contenitore", dao.getNome());
@@ -209,7 +210,7 @@ public class Stanze_DettaglioActivity extends AppCompatActivity
                     OggettoDao dao = (OggettoDao) parent.getItemAtPosition(position); // elencoContenitori.get(position);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(Stanze_DettaglioActivity.this);
-                    OggettoDialog dialog = OggettoDialog.newInstance(builder, true, location);
+                    OggettoDialog dialog = OggettoDialog.newInstance(builder, true, location, -1);
                     dialog.show(getSupportFragmentManager(),"oggetto_dialog");
 
                     //E lo valorizza con gli attributi dell'oggetto su cui abbiamo cliccato

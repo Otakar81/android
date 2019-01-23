@@ -97,6 +97,7 @@ public class ContenitoriActivity extends AppCompatActivity
                 //Creo un intent e vado sul dettaglio
                 Intent intent = new Intent(getApplicationContext(), Contenitori_DettaglioActivity.class);
                 intent.putExtra("id_contenitore", dao.getId());
+                intent.putExtra("id_categoria", dao.getId_categoria());
                 intent.putExtra("id_mobile", dao.getId_mobile());
                 intent.putExtra("id_stanza", dao.getId_stanza());
                 intent.putExtra("nome_contenitore", dao.getNome());

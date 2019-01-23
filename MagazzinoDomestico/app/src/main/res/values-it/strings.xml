@@ -1,0 +1,74 @@
+<resources>
+    <string name="app_name">Magazzino Personale</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Magazzino Personale</string>
+    <string name="nav_header_subtitle">Trova i tuoi oggetti in un attimo</string>
+    <string name="nav_header_autore">by G.Claudio</string>
+    <string name="nav_header_email">gc.decapp@gmail.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Impostazioni</string>
+
+    <string name="title_activity_main">I miei oggetti</string>
+    <string name="title_activity_categorie">Categorie</string>
+    <string name="title_activity_stanze">Stanze</string>
+    <string name="title_activity_mobili">Mobili</string>
+    <string name="title_activity_contenitori">Contenitori</string>
+    <string name="title_activity_contenitori__dettaglio">Contenitori_DettaglioActivity</string>
+    <string name="title_activity_mobili__dettaglio">Mobili_DettaglioActivity</string>
+    <string name="title_activity_stanze__dettaglio">Mobili_DettaglioActivity</string>
+
+    <!-- Generale -->
+    <string name="aggiungi">Aggiungi</string>
+    <string name="modifica">Modifica</string>
+    <string name="elimina">Elimina</string>
+    <string name="annulla">Annulla</string>
+    <string name="operazione_successo">Operazione effettuata con successo</string>
+    <string name="eliminazione_successo">Eliminazione effettuata con successo</string>
+    <string name="search_query_hint">Cerca</string>
+
+    <string name="elimina_ma_mantieni_contenuto">Eliminalo, ma mantieni il suo contenuto</string>
+    <string name="elimina_insieme_al_contenuto">Eliminalo insieme al suo contenuto</string>
+
+
+    <string name="mobili">Mobili</string>
+    <string name="contenitori">Contenitori</string>
+    <string name="oggetti">Oggetti</string>
+
+    <string name="errore_nome">Nome non valido</string>
+    <string name="errore_nome_in_uso">Nome non univoco</string>
+    <string name="errore_campi_obbligatori">Tutti i campi sono obbligatori</string>
+
+    <!-- Categorie -->
+    <string name="categoria_nessuna">- Nessuna Categoria -</string>
+    <string name="categoria_nome">Nome Categoria</string>
+    <string name="categoria_modifica">Modifica Categoria</string>
+    <string name="categoria_nuova">Nuova Categoria</string>
+
+    <!-- Stanze -->
+    <string name="stanza_nome">Nome Stanza</string>
+    <string name="stanza_modifica">Modifica Stanza</string>
+    <string name="stanza_nuovo">Nuova Stanza</string>
+    <string name="stanza_devi_creare_prima">Devi creare la tua prima stanza</string>
+    <string name="stanza_errore_non_vuota">Impossibile cancellare la stanza: occorre svuotarla prima di procedere</string>
+
+    <!-- Mobili -->
+    <string name="mobile_nessuno">- Nessun Mobile -</string>
+    <string name="mobile_nome">Nome del Mobile</string>
+    <string name="mobile_modifica">Modifica Mobile</string>
+    <string name="mobile_nuovo">Nuovo Mobile</string>
+    <string name="mobile_non_vuoto">Il mobile selezionato non è vuoto. Come si vuole procedere?</string>
+
+    <!-- Contenitori -->
+    <string name="contenitore_nessuno">- Nessun Contenitore -</string>
+    <string name="contenitore_nome">Nome Contenitore</string>
+    <string name="contenitore_modifica">Modifica Contenitore</string>
+    <string name="contenitore_nuovo">Nuovo Contenitore</string>
+    <string name="contenitore_non_vuoto">Il contenitore selezionato non è vuoto. Come si vuole procedere?</string>
+
+    <!-- Oggetti -->
+    <string name="oggetto_nome">Nome dell\'Oggetto</string>
+    <string name="oggetto_modifica">Modifica Oggetto</string>
+    <string name="oggetto_nuovo">Nuovo Oggetto</string>
+
+</resources>
