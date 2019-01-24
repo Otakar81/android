@@ -241,8 +241,15 @@ public class StanzeActivity extends AppCompatActivity
     public void aggiornaLista(ArrayList<StanzaDao> elencoNew, boolean aggiornaDaDB)
     {
         //La variabile globale deve essere aggiornata, ma solo se sto aggiornando la lista dopo una modifica su DB
-        if(aggiornaDaDB)
+        if(aggiornaDaDB) {
             elencoStanze = elencoNew;
+
+            //Aggiorno la variabile usata per accorgersi se ci sono stanze nel database. In caso negativo, forza la creazione della prima
+            if(elencoStanze.size() == 0)
+                MainActivity.haveRooms = false;
+            else
+                MainActivity.haveRooms = true;
+        }
 
         ArrayAdapter<StanzaDao> valori = new StanzaAdapter(elencoNew, this);
         listaStanzeView.setAdapter(valori);

@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity
 
     //Database
     public static SQLiteDatabase database;
+    public static boolean haveRooms; //True se c'è almeno una stanza nel database
 
     //Elementi della pagina
     ListView listaOggettiView;
@@ -90,11 +91,18 @@ public class MainActivity extends AppCompatActivity
         //Se non ci sono ancora stanze su database, faccio redirect sull'activity relativa
         ArrayList<StanzaDao> elencoStanze = DatabaseManager.getAllStanze(database);
 
-        if(elencoStanze.size() == 0)
-        {
+        if(elencoStanze.size() == 0) {
+
+            haveRooms = false;
+
             Intent intent = new Intent(getApplicationContext(), StanzeActivity.class);
             startActivity(intent);
+
+        }else{
+
+            haveRooms = true;
         }
+
 
         //Inizializzo la ListView
         listaOggettiView = findViewById(R.id.listaOggettiView);

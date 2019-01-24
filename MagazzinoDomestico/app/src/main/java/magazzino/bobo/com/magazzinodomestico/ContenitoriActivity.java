@@ -47,6 +47,13 @@ public class ContenitoriActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contenitori);
 
+        //Se non ci sono stanze, forzo il redirect verso la sezione apposita
+        if(!MainActivity.haveRooms) {
+            Intent intent = new Intent(getApplicationContext(), StanzeActivity.class);
+            startActivity(intent);
+        }
+
+
         //Recupero l'action bar e la status bar e cambio i loro colori
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setBackground(new ColorDrawable(getResources().getColor(R.color.colorContenitori)));
