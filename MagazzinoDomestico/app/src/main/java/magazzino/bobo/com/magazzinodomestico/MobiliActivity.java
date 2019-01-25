@@ -244,7 +244,12 @@ public class MobiliActivity extends AppCompatActivity
 
         //La variabile globale deve essere aggiornata, ma solo se sto aggiornando la lista dopo una modifica su DB
         if(aggiornaDaDB)
+        {
             elencoMobili = elencoNew;
+
+            if(searchView != null) //Dopo una operazione che ha cambiato la lista, azzero la stringa di ricerca
+                searchView.setQuery("", false);
+        }
 
 
         ArrayAdapter<MobileDao> valori = new MobileAdapter(elencoNew, this); //new ArrayAdapter<MobileDao>(this, android.R.layout.simple_list_item_1, elencoNew);

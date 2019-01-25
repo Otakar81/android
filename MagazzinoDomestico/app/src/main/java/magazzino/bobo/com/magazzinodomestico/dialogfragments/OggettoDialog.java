@@ -441,18 +441,20 @@ public class OggettoDialog extends DialogFragment {
         posizioneCorrenteInLista = 0;
 
         //Categorie
-        if(id_categoria_suggerita != -1) {
-            for (CategoriaDao categoria : elencoCategorie) {
-                if (categoria.getId() == id_categoria_suggerita) {
-                    elencoCategorieView.setSelection(posizioneCorrenteInLista);
-                    break;
-                } else {
-                    posizioneCorrenteInLista++;
+        if(!isEditMode) //Sui nuovi inserimenti, verifico la eventuale categoria del contenitore in cui sto inserendo l'oggetto
+        {
+            if(id_categoria_suggerita != -1) {
+                for (CategoriaDao categoria : elencoCategorie) {
+                    if (categoria.getId() == id_categoria_suggerita) {
+                        elencoCategorieView.setSelection(posizioneCorrenteInLista);
+                        break;
+                    } else {
+                        posizioneCorrenteInLista++;
+                    }
                 }
             }
-        }
 
-        if(idCategoria != -1) {
+        } else if(idCategoria != -1) { //Altrimenti valorizzo con i campi dell'oggetto
             for (CategoriaDao categoria : elencoCategorie) {
                 if (categoria.getId() == idCategoria) {
                     elencoCategorieView.setSelection(posizioneCorrenteInLista);

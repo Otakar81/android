@@ -232,7 +232,12 @@ public class Contenitori_DettaglioActivity extends AppCompatActivity
     {
         //La variabile globale deve essere aggiornata, ma solo se sto aggiornando la lista dopo una modifica su DB
         if(aggiornaDaDB)
+        {
             elencoOggetti = elencoNew;
+
+            if(searchView != null) //Dopo una operazione che ha cambiato la lista, azzero la stringa di ricerca
+                searchView.setQuery("", false);
+        }
 
         //ArrayAdapter<OggettoDao> valori = new ArrayAdapter<OggettoDao>(this, android.R.layout.simple_list_item_1, elencoNew);
         ArrayAdapter<OggettoDao> valori = new OggettoAdapter(elencoNew, this);

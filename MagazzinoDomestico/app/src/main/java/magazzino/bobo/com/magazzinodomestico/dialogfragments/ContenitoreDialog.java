@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -74,6 +75,7 @@ public class ContenitoreDialog extends DialogFragment {
     private Spinner elencoStanzeView;
     private Spinner elencoMobiliView;
     private Spinner elencoCategorieView;
+    private CheckBox propagaCategoriaCheck;
 
 
     //Dialog builder
@@ -106,6 +108,7 @@ public class ContenitoreDialog extends DialogFragment {
         elencoStanzeView = view.findViewById(R.id.elencoStanze);
         elencoMobiliView = view.findViewById(R.id.elencoMobili);
         elencoCategorieView = view.findViewById(R.id.elencoCategorie);
+        propagaCategoriaCheck = view.findViewById(R.id.checkEstendiCategoria);
 
 
         //Setto l'adapter per gli spinner
@@ -177,15 +180,17 @@ public class ContenitoreDialog extends DialogFragment {
                             MobileDao mobile = (MobileDao) elencoMobiliView.getSelectedItem();
                             CategoriaDao categoria = (CategoriaDao) elencoCategorieView.getSelectedItem();
 
+                            //True, se l'utente chiede di salvare la categoria selezionata anche per tutti gli oggetti contenuti nel contenitore
+                            boolean propagaCategoria = propagaCategoriaCheck.isChecked();
+
                             ContenitoreDao dao = new ContenitoreDao(id, nome, categoria.getId(), categoria.getNome(),
                                     stanza.getId(), stanza.getNome(), mobile.getId(), mobile.getNome());
 
 
                             //Modifico
-                            DatabaseManager.updateContenitore(MainActivity.database, dao);
+                            DatabaseManager.updateContenitore(MainActivity.database, dao, propagaCategoria);
 
                             //Avverto la lista che i dati sono cambiati
-                            //((ContenitoriActivity)getActivity()).aggiornaLista(DatabaseManager.getAllContenitori(MainActivity.database), true);
                             updateAdapterLocation();
 
                             Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
@@ -256,6 +261,10 @@ public class ContenitoreDialog extends DialogFragment {
 
         }else{ //Finestra per nuovo inserimento
 
+            //In creazione, non ha senso avere il check di propagazione della categoria: non ho oggetti
+            propagaCategoriaCheck.setVisibility(View.INVISIBLE);
+
+            //Costruisco il dialog
             mBuilder.setView(view)
                     .setIcon(R.drawable.nav_contenitori)
                     .setTitle(R.string.contenitore_nuovo)

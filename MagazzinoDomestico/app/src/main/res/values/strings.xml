@@ -64,6 +64,7 @@
     <string name="contenitore_nome">Container Name</string>
     <string name="contenitore_modifica">Modify Container</string>
     <string name="contenitore_nuovo">New Container</string>
+    <string name="contenitore_eredita_categoria">Apply the same category to all the objects contained</string>
     <string name="contenitore_non_vuoto">Selected container is not empty. How do you want to proceed?</string>
 
     <!-- Oggetti -->

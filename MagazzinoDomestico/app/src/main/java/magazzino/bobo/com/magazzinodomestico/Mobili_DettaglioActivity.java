@@ -322,7 +322,12 @@ public class Mobili_DettaglioActivity extends AppCompatActivity
     {
         //La variabile globale deve essere aggiornata, ma solo se sto aggiornando la lista dopo una modifica su DB
         if(aggiornaDaDB)
+        {
             elencoOggetti = elencoNew;
+
+            if(searchView != null) //Dopo una operazione che ha cambiato la lista, azzero la stringa di ricerca
+                searchView.setQuery("", false);
+        }
 
         ArrayAdapter<OggettoDao> valori = new OggettoAdapter(elencoNew, this);
         listaView.setAdapter(valori);
@@ -337,7 +342,12 @@ public class Mobili_DettaglioActivity extends AppCompatActivity
     {
         //La variabile globale deve essere aggiornata, ma solo se sto aggiornando la lista dopo una modifica su DB
         if(aggiornaDaDB)
+        {
             elencoContenitori = elencoNew;
+
+            if(searchView != null) //Dopo una operazione che ha cambiato la lista, azzero la stringa di ricerca
+                searchView.setQuery("", false);
+        }
 
         ArrayAdapter<ContenitoreDao> valori = new ContenitoreAdapter(elencoNew, this);
         listaView.setAdapter(valori);

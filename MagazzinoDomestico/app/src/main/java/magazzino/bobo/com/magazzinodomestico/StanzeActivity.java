@@ -244,6 +244,9 @@ public class StanzeActivity extends AppCompatActivity
         if(aggiornaDaDB) {
             elencoStanze = elencoNew;
 
+            if(searchView != null) //Dopo una operazione che ha cambiato la lista, azzero la stringa di ricerca
+                searchView.setQuery("", false);
+
             //Aggiorno la variabile usata per accorgersi se ci sono stanze nel database. In caso negativo, forza la creazione della prima
             if(elencoStanze.size() == 0)
                 MainActivity.haveRooms = false;

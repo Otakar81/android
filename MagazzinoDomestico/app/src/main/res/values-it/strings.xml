@@ -65,6 +65,7 @@
     <string name="contenitore_modifica">Modifica Contenitore</string>
     <string name="contenitore_nuovo">Nuovo Contenitore</string>
     <string name="contenitore_non_vuoto">Il contenitore selezionato non è vuoto. Come si vuole procedere?</string>
+    <string name="contenitore_eredita_categoria">Applica la stessa categoria per tutti gli oggetti contenuti</string>
 
     <!-- Oggetti -->
     <string name="oggetto_nome">Nome dell\'Oggetto</string>

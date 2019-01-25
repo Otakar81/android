@@ -671,8 +671,9 @@ public class DatabaseManager {
      *
      * @param database
      * @param contenitoreDao
+     * @param propagaCategoria
      */
-    public static void updateContenitore(SQLiteDatabase database, ContenitoreDao contenitoreDao)
+    public static void updateContenitore(SQLiteDatabase database, ContenitoreDao contenitoreDao, boolean propagaCategoria)
     {
         SQLiteStatement stmt = database.compileStatement("UPDATE contenitori SET nome = ?, immagine = ?, id_categoria = ?, id_stanza = ?, id_mobile = ? WHERE id = ?");
         stmt.bindString(1, contenitoreDao.getNome());
@@ -693,6 +694,15 @@ public class DatabaseManager {
         stmt.bindLong(1, contenitoreDao.getId_mobile());
         stmt.bindLong(2, contenitoreDao.getId());
         stmt.execute();
+
+        //Se l'utente lo ha chiesto, propago la categoria scelta per il contenitore a tutti i suoi oggetti
+        if(propagaCategoria)
+        {
+            stmt = database.compileStatement("UPDATE oggetti SET id_categoria = ? WHERE id_contenitore = ?");
+            stmt.bindLong(1, contenitoreDao.getId_categoria());
+            stmt.bindLong(2, contenitoreDao.getId());
+            stmt.execute();
+        }
     }
 
     /***
