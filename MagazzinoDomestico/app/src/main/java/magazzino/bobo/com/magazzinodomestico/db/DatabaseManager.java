@@ -3,6 +3,7 @@ package magazzino.bobo.com.magazzinodomestico.db;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -60,7 +61,7 @@ public class DatabaseManager {
 
 
         //TODO Da riattivare solo al prossimo rilascio
-        //updateDatabase(database);
+        updateDatabase(database);
     }
 
 
@@ -70,17 +71,24 @@ public class DatabaseManager {
      */
     private static void updateDatabase(SQLiteDatabase database)
     {
-        String sql = "ALTER TABLE stanze ADD COLUMN descrizione VARCHAR";
-        database.execSQL(sql);
+        try{
 
-        sql = "ALTER TABLE mobili ADD COLUMN descrizione VARCHAR";
-        database.execSQL(sql);
+            String sql = "ALTER TABLE stanze ADD COLUMN descrizione VARCHAR";
+            database.execSQL(sql);
 
-        sql = "ALTER TABLE contenitori ADD COLUMN descrizione VARCHAR";
-        database.execSQL(sql);
+            sql = "ALTER TABLE mobili ADD COLUMN descrizione VARCHAR";
+            database.execSQL(sql);
 
-        sql = "ALTER TABLE oggetti ADD COLUMN descrizione VARCHAR";
-        database.execSQL(sql);
+            sql = "ALTER TABLE contenitori ADD COLUMN descrizione VARCHAR";
+            database.execSQL(sql);
+
+            sql = "ALTER TABLE oggetti ADD COLUMN descrizione VARCHAR";
+            database.execSQL(sql);
+
+        }catch (Exception e)
+        {
+            Log.i("DEBUG", "Colonna già presente");
+        }
     }
 
 //endregion
