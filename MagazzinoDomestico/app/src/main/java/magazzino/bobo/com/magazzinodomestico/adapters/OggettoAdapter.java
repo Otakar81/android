@@ -20,7 +20,7 @@ public class OggettoAdapter extends ArrayAdapter {
 
     //Costruttore
     public OggettoAdapter(ArrayList<OggettoDao> data, Context context) {
-        super(context, R.layout.row_oggetto, data);
+        super(context, R.layout.row_oggetto_test, data);
         this.dataSet = data;
         this.mContext=context;
     }
@@ -32,24 +32,28 @@ public class OggettoAdapter extends ArrayAdapter {
         OggettoDao dao = dataSet.get(position);
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        View view = inflater.inflate(R.layout.row_oggetto, null);
+        View view = inflater.inflate(R.layout.row_oggetto_test, null);
 
         TextView nomeView = (TextView) view.findViewById(R.id.nome);
         TextView categoriaView = (TextView) view.findViewById(R.id.categoria);
         TextView stanzaView = (TextView) view.findViewById(R.id.stanza);
         TextView mobileView = (TextView) view.findViewById(R.id.mobile);
         TextView contenitoreView = (TextView) view.findViewById(R.id.contenitore);
+        TextView descrizioneView = (TextView) view.findViewById(R.id.descrizione);
 
         //Valorizzo i campi
         nomeView.setText(dao.getNome());
+        descrizioneView.setText(dao.getDescrizione());
         categoriaView.setText(dao.getNome_categoria());
         stanzaView.setText("(" + dao.getNome_stanza() + ")");
         mobileView.setText(dao.getNome_mobile());
         contenitoreView.setText(dao.getNome_contenitore());
 
-        //E nascondo quelli che non uso
-        //distanza.setVisibility(View.INVISIBLE);
-        //rating.setVisibility(View.INVISIBLE);
+
+        //Se la descrizione è vuota, nascondo il campo
+        if(dao.getDescrizione() == null || dao.getDescrizione().trim().length() == 0)
+            descrizioneView.setVisibility(View.GONE);
+
 
         return view;
     }

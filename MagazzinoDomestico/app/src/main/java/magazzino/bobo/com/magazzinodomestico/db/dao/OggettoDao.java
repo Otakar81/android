@@ -4,6 +4,7 @@ public class OggettoDao {
 
     private long id;
     private String nome;
+    private String descrizione;
     private String immagine;
 
     private long id_categoria;
@@ -18,10 +19,11 @@ public class OggettoDao {
     private long id_contenitore;
     private String nome_contenitore;
 
-    public OggettoDao(long id, String nome, String immagine, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
+    public OggettoDao(long id, String nome, String descrizione, String immagine, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
                       long id_mobile, String nome_mobile, long id_contenitore, String nome_contenitore) {
         this.id = id;
         this.nome = nome;
+        this.descrizione = descrizione;
         this.immagine = immagine;
         this.id_categoria = id_categoria;
         this.nome_categoria = nome_categoria;
@@ -33,10 +35,11 @@ public class OggettoDao {
         this.nome_contenitore = nome_contenitore;
     }
 
-    public OggettoDao(long id, String nome, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
+    public OggettoDao(long id, String nome, String descrizione, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
                       long id_mobile, String nome_mobile, long id_contenitore, String nome_contenitore) {
         this.id = id;
         this.nome = nome;
+        this.descrizione = descrizione;
         //this.immagine = immagine;
         this.id_categoria = id_categoria;
         this.nome_categoria = nome_categoria;
@@ -48,10 +51,11 @@ public class OggettoDao {
         this.nome_contenitore = nome_contenitore;
     }
 
-    public OggettoDao(String nome, String immagine, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
+    public OggettoDao(String nome, String descrizione, String immagine, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
                       long id_mobile, String nome_mobile, long id_contenitore, String nome_contenitore) {
         this.id = -1;
         this.nome = nome;
+        this.descrizione = descrizione;
         this.immagine = immagine;
         this.id_categoria = id_categoria;
         this.nome_categoria = nome_categoria;
@@ -63,10 +67,11 @@ public class OggettoDao {
         this.nome_contenitore = nome_contenitore;
     }
 
-    public OggettoDao(String nome, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
+    public OggettoDao(String nome, String descrizione, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
                       long id_mobile, String nome_mobile, long id_contenitore, String nome_contenitore) {
         this.id = -1;
         this.nome = nome;
+        this.descrizione = descrizione;
         //this.immagine = immagine;
         this.id_categoria = id_categoria;
         this.nome_categoria = nome_categoria;
@@ -166,6 +171,14 @@ public class OggettoDao {
         this.nome_contenitore = nome_contenitore;
     }
 
+    public String getDescrizione() {
+        return descrizione;
+    }
+
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
+    }
+
     /***
      * Restituisce true se la stringa passata come argomento "trova" l'oggetto
      *
@@ -175,6 +188,8 @@ public class OggettoDao {
     public boolean searchItem(String searchString)
     {
         if(nome.toUpperCase().contains(searchString.toUpperCase()))
+            return true;
+        if(descrizione != null && descrizione.toUpperCase().contains(searchString.toUpperCase()))
             return true;
         else if(nome_stanza.toUpperCase().contains(searchString.toUpperCase()))
             return true;

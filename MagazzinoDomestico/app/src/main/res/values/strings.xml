@@ -34,6 +34,7 @@
     <string name="mobili">Furniture</string>
     <string name="contenitori">Containers</string>
     <string name="oggetti">Items</string>
+    <string name="descrizione">Description</string>
 
     <string name="errore_nome">Name not valid</string>
     <string name="errore_nome_in_uso">Name not unique</string>
