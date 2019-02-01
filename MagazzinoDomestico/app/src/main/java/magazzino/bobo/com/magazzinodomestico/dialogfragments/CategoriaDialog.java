@@ -120,7 +120,6 @@ public class CategoriaDialog extends DialogFragment {
             mBuilder.setView(view)
                     .setIcon(R.drawable.nav_categorie)
                     .setTitle(R.string.categoria_nuova)
-                    .setMessage(R.string.categoria_nome)
                     .setPositiveButton(R.string.aggiungi, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

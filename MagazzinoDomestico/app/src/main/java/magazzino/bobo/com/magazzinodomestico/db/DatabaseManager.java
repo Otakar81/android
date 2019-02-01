@@ -443,12 +443,13 @@ public class DatabaseManager {
      */
     public static void insertMobile(SQLiteDatabase database, MobileDao mobileDao)
     {
-        String sql = "INSERT INTO mobili (nome, immagine, id_stanza) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO mobili (nome, descrizione, immagine, id_stanza) VALUES (?, ?, ?, ?)";
 
         SQLiteStatement stmt = database.compileStatement(sql);
         stmt.bindString(1, mobileDao.getNome());
-        stmt.bindString(2, mobileDao.getImmagine());
-        stmt.bindLong(3, mobileDao.getId_stanza());
+        stmt.bindString(2, mobileDao.getDescrizione());
+        stmt.bindString(3, mobileDao.getImmagine());
+        stmt.bindLong(4, mobileDao.getId_stanza());
         stmt.execute();
     }
 
@@ -461,11 +462,12 @@ public class DatabaseManager {
     public static void updateMobile(SQLiteDatabase database, MobileDao mobileDao)
     {
         //Update del mobile
-        SQLiteStatement stmt = database.compileStatement("UPDATE mobili SET nome = ?, immagine = ?, id_stanza = ? WHERE id = ?");
+        SQLiteStatement stmt = database.compileStatement("UPDATE mobili SET nome = ?, descrizione = ?, immagine = ?, id_stanza = ? WHERE id = ?");
         stmt.bindString(1, mobileDao.getNome());
-        stmt.bindString(2, mobileDao.getImmagine());
-        stmt.bindLong(3, mobileDao.getId_stanza());
-        stmt.bindLong(4, mobileDao.getId());
+        stmt.bindString(2, mobileDao.getDescrizione());
+        stmt.bindString(3, mobileDao.getImmagine());
+        stmt.bindLong(4, mobileDao.getId_stanza());
+        stmt.bindLong(5, mobileDao.getId());
         stmt.execute();
 
         //Devo fare update della stanza anche di tutti i contenitori ed oggetti presenti nel mobile, altrimenti potrei avere dati incongruenti
@@ -544,26 +546,23 @@ public class DatabaseManager {
     {
         ArrayList<MobileDao> result = new ArrayList<MobileDao>();
 
-        String sql = "SELECT m.id, m.nome, m.immagine, m.id_stanza, s.nome as nome_stanza, " +
+        String sql = "SELECT m.id, m.nome, m.descrizione, m.immagine, m.id_stanza, s.nome as nome_stanza, " +
                         "(select count(*) from contenitori where id_mobile=m.id) as numero_contenitori, " +
                         "(select count(*) from oggetti where id_mobile=m.id) as numero_oggetti " +
                      "FROM mobili m LEFT JOIN stanze s ON m.id_stanza = s.id ORDER BY m.nome";
 
         Cursor c = database.rawQuery(sql, null);
 
-        int idIndex = c.getColumnIndex("id");
-        int nomeIndex = c.getColumnIndex("nome");
-        int immagineIndex = c.getColumnIndex("immagine");
-        int idStanzaIndex = c.getColumnIndex("id_stanza");
         int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
 
         while (c.moveToNext())
         {
-            long id = c.getLong(idIndex);
-            long idStanza = c.getLong(idStanzaIndex);
+            long id = c.getLong(c.getColumnIndex("id"));
+            long idStanza = c.getLong(c.getColumnIndex("id_stanza"));
 
-            String nome = c.getString(nomeIndex);
-            String immagine = c.getString(immagineIndex);
+            String nome = c.getString(c.getColumnIndex("nome"));
+            String descrizione = c.getString(c.getColumnIndex("descrizione"));
+            String immagine = c.getString(c.getColumnIndex("immagine"));
             String nomeStanza = "";
 
             if(!c.isNull(nomeStanzaIndex))
@@ -572,7 +571,7 @@ public class DatabaseManager {
             int numeroContenitori = c.getInt(c.getColumnIndex("numero_contenitori"));
             int numeroOggetti = c.getInt(c.getColumnIndex("numero_oggetti"));
 
-            MobileDao dao = new MobileDao(id, nome, immagine, idStanza, nomeStanza);
+            MobileDao dao = new MobileDao(id, nome, descrizione, immagine, idStanza, nomeStanza);
             dao.setNumeroContenitori(numeroContenitori);
             dao.setNumeroOggetti(numeroOggetti);
 
@@ -595,7 +594,7 @@ public class DatabaseManager {
     {
         ArrayList<MobileDao> result = new ArrayList<MobileDao>();
 
-        String sql = "SELECT m.id, m.nome, m.immagine, m.id_stanza, s.nome as nome_stanza, " +
+        String sql = "SELECT m.id, m.nome, m.descrizione, m.immagine, m.id_stanza, s.nome as nome_stanza, " +
                         "(select count(*) from contenitori where id_mobile=m.id) as numero_contenitori, " +
                         "(select count(*) from oggetti where id_mobile=m.id) as numero_oggetti " +
                      "FROM mobili m LEFT JOIN stanze s ON m.id_stanza = s.id " +
@@ -603,22 +602,20 @@ public class DatabaseManager {
 
         Cursor c = database.rawQuery(sql, null);
 
-        int idIndex = c.getColumnIndex("id");
-        int nomeIndex = c.getColumnIndex("nome");
-        int immagineIndex = c.getColumnIndex("immagine");
-        int idStanzaIndex = c.getColumnIndex("id_stanza");
+
         int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
 
         if(showDefaultElement) //Se true, inserisco il record di default
-            result.add(new MobileDao(-1, "-", "", -1, ""));
+            result.add(new MobileDao(-1, "-", "", "", -1, ""));
 
         while (c.moveToNext())
         {
-            long id = c.getLong(idIndex);
-            long idStanza = c.getLong(idStanzaIndex);
+            long id = c.getLong(c.getColumnIndex("id"));
+            long idStanza = c.getLong(c.getColumnIndex("id_stanza"));
 
-            String nome = c.getString(nomeIndex);
-            String immagine = c.getString(immagineIndex);
+            String nome = c.getString(c.getColumnIndex("nome"));
+            String descrizione = c.getString(c.getColumnIndex("descrizione"));
+            String immagine = c.getString(c.getColumnIndex("immagine"));
             String nomeStanza = "";
 
             if(!c.isNull(nomeStanzaIndex))
@@ -627,7 +624,7 @@ public class DatabaseManager {
             int numeroContenitori = c.getInt(c.getColumnIndex("numero_contenitori"));
             int numeroOggetti = c.getInt(c.getColumnIndex("numero_oggetti"));
 
-            MobileDao dao = new MobileDao(id, nome, immagine, idStanza, nomeStanza);
+            MobileDao dao = new MobileDao(id, nome, descrizione, immagine, idStanza, nomeStanza);
             dao.setNumeroContenitori(numeroContenitori);
             dao.setNumeroOggetti(numeroOggetti);
 
@@ -652,23 +649,21 @@ public class DatabaseManager {
 
         Cursor c = database.rawQuery("SELECT * FROM mobili m LEFT JOIN stanze s ON m.id_stanza = s.id where m.id = " + id, null);
 
-        int nomeIndex = c.getColumnIndex("nome");
-        int immagineIndex = c.getColumnIndex("immagine");
-        int idStanzaIndex = c.getColumnIndex("id_stanza");
         int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
 
         if (c.moveToNext())
         {
-            long idStanza = c.getLong(idStanzaIndex);
+            long idStanza = c.getLong(c.getColumnIndex("id_stanza"));
 
-            String nome = c.getString(nomeIndex);
-            String immagine = c.getString(immagineIndex);
+            String nome = c.getString(c.getColumnIndex("nome"));
+            String descrizione = c.getString(c.getColumnIndex("descrizione"));
+            String immagine = c.getString(c.getColumnIndex("immagine"));
             String nomeStanza = "";
 
             if(!c.isNull(nomeStanzaIndex))
                 c.getString(nomeStanzaIndex);
 
-            result = new MobileDao(id, nome, immagine, idStanza, nomeStanza);
+            result = new MobileDao(id, nome, descrizione, immagine, idStanza, nomeStanza);
         }
 
         c.close();
@@ -687,14 +682,15 @@ public class DatabaseManager {
      */
     public static void insertContenitore(SQLiteDatabase database, ContenitoreDao contenitoreDao)
     {
-        String sql = "INSERT INTO contenitori (nome, immagine, id_categoria, id_stanza, id_mobile) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO contenitori (nome, descrizione, immagine, id_categoria, id_stanza, id_mobile) VALUES (?, ?, ?, ?, ?, ?)";
 
         SQLiteStatement stmt = database.compileStatement(sql);
         stmt.bindString(1, contenitoreDao.getNome());
-        stmt.bindString(2, contenitoreDao.getImmagine());
-        stmt.bindLong(3, contenitoreDao.getId_categoria());
-        stmt.bindLong(4, contenitoreDao.getId_stanza());
-        stmt.bindLong(5, contenitoreDao.getId_mobile());
+        stmt.bindString(2, contenitoreDao.getDescrizione());
+        stmt.bindString(3, contenitoreDao.getImmagine());
+        stmt.bindLong(4, contenitoreDao.getId_categoria());
+        stmt.bindLong(5, contenitoreDao.getId_stanza());
+        stmt.bindLong(6, contenitoreDao.getId_mobile());
         stmt.execute();
     }
 
@@ -707,13 +703,14 @@ public class DatabaseManager {
      */
     public static void updateContenitore(SQLiteDatabase database, ContenitoreDao contenitoreDao, boolean propagaCategoria)
     {
-        SQLiteStatement stmt = database.compileStatement("UPDATE contenitori SET nome = ?, immagine = ?, id_categoria = ?, id_stanza = ?, id_mobile = ? WHERE id = ?");
+        SQLiteStatement stmt = database.compileStatement("UPDATE contenitori SET nome = ?, descrizione = ?, immagine = ?, id_categoria = ?, id_stanza = ?, id_mobile = ? WHERE id = ?");
         stmt.bindString(1, contenitoreDao.getNome());
-        stmt.bindString(2, contenitoreDao.getImmagine());
-        stmt.bindLong(3, contenitoreDao.getId_categoria());
-        stmt.bindLong(4, contenitoreDao.getId_stanza());
-        stmt.bindLong(5, contenitoreDao.getId_mobile());
-        stmt.bindLong(6, contenitoreDao.getId());
+        stmt.bindString(2, contenitoreDao.getDescrizione());
+        stmt.bindString(3, contenitoreDao.getImmagine());
+        stmt.bindLong(4, contenitoreDao.getId_categoria());
+        stmt.bindLong(5, contenitoreDao.getId_stanza());
+        stmt.bindLong(6, contenitoreDao.getId_mobile());
+        stmt.bindLong(7, contenitoreDao.getId());
         stmt.execute();
 
         //Devo fare update della stanza e del mobile anche di tutti gli oggetti presenti nel contenitore, altrimenti potrei avere dati incongruenti
@@ -772,9 +769,7 @@ public class DatabaseManager {
         Cursor c = database.rawQuery(sql, null);
 
         if (c.moveToNext())
-        {
             numeroAssociazioni = c.getInt(c.getColumnIndex("numero_oggetti"));
-        }
 
         c.close();
 
@@ -791,7 +786,7 @@ public class DatabaseManager {
     {
         ArrayList<ContenitoreDao> result = new ArrayList<ContenitoreDao>();
 
-        String sql = "SELECT c.id, c.nome, c.immagine, c.id_categoria, c.id_stanza, c.id_mobile, " +
+        String sql = "SELECT c.id, c.nome, c.descrizione, c.immagine, c.id_categoria, c.id_stanza, c.id_mobile, " +
                         "m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria, " +
                         "(select count(*) from oggetti where id_contenitore=c.id) as numero_oggetti " +
                         "FROM contenitori c " +
@@ -802,10 +797,6 @@ public class DatabaseManager {
 
         Cursor c = database.rawQuery(sql, null);
 
-        int idIndex = c.getColumnIndex("id");
-        int nomeIndex = c.getColumnIndex("nome");
-        int immagineIndex = c.getColumnIndex("immagine");
-        int idMobileIndex = c.getColumnIndex("id_mobile");
         int nomeMobileIndex = c.getColumnIndex("nome_mobile");
         int idStanzaIndex = c.getColumnIndex("id_stanza");
         int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
@@ -814,13 +805,14 @@ public class DatabaseManager {
 
         while (c.moveToNext())
         {
-            long id = c.getLong(idIndex);
+            long id = c.getLong(c.getColumnIndex("id"));
             long idStanza = c.getLong(idStanzaIndex);
-            long idMobile = c.getLong(idMobileIndex);
+            long idMobile = c.getLong(c.getColumnIndex("id_mobile"));
             long idCategoria = c.getLong(idCategoriaIndex);
 
-            String nome = c.getString(nomeIndex);
-            String immagine = c.getString(immagineIndex);
+            String nome = c.getString(c.getColumnIndex("nome"));
+            String descrizione = c.getString(c.getColumnIndex("descrizione"));
+            String immagine = c.getString(c.getColumnIndex("immagine"));
 
             String nomeMobile = "";
 
@@ -839,7 +831,7 @@ public class DatabaseManager {
 
             int numeroOggetti = c.getInt(c.getColumnIndex("numero_oggetti"));
 
-            ContenitoreDao dao = new ContenitoreDao(id, nome, immagine, idCategoria, nomeCategoria,
+            ContenitoreDao dao = new ContenitoreDao(id, nome, descrizione, immagine, idCategoria, nomeCategoria,
                     idStanza, nomeStanza, idMobile, nomeMobile);
 
             dao.setNumeroOggetti(numeroOggetti);
@@ -867,7 +859,7 @@ public class DatabaseManager {
         long id_mobile = location.getId_mobile();
         long id_categoria = location.getId_categoria();
 
-        String sql = "SELECT c.id, c.nome, c.immagine, c.id_categoria, c.id_stanza, c.id_mobile, " +
+        String sql = "SELECT c.id, c.nome, c.descrizione, c.immagine, c.id_categoria, c.id_stanza, c.id_mobile, " +
                 "m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria, " +
                 "(select count(*) from oggetti where id_contenitore=c.id) as numero_oggetti " +
                 "FROM contenitori c " +
@@ -882,14 +874,11 @@ public class DatabaseManager {
 
 
         if(showDefaultElement) //Se true, inserisco il record di default
-            result.add(new ContenitoreDao(-1, "-", "", -1, "", -1, ""));
+            result.add(new ContenitoreDao(-1, "-", "", "", -1, "", -1, ""));
 
 
         Cursor c = database.rawQuery(sql, null);
 
-        int idIndex = c.getColumnIndex("id");
-        int nomeIndex = c.getColumnIndex("nome");
-        int immagineIndex = c.getColumnIndex("immagine");
         int idMobileIndex = c.getColumnIndex("id_mobile");
         int nomeMobileIndex = c.getColumnIndex("nome_mobile");
         int idStanzaIndex = c.getColumnIndex("id_stanza");
@@ -899,13 +888,14 @@ public class DatabaseManager {
 
         while (c.moveToNext())
         {
-            long id = c.getLong(idIndex);
+            long id = c.getLong(c.getColumnIndex("id"));
             long idStanza = c.getLong(idStanzaIndex);
             long idMobile = c.getLong(idMobileIndex);
             long idCategoria = c.getLong(idCategoriaIndex);
 
-            String nome = c.getString(nomeIndex);
-            String immagine = c.getString(immagineIndex);
+            String nome = c.getString(c.getColumnIndex("nome"));
+            String descrizione = c.getString(c.getColumnIndex("descrizione"));
+            String immagine = c.getString(c.getColumnIndex("immagine"));
 
             String nomeMobile = "";
 
@@ -924,7 +914,7 @@ public class DatabaseManager {
 
             int numeroOggetti = c.getInt(c.getColumnIndex("numero_oggetti"));
 
-            ContenitoreDao dao = new ContenitoreDao(id, nome, immagine, idCategoria, nomeCategoria,
+            ContenitoreDao dao = new ContenitoreDao(id, nome, descrizione, immagine, idCategoria, nomeCategoria,
                     idStanza, nomeStanza, idMobile, nomeMobile);
 
             dao.setNumeroOggetti(numeroOggetti);
@@ -947,7 +937,7 @@ public class DatabaseManager {
     {
         ArrayList<ContenitoreDao> result = new ArrayList<ContenitoreDao>();
 
-        String sql = "SELECT c.id, c.nome, c.immagine, c.id_categoria, c.id_stanza, c.id_mobile, " +
+        String sql = "SELECT c.id, c.nome, c.descrizione, c.immagine, c.id_categoria, c.id_stanza, c.id_mobile, " +
                 "m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
                 "FROM contenitori c " +
                 "LEFT JOIN mobili m ON c.id_mobile = m.id " +
@@ -961,25 +951,20 @@ public class DatabaseManager {
 
         Cursor c = database.rawQuery(sql, null);
 
-        int idIndex = c.getColumnIndex("id");
-        int nomeIndex = c.getColumnIndex("nome");
-        int immagineIndex = c.getColumnIndex("immagine");
-        int idMobileIndex = c.getColumnIndex("id_mobile");
         int nomeMobileIndex = c.getColumnIndex("nome_mobile");
-        int idStanzaIndex = c.getColumnIndex("id_stanza");
         int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
-        int idCategoriaIndex = c.getColumnIndex("id_categoria");
         int nomeCategoriaIndex = c.getColumnIndex("nome_categoria");
 
         while (c.moveToNext())
         {
-            long id = c.getLong(idIndex);
-            long idStanza = c.getLong(idStanzaIndex);
-            long idMobile = c.getLong(idMobileIndex);
-            long idCategoria = c.getLong(idCategoriaIndex);
+            long id = c.getLong(c.getColumnIndex("id"));
+            long idStanza = c.getLong(c.getColumnIndex("id_stanza"));
+            long idMobile = c.getLong(c.getColumnIndex("id_mobile"));
+            long idCategoria = c.getLong(c.getColumnIndex("id_categoria"));
 
-            String nome = c.getString(nomeIndex);
-            String immagine = c.getString(immagineIndex);
+            String nome = c.getString(c.getColumnIndex("nome"));
+            String descrizione = c.getString(c.getColumnIndex("descrizione"));
+            String immagine = c.getString(c.getColumnIndex("immagine"));
 
             String nomeMobile = "";
 
@@ -997,7 +982,7 @@ public class DatabaseManager {
                 nomeCategoria = c.getString(nomeCategoriaIndex);
 
 
-            ContenitoreDao dao = new ContenitoreDao(id, nome, immagine, idCategoria, nomeCategoria,
+            ContenitoreDao dao = new ContenitoreDao(id, nome, descrizione, immagine, idCategoria, nomeCategoria,
                     idStanza, nomeStanza, idMobile, nomeMobile);
 
             result.add(dao);
@@ -1019,7 +1004,7 @@ public class DatabaseManager {
     {
         ContenitoreDao result = null;
 
-        String sql = "SELECT c.id, c.nome, c.immagine, c.id_categoria, c.id_stanza, c.id_mobile, " +
+        String sql = "SELECT c.id, c.nome, c.descrizione, c.immagine, c.id_categoria, c.id_stanza, c.id_mobile, " +
                 "m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
                 "FROM contenitori c " +
                 "LEFT JOIN mobili m ON c.id_mobile = m.id " +
@@ -1029,25 +1014,20 @@ public class DatabaseManager {
 
         Cursor c = database.rawQuery(sql, null);
 
-        int idIndex = c.getColumnIndex("id");
-        int nomeIndex = c.getColumnIndex("nome");
-        int immagineIndex = c.getColumnIndex("immagine");
-        int idMobileIndex = c.getColumnIndex("id_mobile");
         int nomeMobileIndex = c.getColumnIndex("nome_mobile");
-        int idStanzaIndex = c.getColumnIndex("id_stanza");
         int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
-        int idCategoriaIndex = c.getColumnIndex("id_categoria");
         int nomeCategoriaIndex = c.getColumnIndex("nome_categoria");
 
 
         if (c.moveToNext())
         {
-            long idStanza = c.getLong(idStanzaIndex);
-            long idMobile = c.getLong(idMobileIndex);
-            long idCategoria = c.getLong(idCategoriaIndex);
+            long idStanza = c.getLong(c.getColumnIndex("id_stanza"));
+            long idMobile = c.getLong(c.getColumnIndex("id_mobile"));
+            long idCategoria = c.getLong(c.getColumnIndex("id_categoria"));
 
-            String nome = c.getString(nomeIndex);
-            String immagine = c.getString(immagineIndex);
+            String nome = c.getString(c.getColumnIndex("nome"));
+            String descrizione = c.getString(c.getColumnIndex("descrizione"));
+            String immagine = c.getString(c.getColumnIndex("immagine"));
 
             String nomeMobile = "";
 
@@ -1065,7 +1045,7 @@ public class DatabaseManager {
                 nomeCategoria = c.getString(nomeCategoriaIndex);
 
 
-            result = new ContenitoreDao(id, nome, immagine, idCategoria, nomeCategoria,
+            result = new ContenitoreDao(id, nome, descrizione, immagine, idCategoria, nomeCategoria,
                     idStanza, nomeStanza, idMobile, nomeMobile);
         }
 

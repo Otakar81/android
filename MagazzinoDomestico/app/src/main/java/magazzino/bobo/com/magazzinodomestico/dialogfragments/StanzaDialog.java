@@ -125,7 +125,6 @@ public class StanzaDialog extends DialogFragment {
             mBuilder.setView(view)
                     .setIcon(R.drawable.nav_stanze2)
                     .setTitle(R.string.stanza_nuovo)
-                    .setMessage(R.string.stanza_nome)
                     .setPositiveButton(R.string.aggiungi, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

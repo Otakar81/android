@@ -462,6 +462,17 @@ public class OggettoDialog extends DialogFragment {
                 }
             }
 
+            if(idCategoria != -1) { //Altrimenti valorizzo con i campi dell'oggetto
+                for (CategoriaDao categoria : elencoCategorie) {
+                    if (categoria.getId() == idCategoria) {
+                        elencoCategorieView.setSelection(posizioneCorrenteInLista);
+                        break;
+                    } else {
+                        posizioneCorrenteInLista++;
+                    }
+                }
+            }
+
         } else if(idCategoria != -1) { //Altrimenti valorizzo con i campi dell'oggetto
             for (CategoriaDao categoria : elencoCategorie) {
                 if (categoria.getId() == idCategoria) {

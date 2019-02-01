@@ -61,6 +61,7 @@ public class ContenitoreDialog extends DialogFragment {
     //Variabili di istanza
     private long id;
     private String nome;
+    private String descrizione;
     private long id_stanza;
     private long id_mobile;
     private long id_categoria;
@@ -72,6 +73,7 @@ public class ContenitoreDialog extends DialogFragment {
 
     //Elementi view del dialog
     private EditText nomeView;
+    private EditText descrizioneView;
     private Spinner elencoStanzeView;
     private Spinner elencoMobiliView;
     private Spinner elencoCategorieView;
@@ -105,6 +107,7 @@ public class ContenitoreDialog extends DialogFragment {
 
         //Valorizzo le view del layout
         nomeView = view.findViewById(R.id.nomeContenitore);
+        descrizioneView = view.findViewById(R.id.descrizione);
         elencoStanzeView = view.findViewById(R.id.elencoStanze);
         elencoMobiliView = view.findViewById(R.id.elencoMobili);
         elencoCategorieView = view.findViewById(R.id.elencoCategorie);
@@ -143,13 +146,13 @@ public class ContenitoreDialog extends DialogFragment {
                 {
                     if(isCreazioneDialog)
                     {
-                        settaValoriIstanza(nome, id_stanza, id_mobile, id_categoria);
+                        settaValoriIstanza(nome, descrizione, id_stanza, id_mobile, id_categoria);
                         isCreazioneDialog = false;
                     }
 
                 }else //Altrimenti valorizzo con i valori "imposti" dalla location
                 {
-                    settaValoriIstanza(null, location.getId_stanza(), location.getId_mobile(), location.getId_categoria());
+                    settaValoriIstanza(null,null, location.getId_stanza(), location.getId_mobile(), location.getId_categoria());
 
                     //E disabilito gli spinner già valorizzati
                     disabilitaSpinner();
@@ -175,6 +178,7 @@ public class ContenitoreDialog extends DialogFragment {
                         public void onClick(DialogInterface dialog, int which) {
 
                             String nome = nomeView.getText().toString().trim();
+                            String descrizione = descrizioneView.getText().toString().trim();
 
                             StanzaDao stanza = (StanzaDao) elencoStanzeView.getSelectedItem();
                             MobileDao mobile = (MobileDao) elencoMobiliView.getSelectedItem();
@@ -183,7 +187,7 @@ public class ContenitoreDialog extends DialogFragment {
                             //True, se l'utente chiede di salvare la categoria selezionata anche per tutti gli oggetti contenuti nel contenitore
                             boolean propagaCategoria = propagaCategoriaCheck.isChecked();
 
-                            ContenitoreDao dao = new ContenitoreDao(id, nome, categoria.getId(), categoria.getNome(),
+                            ContenitoreDao dao = new ContenitoreDao(id, nome, descrizione, "", categoria.getId(), categoria.getNome(),
                                     stanza.getId(), stanza.getNome(), mobile.getId(), mobile.getNome());
 
 
@@ -257,7 +261,7 @@ public class ContenitoreDialog extends DialogFragment {
 
             //Se le variabili sono già state valorizzate, le uso per riempire la finestra
             if(this.nome != null)
-                settaValoriIstanza(nome, id_stanza, id_mobile, id_categoria);
+                settaValoriIstanza(nome, descrizione, id_stanza, id_mobile, id_categoria);
 
         }else{ //Finestra per nuovo inserimento
 
@@ -268,12 +272,12 @@ public class ContenitoreDialog extends DialogFragment {
             mBuilder.setView(view)
                     .setIcon(R.drawable.nav_contenitori)
                     .setTitle(R.string.contenitore_nuovo)
-                    .setMessage(R.string.contenitore_nome)
                     .setPositiveButton(R.string.aggiungi, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
                             String nome = nomeView.getText().toString().trim();
+                            String descrizione = descrizioneView.getText().toString().trim();
 
                             StanzaDao stanza = (StanzaDao) elencoStanzeView.getSelectedItem();
                             MobileDao mobile = (MobileDao) elencoMobiliView.getSelectedItem();
@@ -290,7 +294,7 @@ public class ContenitoreDialog extends DialogFragment {
                             }else{
 
                                 //Creo e salvo il nuovo elemento
-                                ContenitoreDao dao = new ContenitoreDao(id, nome, categoria.getId(), categoria.getNome(),
+                                ContenitoreDao dao = new ContenitoreDao(id, nome, descrizione, "", categoria.getId(), categoria.getNome(),
                                         stanza.getId(), stanza.getNome(), mobile.getId(), mobile.getNome());
 
                                 DatabaseManager.insertContenitore(MainActivity.database, dao);
@@ -319,18 +323,19 @@ public class ContenitoreDialog extends DialogFragment {
      * @param id
      * @param nome
      */
-    public void valorizzaDialog(long id, String nome, long idStanza, long idMobile, long idCategoria)
+    public void valorizzaDialog(long id, String nome, String descrizione, long idStanza, long idMobile, long idCategoria)
     {
         //Valorizzo le variabili dell'oggetto
         this.id = id;
         this.nome = nome;
+        this.descrizione = descrizione;
         this.id_stanza = idStanza;
         this.id_mobile = idMobile;
         this.id_categoria = idCategoria;
 
         //Se la view è stata crata, la valorizzo con i dati passati
         if(nomeView != null)
-            settaValoriIstanza(nome, idStanza, idMobile, idCategoria);
+            settaValoriIstanza(nome, descrizione, idStanza, idMobile, idCategoria);
     }
 
 
@@ -342,10 +347,13 @@ public class ContenitoreDialog extends DialogFragment {
      * @param idMobile
      * @param idCategoria
      */
-    private void settaValoriIstanza(String nome, long idStanza, long idMobile, long idCategoria)
+    private void settaValoriIstanza(String nome, String descrizione, long idStanza, long idMobile, long idCategoria)
     {
         if(nome != null)
             nomeView.setText(nome);
+
+        if(descrizione != null)
+            descrizioneView.setText(descrizione);
 
         //Verifico quale elemento della lista è selezionato per tutti gli spinner
         int posizioneCorrenteInLista = 0;

@@ -20,7 +20,7 @@ public class OggettoAdapter extends ArrayAdapter {
 
     //Costruttore
     public OggettoAdapter(ArrayList<OggettoDao> data, Context context) {
-        super(context, R.layout.row_oggetto_test, data);
+        super(context, R.layout.row_oggetto, data);
         this.dataSet = data;
         this.mContext=context;
     }
@@ -32,14 +32,15 @@ public class OggettoAdapter extends ArrayAdapter {
         OggettoDao dao = dataSet.get(position);
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        View view = inflater.inflate(R.layout.row_oggetto_test, null);
+        View view = inflater.inflate(R.layout.row_oggetto, null);
 
         TextView nomeView = (TextView) view.findViewById(R.id.nome);
+        TextView descrizioneView = (TextView) view.findViewById(R.id.descrizione);
         TextView categoriaView = (TextView) view.findViewById(R.id.categoria);
         TextView stanzaView = (TextView) view.findViewById(R.id.stanza);
         TextView mobileView = (TextView) view.findViewById(R.id.mobile);
         TextView contenitoreView = (TextView) view.findViewById(R.id.contenitore);
-        TextView descrizioneView = (TextView) view.findViewById(R.id.descrizione);
+
 
         //Valorizzo i campi
         nomeView.setText(dao.getNome());

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 import magazzino.bobo.com.magazzinodomestico.R;
 import magazzino.bobo.com.magazzinodomestico.db.dao.ContenitoreDao;
-import magazzino.bobo.com.magazzinodomestico.db.dao.OggettoDao;
 
 
 public class ContenitoreAdapter extends ArrayAdapter {
@@ -21,7 +20,7 @@ public class ContenitoreAdapter extends ArrayAdapter {
 
     //Costruttore
     public ContenitoreAdapter(ArrayList<ContenitoreDao> data, Context context) {
-        super(context, R.layout.row_oggetto, data);
+        super(context, R.layout.row_oggetto_bkp, data);
         this.dataSet = data;
         this.mContext=context;
     }
@@ -36,23 +35,25 @@ public class ContenitoreAdapter extends ArrayAdapter {
         View view = inflater.inflate(R.layout.row_contenitore, null);
 
         TextView nomeView = (TextView) view.findViewById(R.id.nome);
+        TextView descrizioneView = (TextView) view.findViewById(R.id.descrizione);
         TextView categoriaView = (TextView) view.findViewById(R.id.categoria);
         TextView stanzaView = (TextView) view.findViewById(R.id.stanza);
         TextView mobileView = (TextView) view.findViewById(R.id.mobile);
         TextView numeroOggettiView = (TextView) view.findViewById(R.id.numeroOggetti);
 
 
+
         //Valorizzo i campi
         nomeView.setText(dao.getNome());
+        descrizioneView.setText(dao.getDescrizione());
         categoriaView.setText(dao.getNome_categoria());
         stanzaView.setText("(" + dao.getNome_stanza() + ")");
         mobileView.setText(dao.getNome_mobile());
         numeroOggettiView.setText("(" + dao.getNumeroOggetti() + ")");
 
-
-        //E nascondo quelli che non uso
-        //distanza.setVisibility(View.INVISIBLE);
-        //rating.setVisibility(View.INVISIBLE);
+        //Se la descrizione è vuota, nascondo il campo
+        if(dao.getDescrizione() == null || dao.getDescrizione().trim().length() == 0)
+            descrizioneView.setVisibility(View.GONE);
 
         return view;
     }

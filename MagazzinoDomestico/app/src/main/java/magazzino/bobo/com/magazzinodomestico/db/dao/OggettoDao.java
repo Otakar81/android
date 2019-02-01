@@ -189,7 +189,7 @@ public class OggettoDao {
     {
         if(nome.toUpperCase().contains(searchString.toUpperCase()))
             return true;
-        if(descrizione != null && descrizione.toUpperCase().contains(searchString.toUpperCase()))
+        else if(descrizione != null && descrizione.toUpperCase().contains(searchString.toUpperCase()))
             return true;
         else if(nome_stanza.toUpperCase().contains(searchString.toUpperCase()))
             return true;

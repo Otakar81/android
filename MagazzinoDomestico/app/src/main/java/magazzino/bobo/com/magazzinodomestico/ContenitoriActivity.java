@@ -125,7 +125,7 @@ public class ContenitoriActivity extends AppCompatActivity
                 dialog.show(getSupportFragmentManager(),"stanza_dialog");
 
                 //E lo valorizza con gli attributi dell'oggetto su cui abbiamo cliccato
-                dialog.valorizzaDialog(dao.getId(), dao.getNome(), dao.getId_stanza(), dao.getId_mobile(), dao.getId_categoria());
+                dialog.valorizzaDialog(dao.getId(), dao.getNome(), dao.getDescrizione(), dao.getId_stanza(), dao.getId_mobile(), dao.getId_categoria());
 
                 return true;
             }

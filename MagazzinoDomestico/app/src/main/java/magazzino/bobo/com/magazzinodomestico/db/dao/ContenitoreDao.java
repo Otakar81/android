@@ -4,6 +4,7 @@ public class ContenitoreDao {
 
     private long id;
     private String nome;
+    private String descrizione;
     private String immagine;
 
     private long id_categoria;
@@ -18,10 +19,11 @@ public class ContenitoreDao {
     //Contatori per tener traccia del numero di elementi presenti nella stanza
     private int numeroOggetti;
 
-    public ContenitoreDao(long id, String nome, String immagine, long id_categoria, String nome_categoria,
+    public ContenitoreDao(long id, String nome, String descrizione, String immagine, long id_categoria, String nome_categoria,
                           long id_stanza, String nome_stanza, long id_mobile, String nome_mobile) {
         this.id = id;
         this.nome = nome;
+        this.descrizione = descrizione;
         this.immagine = immagine;
 
         this.id_categoria = id_categoria;
@@ -36,46 +38,13 @@ public class ContenitoreDao {
         this.numeroOggetti = -1;
     }
 
-    public ContenitoreDao(long id, String nome, long id_categoria, String nome_categoria,
+
+    public ContenitoreDao(long id, String nome, String descrizione, String immagine,
                           long id_stanza, String nome_stanza, long id_mobile, String nome_mobile) {
         this.id = id;
         this.nome = nome;
-        this.immagine = "";
-
-        this.id_categoria = id_categoria;
-        this.nome_categoria = nome_categoria;
-
-        this.id_stanza = id_stanza;
-        this.nome_stanza = nome_stanza;
-
-        this.id_mobile = id_mobile;
-        this.nome_mobile = nome_mobile;
-
-        this.numeroOggetti = -1;
-    }
-
-    public ContenitoreDao(long id, String nome, String immagine,
-                          long id_stanza, String nome_stanza, long id_mobile, String nome_mobile) {
-        this.id = id;
-        this.nome = nome;
+        this.descrizione = descrizione;
         this.immagine = immagine;
-
-        this.id_categoria = -1;
-        this.nome_categoria = "";
-
-        this.id_stanza = id_stanza;
-        this.nome_stanza = nome_stanza;
-
-        this.id_mobile = id_mobile;
-        this.nome_mobile = nome_mobile;
-
-        this.numeroOggetti = -1;
-    }
-
-    public ContenitoreDao(long id, String nome, long id_stanza, String nome_stanza, long id_mobile, String nome_mobile) {
-        this.id = id;
-        this.nome = nome;
-        this.immagine = "";
 
         this.id_categoria = -1;
         this.nome_categoria = "";
@@ -159,6 +128,14 @@ public class ContenitoreDao {
         this.numeroOggetti = numeroOggetti;
     }
 
+    public String getDescrizione() {
+        return descrizione;
+    }
+
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
+    }
+
     /***
      * Restituisce true se la stringa passata come argomento "trova" l'oggetto
      *
@@ -168,6 +145,8 @@ public class ContenitoreDao {
     public boolean searchItem(String searchString)
     {
         if(nome.toUpperCase().contains(searchString.toUpperCase()))
+            return true;
+        else if(descrizione != null && descrizione.toUpperCase().contains(searchString.toUpperCase()))
             return true;
         else if(nome_stanza.toUpperCase().contains(searchString.toUpperCase()))
             return true;

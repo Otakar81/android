@@ -130,7 +130,7 @@ public class MobiliActivity extends AppCompatActivity
                 dialog.show(getSupportFragmentManager(),"mobile_dialog");
 
                 //E lo valorizza con gli attributi dell'oggetto su cui abbiamo cliccato
-                dialog.valorizzaDialog(dao.getId(), dao.getNome(), dao.getId_stanza());
+                dialog.valorizzaDialog(dao.getId(), dao.getNome(), dao.getDescrizione(), dao.getId_stanza());
 
                 return true;
             }

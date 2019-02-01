@@ -4,6 +4,7 @@ public class MobileDao {
 
     private long id;
     private String nome;
+    private String descrizione;
     private String immagine;
     private long id_stanza;
     private String nomeStanza;
@@ -12,9 +13,10 @@ public class MobileDao {
     private int numeroContenitori;
     private int numeroOggetti;
 
-    public MobileDao(long id, String nome, String immagine, long id_stanza, String nomeStanza) {
+    public MobileDao(long id, String nome, String descrizione, String immagine, long id_stanza, String nomeStanza) {
         this.id = id;
         this.nome = nome;
+        this.descrizione = descrizione;
         this.immagine = immagine;
         this.id_stanza = id_stanza;
         this.nomeStanza = nomeStanza;
@@ -23,20 +25,10 @@ public class MobileDao {
         this.numeroOggetti = -1;
     }
 
-    public MobileDao(long id, String nome, long id_stanza, String nomeStanza) {
-        this.id = id;
-        this.nome = nome;
-        this.id_stanza = id_stanza;
-        this.nomeStanza = nomeStanza;
-        this.immagine = "";
-
-        this.numeroContenitori = -1;
-        this.numeroOggetti = -1;
-    }
-
-    public MobileDao(String nome, String immagine, long id_stanza, String nomeStanza) {
+    public MobileDao(String nome, String descrizione, String immagine, long id_stanza, String nomeStanza) {
         this.id = -1;
         this.nome = nome;
+        this.descrizione = descrizione;
         this.immagine = immagine;
         this.id_stanza = id_stanza;
         this.nomeStanza = nomeStanza;
@@ -45,16 +37,6 @@ public class MobileDao {
         this.numeroOggetti = -1;
     }
 
-    public MobileDao(String nome, long id_stanza, String nomeStanza) {
-        this.id = -1;
-        this.nome = nome;
-        this.id_stanza = id_stanza;
-        this.nomeStanza = nomeStanza;
-        this.immagine = "";
-
-        this.numeroContenitori = -1;
-        this.numeroOggetti = -1;
-    }
 
     public long getId() {
         return id;
@@ -104,6 +86,14 @@ public class MobileDao {
         this.numeroContenitori = numeroContenitori;
     }
 
+    public String getDescrizione() {
+        return descrizione;
+    }
+
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
+    }
+
     public int getNumeroOggetti() {
         return numeroOggetti;
     }
@@ -134,6 +124,8 @@ public class MobileDao {
     public boolean searchItem(String searchString)
     {
         if(nome.toUpperCase().contains(searchString.toUpperCase()))
+            return true;
+        else if(descrizione != null && descrizione.toUpperCase().contains(searchString.toUpperCase()))
             return true;
         else if(nomeStanza.toUpperCase().contains(searchString.toUpperCase()))
             return true;

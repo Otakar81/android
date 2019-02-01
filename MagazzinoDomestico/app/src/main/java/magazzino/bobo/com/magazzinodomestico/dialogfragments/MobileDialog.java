@@ -52,6 +52,7 @@ public class MobileDialog extends DialogFragment {
     //Variabili di istanza
     private long id;
     private String nome;
+    private String descrizione;
     private long id_stanza;
 
     private ArrayList<StanzaDao> elencoStanze;
@@ -59,6 +60,7 @@ public class MobileDialog extends DialogFragment {
 
     //Elementi view del dialog
     private EditText nomeView;
+    private EditText descrizioneView;
     private Spinner elencoStanzeView;
 
     //Dialog builder
@@ -87,6 +89,7 @@ public class MobileDialog extends DialogFragment {
 
         //Valorizzo le view del layout
         nomeView = view.findViewById(R.id.nomeMobile);
+        descrizioneView = view.findViewById(R.id.descrizione);
         elencoStanzeView = view.findViewById(R.id.elencoStanze);
 
         //Setto l'adapter per lo spinner
@@ -106,9 +109,10 @@ public class MobileDialog extends DialogFragment {
                         public void onClick(DialogInterface dialog, int which) {
 
                             String nome = nomeView.getText().toString().trim();
+                            String descrizione = descrizioneView.getText().toString().trim();
                             StanzaDao stanza = (StanzaDao) elencoStanzeView.getSelectedItem();
 
-                            MobileDao dao = new MobileDao(id, nome, "", stanza.getId(), stanza.getNome());
+                            MobileDao dao = new MobileDao(id, nome, descrizione, "", stanza.getId(), stanza.getNome());
 
                             //Modifico
                             DatabaseManager.updateMobile(MainActivity.database, dao);
@@ -182,19 +186,19 @@ public class MobileDialog extends DialogFragment {
 
             //Se le variabili sono già state valorizzate, le uso per riempire la finestra
             if(this.nome != null)
-                settaValoriIstanza(nome, id_stanza);
+                settaValoriIstanza(nome, descrizione, id_stanza);
 
         }else{ //Finestra per inserimento di un nuovo Mobile
 
             mBuilder.setView(view)
                     .setIcon(R.drawable.nav_mobili)
                     .setTitle(R.string.mobile_nuovo)
-                    .setMessage(R.string.mobile_nome)
                     .setPositiveButton(R.string.aggiungi, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
                             String nome = nomeView.getText().toString().trim();
+                            String descrizione = descrizioneView.getText().toString().trim();
                             StanzaDao stanza = (StanzaDao) elencoStanzeView.getSelectedItem();
 
                             if(nome == null || nome.trim().equals(""))
@@ -203,7 +207,7 @@ public class MobileDialog extends DialogFragment {
                             }else{
 
                                 //Creo e salvo il nuovo elemento
-                                MobileDao dao = new MobileDao(id, nome, "", stanza.getId(), stanza.getNome());
+                                MobileDao dao = new MobileDao(id, nome, descrizione, "", stanza.getId(), stanza.getNome());
                                 DatabaseManager.insertMobile(MainActivity.database, dao);
 
                                 //Aggiorno l'adapter dell'activity da cui sono stato chiamato
@@ -217,7 +221,7 @@ public class MobileDialog extends DialogFragment {
                     .setNegativeButton(R.string.annulla, null);
 
             //Valorizzo eventualmente i campi necessari del dialog, se sto creando un nuovo elemento da una location specifica
-            settaValoriIstanza(null, location.getId_stanza());
+            settaValoriIstanza(null, null, location.getId_stanza());
 
             //E disabilito gli spinner già valorizzati
             disabilitaSpinner();
@@ -234,16 +238,17 @@ public class MobileDialog extends DialogFragment {
      * @param id
      * @param nome
      */
-    public void valorizzaDialog(long id, String nome, long idStanza)
+    public void valorizzaDialog(long id, String nome, String descrizione, long idStanza)
     {
         //Valorizzo le variabili dell'oggetto
         this.id = id;
         this.nome = nome;
+        this.descrizione = descrizione;
         this.id_stanza = idStanza;
 
         //Se la view è stata crata, la valorizzo con i dati passati
         if(nomeView != null)
-            settaValoriIstanza(nome, idStanza);
+            settaValoriIstanza(nome, descrizione, idStanza);
     }
 
     /***
@@ -252,10 +257,13 @@ public class MobileDialog extends DialogFragment {
      * @param nome
      * @param idStanza
      */
-    private void settaValoriIstanza(String nome, long idStanza) {
+    private void settaValoriIstanza(String nome, String descrizione, long idStanza) {
 
         if (nome != null)
             nomeView.setText(nome);
+
+        if(descrizione != null)
+            descrizioneView.setText(descrizione);
 
         //Verifico quale elemento della lista è selezionato per tutti gli spinner
         int posizioneCorrenteInLista = 0;
