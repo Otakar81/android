@@ -1,13 +1,18 @@
 package magazzino.bobo.com.magazzinodomestico;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,6 +28,10 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 import magazzino.bobo.com.magazzinodomestico.adapters.OggettoAdapter;
@@ -43,6 +52,13 @@ public class MainActivity extends AppCompatActivity
     ListView listaOggettiView;
     SearchView searchView;
     ArrayList<OggettoDao> elencoOggetti;
+
+    //TODO TEST
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
 
     @Override
@@ -219,6 +235,54 @@ public class MainActivity extends AppCompatActivity
             //Creo un intent e vado sulla activity corrispondente
             Intent intent = new Intent(getApplicationContext(), CategorieActivity.class);
             startActivity(intent);
+        }
+
+        //TODO TEST
+        else if (id == R.id.nav_database) {
+
+            //Recupero il path del database
+            String pathDB = database.getPath();
+            Log.i("PATH_DB", pathDB);
+
+
+            try {
+                File sd = Environment.getExternalStorageDirectory();
+
+                String state = Environment.getExternalStorageState();
+                if (Environment.MEDIA_MOUNTED.equals(state)) {
+                    Log.i("STATE", state);
+                }
+
+                int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+                if (permission != PackageManager.PERMISSION_GRANTED) {
+                    // We don't have permission so prompt the user
+                    ActivityCompat.requestPermissions(
+                            this,
+                            PERMISSIONS_STORAGE,
+                            REQUEST_EXTERNAL_STORAGE
+                    );
+                }
+
+
+                if (sd.canWrite()) {
+
+                    File backupDB = new File(pathDB);
+
+                    String backupDBPath = String.format("%s.bak", "test_backup");
+                    File exportedDB = new File(sd, backupDBPath);
+
+                    FileChannel src = new FileInputStream(backupDB).getChannel();
+                    FileChannel dst = new FileOutputStream(exportedDB).getChannel();
+                    dst.transferFrom(src, 0, src.size());
+                    src.close();
+                    dst.close();
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

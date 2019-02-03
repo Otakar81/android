@@ -25,4 +25,13 @@
             android:icon="@drawable/nav_categorie"
             android:title="@string/title_activity_categorie" />
     </group>
+
+    <item android:title="Utility">
+        <menu>
+            <item
+                android:id="@+id/nav_database"
+                android:icon="@drawable/nav_categorie"
+                android:title="Database Utility" />
+        </menu>
+    </item>
 </menu>
