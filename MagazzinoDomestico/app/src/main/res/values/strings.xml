@@ -23,6 +23,7 @@
     <string name="modifica">Modify</string>
     <string name="elimina">Delete</string>
     <string name="annulla">Undo</string>
+    <string name="errore">An error has occurred</string>
     <string name="operazione_successo">Operation completed successfully</string>
     <string name="eliminazione_successo">Deletion successful</string>
     <string name="search_query_hint">Search</string>
@@ -73,13 +74,11 @@
     <string name="oggetto_modifica">Modify Item</string>
     <string name="oggetto_nuovo">New Item</string>
 
-
-
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
-
-    <string name="action_example">Example action</string>
+    <!-- Gestione database -->
+    <string name="database_utility">Database Tools</string>
+    <string name="database_backup">Create a Backup File</string>
+    <string name="database_restore">Restore from the Backup File</string>
+    <string name="database_delete">Delete old Backup Files</string>
 
 </resources>
 

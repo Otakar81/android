@@ -36,6 +36,7 @@ import java.util.ArrayList;
 
 import magazzino.bobo.com.magazzinodomestico.adapters.OggettoAdapter;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
+import magazzino.bobo.com.magazzinodomestico.db.DatabaseTools;
 import magazzino.bobo.com.magazzinodomestico.db.dao.LocationDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.OggettoDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
@@ -52,14 +53,6 @@ public class MainActivity extends AppCompatActivity
     ListView listaOggettiView;
     SearchView searchView;
     ArrayList<OggettoDao> elencoOggetti;
-
-    //TODO TEST
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -237,52 +230,23 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
         }
 
-        //TODO TEST
-        else if (id == R.id.nav_database) {
+        //TODO -> Rivedere i messaggi in output
+        else if (id == R.id.nav_database_export) {
 
-            //Recupero il path del database
-            String pathDB = database.getPath();
-            Log.i("PATH_DB", pathDB);
+            boolean esito = DatabaseTools.backupDatabase(this, database, getResources().getString(R.string.app_name));
 
+            if(esito)
+                Toast.makeText(this, R.string.operazione_successo, Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(this, R.string.errore, Toast.LENGTH_LONG).show();
 
-            try {
-                File sd = Environment.getExternalStorageDirectory();
+        }else if (id == R.id.nav_database_import) {
 
-                String state = Environment.getExternalStorageState();
-                if (Environment.MEDIA_MOUNTED.equals(state)) {
-                    Log.i("STATE", state);
-                }
+            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_LONG).show();
 
-                int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }else if (id == R.id.nav_database_delete) {
 
-                if (permission != PackageManager.PERMISSION_GRANTED) {
-                    // We don't have permission so prompt the user
-                    ActivityCompat.requestPermissions(
-                            this,
-                            PERMISSIONS_STORAGE,
-                            REQUEST_EXTERNAL_STORAGE
-                    );
-                }
-
-
-                if (sd.canWrite()) {
-
-                    File backupDB = new File(pathDB);
-
-                    String backupDBPath = String.format("%s.bak", "test_backup");
-                    File exportedDB = new File(sd, backupDBPath);
-
-                    FileChannel src = new FileInputStream(backupDB).getChannel();
-                    FileChannel dst = new FileOutputStream(exportedDB).getChannel();
-                    dst.transferFrom(src, 0, src.size());
-                    src.close();
-                    dst.close();
-
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_LONG).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

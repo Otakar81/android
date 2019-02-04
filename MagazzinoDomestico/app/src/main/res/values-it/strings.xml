@@ -23,6 +23,7 @@
     <string name="modifica">Modifica</string>
     <string name="elimina">Elimina</string>
     <string name="annulla">Annulla</string>
+    <string name="errore">Si è verificato un errore</string>
     <string name="operazione_successo">Operazione effettuata con successo</string>
     <string name="eliminazione_successo">Eliminazione effettuata con successo</string>
     <string name="search_query_hint">Cerca</string>
@@ -72,5 +73,11 @@
     <string name="oggetto_nome">Nome dell\'Oggetto</string>
     <string name="oggetto_modifica">Modifica Oggetto</string>
     <string name="oggetto_nuovo">Nuovo Oggetto</string>
+
+    <!-- Gestione database -->
+    <string name="database_utility">Strumenti Database</string>
+    <string name="database_backup">Crea un File di Backup</string>
+    <string name="database_restore">Ripristina dal File di Backup</string>
+    <string name="database_delete">Elimina i vecchi File di Backup</string>
 
 </resources>
