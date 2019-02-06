@@ -40,6 +40,7 @@ import magazzino.bobo.com.magazzinodomestico.db.DatabaseTools;
 import magazzino.bobo.com.magazzinodomestico.db.dao.LocationDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.OggettoDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
+import magazzino.bobo.com.magazzinodomestico.dialogfragments.ElencoFilesDialog;
 import magazzino.bobo.com.magazzinodomestico.dialogfragments.OggettoDialog;
 
 public class MainActivity extends AppCompatActivity
@@ -241,6 +242,10 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(this, R.string.errore, Toast.LENGTH_LONG).show();
 
         }else if (id == R.id.nav_database_import) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            ElencoFilesDialog dialog = ElencoFilesDialog.newInstance(builder, getResources().getString(R.string.app_name));
+            dialog.show(getSupportFragmentManager(),"files_dialog");
 
             Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_LONG).show();
 
