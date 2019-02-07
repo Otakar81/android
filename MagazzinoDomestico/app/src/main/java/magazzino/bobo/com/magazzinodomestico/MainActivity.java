@@ -244,10 +244,8 @@ public class MainActivity extends AppCompatActivity
         }else if (id == R.id.nav_database_import) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            ElencoFilesDialog dialog = ElencoFilesDialog.newInstance(builder, getResources().getString(R.string.app_name));
+            ElencoFilesDialog dialog = ElencoFilesDialog.newInstance(builder, database, getResources().getString(R.string.app_name));
             dialog.show(getSupportFragmentManager(),"files_dialog");
-
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_LONG).show();
 
         }else if (id == R.id.nav_database_delete) {
 

@@ -139,6 +139,7 @@ public class DatabaseTools {
                     //Il file del database da sovrascrivere
                     File dbOriginale = new File(pathDB);
 
+
                     FileChannel src = new FileInputStream(dbBackup).getChannel();
                     FileChannel dst = new FileOutputStream(dbOriginale).getChannel();
                     dst.transferFrom(src, 0, src.size());
