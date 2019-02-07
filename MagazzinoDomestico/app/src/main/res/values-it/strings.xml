@@ -28,6 +28,8 @@
     <string name="eliminazione_successo">Eliminazione effettuata con successo</string>
     <string name="search_query_hint">Cerca</string>
 
+    <string name="errore_memoria_esterna">Memoria esterna non disponibile</string>
+
     <string name="elimina_ma_mantieni_contenuto">Eliminalo, ma mantieni il suo contenuto</string>
     <string name="elimina_insieme_al_contenuto">Eliminalo insieme al suo contenuto</string>
 

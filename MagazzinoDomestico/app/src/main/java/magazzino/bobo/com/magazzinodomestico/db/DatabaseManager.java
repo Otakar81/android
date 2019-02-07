@@ -1,5 +1,6 @@
 package magazzino.bobo.com.magazzinodomestico.db;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -17,6 +18,18 @@ import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
 public class DatabaseManager {
 
 //region SEZIONE COMUNE
+
+    /**
+     * Crea la connessione al database
+     *
+     * @param context
+     * @return
+     */
+    public static SQLiteDatabase openOrCreateDatabase(Context context)
+    {
+        return context.openOrCreateDatabase("magazzino_db", Context.MODE_PRIVATE, null);
+    }
+
 
     /***
      * Crea le tabelle utilizzate dall'applicazione

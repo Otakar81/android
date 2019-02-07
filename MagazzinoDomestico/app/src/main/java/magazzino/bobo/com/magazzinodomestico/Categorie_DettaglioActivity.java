@@ -18,16 +18,19 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import magazzino.bobo.com.magazzinodomestico.adapters.ContenitoreAdapter;
 import magazzino.bobo.com.magazzinodomestico.adapters.OggettoAdapter;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
+import magazzino.bobo.com.magazzinodomestico.db.DatabaseTools;
 import magazzino.bobo.com.magazzinodomestico.db.dao.ContenitoreDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.LocationDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.OggettoDao;
 import magazzino.bobo.com.magazzinodomestico.dialogfragments.ContenitoreDialog;
+import magazzino.bobo.com.magazzinodomestico.dialogfragments.ElencoFilesDialog;
 import magazzino.bobo.com.magazzinodomestico.dialogfragments.OggettoDialog;
 
 public class Categorie_DettaglioActivity extends AppCompatActivity
@@ -306,7 +309,22 @@ public class Categorie_DettaglioActivity extends AppCompatActivity
 
             //Creo un intent e vado sulla activity corrispondente
             Intent intent = new Intent(getApplicationContext(), CategorieActivity.class);
-            startActivity(intent);        }
+            startActivity(intent);
+
+        }else if (id == R.id.nav_database_export) {
+
+            DatabaseTools.backupDatabase(this, MainActivity.database, getResources().getString(R.string.app_name));
+
+        }else if (id == R.id.nav_database_import) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            ElencoFilesDialog dialog = ElencoFilesDialog.newInstance(builder, MainActivity.database, getResources().getString(R.string.app_name));
+            dialog.show(getSupportFragmentManager(),"files_dialog");
+
+        }else if (id == R.id.nav_database_delete) {
+
+            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_LONG).show();
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

@@ -29,9 +29,11 @@ import java.util.ArrayList;
 
 import magazzino.bobo.com.magazzinodomestico.adapters.CategoriaAdapter;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
+import magazzino.bobo.com.magazzinodomestico.db.DatabaseTools;
 import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.ContenitoreDao;
 import magazzino.bobo.com.magazzinodomestico.dialogfragments.CategoriaDialog;
+import magazzino.bobo.com.magazzinodomestico.dialogfragments.ElencoFilesDialog;
 
 public class CategorieActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -221,6 +223,20 @@ public class CategorieActivity extends AppCompatActivity
         } else if (id == R.id.nav_categorie) {
 
             // Nulla, sono già qui
+
+        }else if (id == R.id.nav_database_export) {
+
+            DatabaseTools.backupDatabase(this, MainActivity.database, getResources().getString(R.string.app_name));
+
+        }else if (id == R.id.nav_database_import) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            ElencoFilesDialog dialog = ElencoFilesDialog.newInstance(builder, MainActivity.database, getResources().getString(R.string.app_name));
+            dialog.show(getSupportFragmentManager(),"files_dialog");
+
+        }else if (id == R.id.nav_database_delete) {
+
+            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_LONG).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

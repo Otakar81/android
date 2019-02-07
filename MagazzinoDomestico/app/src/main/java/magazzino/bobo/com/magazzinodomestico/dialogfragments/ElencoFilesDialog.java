@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import magazzino.bobo.com.magazzinodomestico.R;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseTools;
@@ -61,12 +60,7 @@ public class ElencoFilesDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog,int which) {
 
-                        boolean esito = DatabaseTools.restoreDatabase(activity, database, appName, strName);
-
-                        if(esito)
-                            Toast.makeText(activity, R.string.operazione_successo, Toast.LENGTH_LONG).show();
-                        else
-                            Toast.makeText(activity, R.string.errore, Toast.LENGTH_LONG).show();
+                        DatabaseTools.restoreDatabase(activity, database, appName, strName);
                     }
                 })
                 .setNegativeButton(R.string.annulla, null);

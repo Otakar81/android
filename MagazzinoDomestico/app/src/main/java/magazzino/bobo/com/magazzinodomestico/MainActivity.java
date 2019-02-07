@@ -93,7 +93,8 @@ public class MainActivity extends AppCompatActivity
 
 
         //Creo il database
-        database = this.openOrCreateDatabase("magazzino_db", Context.MODE_PRIVATE, null);
+        //database = this.openOrCreateDatabase("magazzino_db", Context.MODE_PRIVATE, null);
+        database = DatabaseManager.openOrCreateDatabase(getApplicationContext());
 
         //Se non esistono, creo le tabelle
         DatabaseManager.createTables(database);
@@ -231,15 +232,10 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
         }
 
-        //TODO -> Rivedere i messaggi in output
+
         else if (id == R.id.nav_database_export) {
 
-            boolean esito = DatabaseTools.backupDatabase(this, database, getResources().getString(R.string.app_name));
-
-            if(esito)
-                Toast.makeText(this, R.string.operazione_successo, Toast.LENGTH_LONG).show();
-            else
-                Toast.makeText(this, R.string.errore, Toast.LENGTH_LONG).show();
+            DatabaseTools.backupDatabase(this, database, getResources().getString(R.string.app_name));
 
         }else if (id == R.id.nav_database_import) {
 
