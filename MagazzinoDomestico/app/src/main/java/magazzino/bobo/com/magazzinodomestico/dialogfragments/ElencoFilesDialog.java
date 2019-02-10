@@ -39,9 +39,12 @@ public class ElencoFilesDialog extends DialogFragment {
         final ArrayAdapter<String> elencoFiles = DatabaseTools.getListBackupFiles(activity, appName);
 
         //mBuilder.setIcon(android.support.v4.R.drawable.notification_icon_background);
-        mBuilder.setTitle("Seleziona il File di Backup");
+        if(elencoFiles.getCount() == 0)
+            mBuilder.setTitle(R.string.database_restore_no_file);
+        else
+            mBuilder.setTitle(R.string.database_seleziona_file);
 
-        mBuilder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+        mBuilder.setNegativeButton(R.string.annulla, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -55,8 +58,8 @@ public class ElencoFilesDialog extends DialogFragment {
 
                 AlertDialog.Builder builderInner = new AlertDialog.Builder(activity);
                 builderInner.setMessage(strName);
-                builderInner.setTitle("Vuoi ripristinare questo file?");
-                builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                builderInner.setTitle(R.string.database_seleziona_file_conferma);
+                builderInner.setPositiveButton(R.string.conferma, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog,int which) {
 

@@ -3,6 +3,7 @@ package magazzino.bobo.com.magazzinodomestico;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
@@ -239,13 +240,28 @@ public class MainActivity extends AppCompatActivity
 
         }else if (id == R.id.nav_database_import) {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             ElencoFilesDialog dialog = ElencoFilesDialog.newInstance(builder, database, getResources().getString(R.string.app_name));
             dialog.show(getSupportFragmentManager(),"files_dialog");
 
         }else if (id == R.id.nav_database_delete) {
 
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_LONG).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle(R.string.database_delete_conferma)
+            .setPositiveButton(R.string.conferma, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    DatabaseTools.deleteListBackupFiles(MainActivity.this, getResources().getString(R.string.app_name));
+                }
+            })
+            .setNegativeButton(R.string.annulla, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            })
+            .show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

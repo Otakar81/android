@@ -226,56 +226,125 @@ public class DatabaseTools {
             }
         };
 
-        try {
+        //Chiedo il permesso di poter leggere e scrivere la memoria
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-            //Chiedo il permesso di poter leggere e scrivere la memoria
-            int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
 
-            if (permission != PackageManager.PERMISSION_GRANTED) {
-                // We don't have permission so prompt the user
-                ActivityCompat.requestPermissions(
-                        activity,
-                        PERMISSIONS_STORAGE,
-                        REQUEST_EXTERNAL_STORAGE
-                );
-            }
+        } else {
 
-            //Recupero il puntamento alla memoria esterna
-            File sd = Environment.getExternalStorageDirectory();
+            try {
 
-            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) && sd.canRead()) {
+                //Recupero il puntamento alla memoria esterna
+                File sd = Environment.getExternalStorageDirectory();
 
-                //Se non esiste, creo la cartella che dovrà ospitare i backup
-                File folderBackup = new File(sd, appName);
+                if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) && sd.canRead()) {
 
-                if(folderBackup.exists())
-                {
-                    //Recupero tutti i files .bak dalla cartella dell'app
-                    String[] elencoFiles = folderBackup.list(
-                            new FilenameFilter() {
-                                public boolean accept(File dir, String name) {
-                                    return name.toLowerCase().endsWith(".bak");
-                                }
-                            });
+                    //Se non esiste, creo la cartella che dovrà ospitare i backup
+                    File folderBackup = new File(sd, appName);
 
-                    //Ordino i files in senso alfabetico inverso
-                    Arrays.sort(elencoFiles,
-                            new Comparator<String>() {
-                                public int compare(String a, String b) {
-                                    return b.compareTo(a);
-                                }
-                            });
+                    if(folderBackup.exists())
+                    {
+                        //Recupero tutti i files .bak dalla cartella dell'app
+                        String[] elencoFiles = folderBackup.list(
+                                new FilenameFilter() {
+                                    public boolean accept(File dir, String name) {
+                                        return name.toLowerCase().endsWith(".bak");
+                                    }
+                                });
 
-                    //Popolo la lista
-                    arrayAdapter.addAll(elencoFiles);
+                        //Ordino i files in senso alfabetico inverso
+                        Arrays.sort(elencoFiles,
+                                new Comparator<String>() {
+                                    public int compare(String a, String b) {
+                                        return b.compareTo(a);
+                                    }
+                                });
+
+                        //Popolo la lista
+                        arrayAdapter.addAll(elencoFiles);
+                    }
                 }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
         return arrayAdapter;
+    }
+
+
+    /***
+     * Elimino tutti i file di Backup presenti nella memoria esterna
+     *
+     * @param activity
+     * @param appName
+     */
+    public static void deleteListBackupFiles(Activity activity, String appName)
+    {
+        //Chiedo il permesso di poter leggere e scrivere la memoria
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+
+        } else {
+
+            boolean esito = true;
+
+            try {
+
+                //Recupero il puntamento alla memoria esterna
+                File sd = Environment.getExternalStorageDirectory();
+
+                if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) && sd.canRead()) {
+
+                    //Se non esiste, creo la cartella che dovrà ospitare i backup
+                    File folderBackup = new File(sd, appName);
+
+                    if(folderBackup.exists())
+                    {
+                        //Recupero tutti i files .bak dalla cartella dell'app
+                        File[] elencoFiles = folderBackup.listFiles(
+                                new FilenameFilter() {
+                                    public boolean accept(File dir, String name) {
+                                        return name.toLowerCase().endsWith(".bak");
+                                    }
+                                });
+
+
+                        //E li elimino
+                        for (File file: elencoFiles)
+                            file.delete();
+                    }
+
+                } else {
+                    Toast.makeText(activity, R.string.errore_memoria_esterna, Toast.LENGTH_LONG).show();
+                    esito = false;
+                }
+
+            } catch (Exception e) {
+
+                Toast.makeText(activity, e.getMessage(), Toast.LENGTH_LONG).show();
+                esito = false;
+            }
+
+            if(esito)
+                Toast.makeText(activity, R.string.operazione_successo, Toast.LENGTH_LONG).show();
+        }
     }
 
 }

@@ -23,16 +23,14 @@
     <string name="modifica">Modifica</string>
     <string name="elimina">Elimina</string>
     <string name="annulla">Annulla</string>
+    <string name="conferma">Conferma</string>
     <string name="errore">Si è verificato un errore</string>
     <string name="operazione_successo">Operazione effettuata con successo</string>
     <string name="eliminazione_successo">Eliminazione effettuata con successo</string>
     <string name="search_query_hint">Cerca</string>
 
-    <string name="errore_memoria_esterna">Memoria esterna non disponibile</string>
-
     <string name="elimina_ma_mantieni_contenuto">Eliminalo, ma mantieni il suo contenuto</string>
     <string name="elimina_insieme_al_contenuto">Eliminalo insieme al suo contenuto</string>
-
 
     <string name="mobili">Mobili</string>
     <string name="contenitori">Contenitori</string>
@@ -81,5 +79,10 @@
     <string name="database_backup">Crea un File di Backup</string>
     <string name="database_restore">Ripristina dal File di Backup</string>
     <string name="database_delete">Elimina i vecchi File di Backup</string>
+    <string name="database_delete_conferma">Attenzione: tutti i file di backup saranno eliminati. Procedere?</string>
+    <string name="database_seleziona_file">Seleziona il File di Backup</string>
+    <string name="database_seleziona_file_conferma">Vuoi ripristinare questo file?</string>
+    <string name="database_restore_no_file">Non ci sono file di backup da ripristinare</string>
+    <string name="errore_memoria_esterna">Memoria esterna non disponibile</string>
 
 </resources>

@@ -23,16 +23,14 @@
     <string name="modifica">Modify</string>
     <string name="elimina">Delete</string>
     <string name="annulla">Undo</string>
+    <string name="conferma">Ok</string>
     <string name="errore">An error has occurred</string>
     <string name="operazione_successo">Operation completed successfully</string>
     <string name="eliminazione_successo">Deletion successful</string>
     <string name="search_query_hint">Search</string>
 
-    <string name="errore_memoria_esterna">External memory is not available</string>
-
     <string name="elimina_ma_mantieni_contenuto">Delete it, but keep its content</string>
     <string name="elimina_insieme_al_contenuto">Delete it and its content</string>
-
 
     <string name="mobili">Furniture</string>
     <string name="contenitori">Containers</string>
@@ -81,6 +79,11 @@
     <string name="database_backup">Create a Backup File</string>
     <string name="database_restore">Restore from the Backup File</string>
     <string name="database_delete">Delete old Backup Files</string>
+    <string name="database_delete_conferma">Warning: all backup files will be deleted. Proceed?</string>
+    <string name="database_seleziona_file">Select the Backup File</string>
+    <string name="database_seleziona_file_conferma">Do you want to restore this file?</string>
+    <string name="database_restore_no_file">There are no backup files to restore</string>
+    <string name="errore_memoria_esterna">External memory is not available</string>
 
 </resources>
 
