@@ -1,6 +1,8 @@
 package magazzino.bobo.com.magazzinodomestico;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -238,7 +240,24 @@ public class ContenitoriActivity extends AppCompatActivity
 
         }else if (id == R.id.nav_database_delete) {
 
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_LONG).show();
+            final Activity appoggio = this;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle(R.string.database_delete_conferma)
+                    .setPositiveButton(R.string.conferma, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            DatabaseTools.deleteListBackupFiles(appoggio, getResources().getString(R.string.app_name));
+                        }
+                    })
+                    .setNegativeButton(R.string.annulla, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

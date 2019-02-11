@@ -1,6 +1,7 @@
 package magazzino.bobo.com.magazzinodomestico;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -246,13 +247,15 @@ public class MainActivity extends AppCompatActivity
 
         }else if (id == R.id.nav_database_delete) {
 
+            final Activity appoggio = this;
+
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             builder.setTitle(R.string.database_delete_conferma)
             .setPositiveButton(R.string.conferma, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    DatabaseTools.deleteListBackupFiles(MainActivity.this, getResources().getString(R.string.app_name));
+                    DatabaseTools.deleteListBackupFiles(appoggio, getResources().getString(R.string.app_name));
                 }
             })
             .setNegativeButton(R.string.annulla, new DialogInterface.OnClickListener() {
