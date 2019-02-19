@@ -252,6 +252,17 @@ public class Contenitori_DettaglioActivity extends AppCompatActivity
                         }
                     })
                     .show();
+
+        }else if (id == R.id.nav_share) {
+
+            String uri = "https://play.google.com/store/apps/details?id=magazzino.bobo.com.magazzinodomestico";
+
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            String ShareSub = getResources().getString(R.string.try_it);
+            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, ShareSub);
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, uri);
+            startActivity(Intent.createChooser(sharingIntent, "Share via"));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -42,4 +42,13 @@
                 android:title="@string/database_delete" />
         </menu>
     </item>
+
+    <item android:title="@string/invite_friend">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/nav_share"
+                android:title="@string/share" />
+        </menu>
+    </item>
 </menu>

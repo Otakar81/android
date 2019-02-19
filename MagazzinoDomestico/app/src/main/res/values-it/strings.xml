@@ -85,4 +85,9 @@
     <string name="database_restore_no_file">Non ci sono file di backup da ripristinare</string>
     <string name="errore_memoria_esterna">Memoria esterna non disponibile</string>
 
+    <!-- Extra -->
+    <string name="invite_friend">Consiglia ad un amico</string>
+    <string name="try_it">Prova questa App!</string>
+    <string name="share">Condividi</string>
+
 </resources>
