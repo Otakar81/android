@@ -40,23 +40,30 @@ public class OggettoAdapter extends ArrayAdapter {
         TextView stanzaView = (TextView) view.findViewById(R.id.stanza);
         TextView mobileView = (TextView) view.findViewById(R.id.mobile);
         TextView contenitoreView = (TextView) view.findViewById(R.id.contenitore);
+        TextView numeroOggettiView = (TextView) view.findViewById(R.id.numeroOggetti);
 
 
         //Valorizzo i campi
+
+        //Compongo il campo nome tenendo conto anche del numero di oggetti eventualmente specificato
         nomeView.setText(dao.getNome());
+
         descrizioneView.setText(dao.getDescrizione());
         categoriaView.setText(dao.getNome_categoria());
         stanzaView.setText("(" + dao.getNome_stanza() + ")");
         mobileView.setText(dao.getNome_mobile());
         contenitoreView.setText(dao.getNome_contenitore());
 
+        //Valorizzo il campo numero oggetti, o lo nascondo se non specificato
+        if(dao.getNumero_oggetti() > 0)
+            numeroOggettiView.setText("(Quantità: " + dao.getNumero_oggetti() + ")");
+        else
+            numeroOggettiView.setVisibility(View.GONE);
 
         //Se la descrizione è vuota, nascondo il campo
         if(dao.getDescrizione() == null || dao.getDescrizione().trim().length() == 0)
             descrizioneView.setVisibility(View.GONE);
 
-
         return view;
     }
-
 }

@@ -6,7 +6,7 @@ public class OggettoDao {
     private String nome;
     private String descrizione;
     private String immagine;
-    private int numeroOggetti;
+    private int numero_oggetti;
 
     private long id_categoria;
     private String nome_categoria;
@@ -20,11 +20,12 @@ public class OggettoDao {
     private long id_contenitore;
     private String nome_contenitore;
 
-    public OggettoDao(long id, String nome, String descrizione, String immagine, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
+    public OggettoDao(long id, String nome, String descrizione, int numero_oggetti, String immagine, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
                       long id_mobile, String nome_mobile, long id_contenitore, String nome_contenitore) {
         this.id = id;
         this.nome = nome;
         this.descrizione = descrizione;
+        this.numero_oggetti = numero_oggetti;
         this.immagine = immagine;
         this.id_categoria = id_categoria;
         this.nome_categoria = nome_categoria;
@@ -36,11 +37,12 @@ public class OggettoDao {
         this.nome_contenitore = nome_contenitore;
     }
 
-    public OggettoDao(long id, String nome, String descrizione, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
+    public OggettoDao(long id, String nome, String descrizione, int numero_oggetti, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
                       long id_mobile, String nome_mobile, long id_contenitore, String nome_contenitore) {
         this.id = id;
         this.nome = nome;
         this.descrizione = descrizione;
+        this.numero_oggetti = numero_oggetti;
         //this.immagine = immagine;
         this.id_categoria = id_categoria;
         this.nome_categoria = nome_categoria;
@@ -52,11 +54,12 @@ public class OggettoDao {
         this.nome_contenitore = nome_contenitore;
     }
 
-    public OggettoDao(String nome, String descrizione, String immagine, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
+    public OggettoDao(String nome, String descrizione, int numero_oggetti, String immagine, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
                       long id_mobile, String nome_mobile, long id_contenitore, String nome_contenitore) {
         this.id = -1;
         this.nome = nome;
         this.descrizione = descrizione;
+        this.numero_oggetti = numero_oggetti;
         this.immagine = immagine;
         this.id_categoria = id_categoria;
         this.nome_categoria = nome_categoria;
@@ -68,11 +71,12 @@ public class OggettoDao {
         this.nome_contenitore = nome_contenitore;
     }
 
-    public OggettoDao(String nome, String descrizione, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
+    public OggettoDao(String nome, String descrizione, int numero_oggetti, long id_categoria, String nome_categoria, long id_stanza, String nome_stanza,
                       long id_mobile, String nome_mobile, long id_contenitore, String nome_contenitore) {
         this.id = -1;
         this.nome = nome;
         this.descrizione = descrizione;
+        this.numero_oggetti = numero_oggetti;
         //this.immagine = immagine;
         this.id_categoria = id_categoria;
         this.nome_categoria = nome_categoria;
@@ -178,6 +182,14 @@ public class OggettoDao {
 
     public void setDescrizione(String descrizione) {
         this.descrizione = descrizione;
+    }
+
+    public int getNumero_oggetti() {
+        return numero_oggetti;
+    }
+
+    public void setNumero_oggetti(int numero_oggetti) {
+        this.numero_oggetti = numero_oggetti;
     }
 
     /***

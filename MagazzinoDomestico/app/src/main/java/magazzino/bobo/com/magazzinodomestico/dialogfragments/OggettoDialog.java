@@ -64,6 +64,7 @@ public class OggettoDialog extends DialogFragment {
     private long id;
     private String nome;
     private String descrizione;
+    private int numeroOggetti;
     private long id_stanza;
     private long id_mobile;
     private long id_categoria;
@@ -77,6 +78,7 @@ public class OggettoDialog extends DialogFragment {
     private ArrayList<CategoriaDao> elencoCategorie;
     private ArrayList<ContenitoreDao> elencoContenitori;
 
+    private int[] elencoValoriNumeroOggetti;
 
 
     //Elementi view del dialog
@@ -134,11 +136,11 @@ public class OggettoDialog extends DialogFragment {
          */
 
         //Mostro tutte le scelte per lo spinner che memorizza il numero di oggetti
-        int[] elencoValoriPossibili = getResources().getIntArray(R.array.numero_oggetti_value);
-
+        elencoValoriNumeroOggetti = getResources().getIntArray(R.array.numero_oggetti_value);
 
         ArrayAdapter<CharSequence> oggettiAdapter =
                 ArrayAdapter.createFromResource(getActivity(), R.array.numero_oggetti_label, android.R.layout.simple_list_item_1);
+
         numeroOggettiView.setAdapter(oggettiAdapter);
 
 
@@ -217,7 +219,7 @@ public class OggettoDialog extends DialogFragment {
 
                             if(numeroGiri < limiteGiri)//if(isCreazioneDialog)
                             {
-                                settaValoriIstanza(nome, descrizione, id_stanza, id_mobile, id_contenitore, id_categoria);
+                                settaValoriIstanza(nome, descrizione, numeroOggetti, id_stanza, id_mobile, id_contenitore, id_categoria);
                                 isCreazioneDialog = false;
 
                                 numeroGiri++;
@@ -236,7 +238,7 @@ public class OggettoDialog extends DialogFragment {
 
                             if(numeroGiri < limiteGiri)//if(isCreazioneDialog)
                             {
-                                settaValoriIstanza(null, null, location.getId_stanza(), location.getId_mobile(), location.getId_contenitore(), location.getId_categoria());
+                                settaValoriIstanza(null, null, -1, location.getId_stanza(), location.getId_mobile(), location.getId_contenitore(), location.getId_categoria());
 
                                 //E disabilito gli spinner già valorizzati
                                 disabilitaSpinner();
@@ -288,8 +290,9 @@ public class OggettoDialog extends DialogFragment {
                             CategoriaDao categoria = (CategoriaDao) elencoCategorieView.getSelectedItem();
                             ContenitoreDao contenitore = (ContenitoreDao) elencoContenitoriView.getSelectedItem();
 
+                            int numeroOggetti = elencoValoriNumeroOggetti[numeroOggettiView.getSelectedItemPosition()];
 
-                            OggettoDao dao = new OggettoDao(id, nome, descrizione, "", categoria.getId(), categoria.getNome(),
+                            OggettoDao dao = new OggettoDao(id, nome, descrizione, numeroOggetti, "", categoria.getId(), categoria.getNome(),
                                     stanza.getId(), stanza.getNome(), mobile.getId(), mobile.getNome(), contenitore.getId(), contenitore.getNome());
 
                             //Modifico
@@ -340,6 +343,8 @@ public class OggettoDialog extends DialogFragment {
                             CategoriaDao categoria = (CategoriaDao) elencoCategorieView.getSelectedItem();
                             ContenitoreDao contenitore = (ContenitoreDao) elencoContenitoriView.getSelectedItem();
 
+                            int numeroOggetti = elencoValoriNumeroOggetti[numeroOggettiView.getSelectedItemPosition()];
+
                             if(nome == null || nome.trim().equals(""))
                             {
                                 Toast.makeText(getActivity(), R.string.errore_nome, Toast.LENGTH_SHORT).show();
@@ -351,7 +356,7 @@ public class OggettoDialog extends DialogFragment {
                             }else{
 
                                 //Creo e salvo il nuovo elemento
-                                OggettoDao dao = new OggettoDao(nome, descrizione, "", categoria.getId(), categoria.getNome(),
+                                OggettoDao dao = new OggettoDao(nome, descrizione, numeroOggetti,"", categoria.getId(), categoria.getNome(),
                                         stanza.getId(), stanza.getNome(), mobile.getId(), mobile.getNome(), contenitore.getId(), contenitore.getNome());
 
                                 DatabaseManager.insertOggetto(MainActivity.database, dao);
@@ -380,12 +385,13 @@ public class OggettoDialog extends DialogFragment {
      * @param id
      * @param nome
      */
-    public void valorizzaDialog(long id, String nome, String descrizione, long idStanza, long idMobile, long idContenitore, long idCategoria)
+    public void valorizzaDialog(long id, String nome, String descrizione, int numeroOggetti, long idStanza, long idMobile, long idContenitore, long idCategoria)
     {
         //Valorizzo le variabili dell'oggetto
         this.id = id;
         this.nome = nome;
         this.descrizione = descrizione;
+        this.numeroOggetti = numeroOggetti;
         this.id_stanza = idStanza;
         this.id_mobile = idMobile;
         this.id_contenitore = idContenitore;
@@ -393,7 +399,7 @@ public class OggettoDialog extends DialogFragment {
 
         //Se la view è stata crata, la valorizzo con i dati passati
         if(false && nomeView != null)
-            settaValoriIstanza(nome, descrizione, idStanza, idMobile, idContenitore, idCategoria);
+            settaValoriIstanza(nome, descrizione, numeroOggetti, idStanza, idMobile, idContenitore, idCategoria);
 
     }
 
@@ -406,7 +412,7 @@ public class OggettoDialog extends DialogFragment {
      * @param idMobile
      * @param idCategoria
      */
-    private void settaValoriIstanza(String nome, String descrizione, long idStanza, long idMobile, long idContenitore, long idCategoria)
+    private void settaValoriIstanza(String nome, String descrizione, int numeroOggetti, long idStanza, long idMobile, long idContenitore, long idCategoria)
     {
         if(nome != null)
             nomeView.setText(nome);
@@ -416,6 +422,21 @@ public class OggettoDialog extends DialogFragment {
 
         //Verifico quale elemento della lista è selezionato per tutti gli spinner
         int posizioneCorrenteInLista = 0;
+
+        //Contenitori
+        if(numeroOggetti != -1) {
+
+            //Recupero la posizione nell'array dei valori possibili
+            for (int i = 0; i < elencoValoriNumeroOggetti.length; i++) {
+
+                if(numeroOggetti == elencoValoriNumeroOggetti[i]) {
+                    numeroOggettiView.setSelection(i);
+                    break;
+                }
+            }
+        }
+
+        posizioneCorrenteInLista = 0;
 
         //Stanze
         if(idStanza != -1) {

@@ -68,7 +68,7 @@ public class DatabaseManager {
         /*
             TABELLA OGGETTI
          */
-        sql = "CREATE TABLE IF NOT EXISTS oggetti (id INTEGER PRIMARY KEY, nome VARCHAR, descrizione VARCHAR, immagine VARCHAR, " +
+        sql = "CREATE TABLE IF NOT EXISTS oggetti (id INTEGER PRIMARY KEY, nome VARCHAR, descrizione VARCHAR, numero_oggetti INTEGER, immagine VARCHAR, " +
                 "id_categoria INTEGER, id_stanza INTEGER, id_mobile INTEGER, id_contenitore INTEGER)";
         database.execSQL(sql);
 
@@ -84,6 +84,7 @@ public class DatabaseManager {
      */
     private static void updateDatabase(SQLiteDatabase database)
     {
+        /* Primo update
         try{
 
             String sql = "ALTER TABLE stanze ADD COLUMN descrizione VARCHAR";
@@ -97,6 +98,19 @@ public class DatabaseManager {
 
             sql = "ALTER TABLE oggetti ADD COLUMN descrizione VARCHAR";
             database.execSQL(sql);
+
+        }catch (Exception e)
+        {
+            Log.i("DEBUG", "Colonna già presente");
+        }
+        */
+
+
+        try{
+
+            String sql = "ALTER TABLE oggetti ADD COLUMN numero_oggetti INTEGER";
+            database.execSQL(sql);
+
 
         }catch (Exception e)
         {
@@ -1078,16 +1092,17 @@ public class DatabaseManager {
      */
     public static void insertOggetto(SQLiteDatabase database, OggettoDao oggettoDao)
     {
-        String sql = "INSERT INTO oggetti (nome, descrizione, immagine, id_categoria, id_stanza, id_mobile, id_contenitore) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO oggetti (nome, descrizione, numero_oggetti, immagine, id_categoria, id_stanza, id_mobile, id_contenitore) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         SQLiteStatement stmt = database.compileStatement(sql);
         stmt.bindString(1, oggettoDao.getNome());
         stmt.bindString(2, oggettoDao.getDescrizione());
-        stmt.bindString(3, oggettoDao.getImmagine());
-        stmt.bindLong(4, oggettoDao.getId_categoria());
-        stmt.bindLong(5, oggettoDao.getId_stanza());
-        stmt.bindLong(6, oggettoDao.getId_mobile());
-        stmt.bindLong(7, oggettoDao.getId_contenitore());
+        stmt.bindLong(3, oggettoDao.getNumero_oggetti());
+        stmt.bindString(4, oggettoDao.getImmagine());
+        stmt.bindLong(5, oggettoDao.getId_categoria());
+        stmt.bindLong(6, oggettoDao.getId_stanza());
+        stmt.bindLong(7, oggettoDao.getId_mobile());
+        stmt.bindLong(8, oggettoDao.getId_contenitore());
         stmt.execute();
     }
 
@@ -1100,16 +1115,17 @@ public class DatabaseManager {
     public static void updateOggetto(SQLiteDatabase database, OggettoDao oggettoDao)
     {
         SQLiteStatement stmt = database.compileStatement("UPDATE oggetti " +
-                "SET nome = ?, descrizione = ?, immagine = ?, id_categoria = ?, id_stanza = ?, id_mobile = ?, id_contenitore = ? WHERE id = ?");
+                "SET nome = ?, descrizione = ?, numero_oggetti = ?, immagine = ?, id_categoria = ?, id_stanza = ?, id_mobile = ?, id_contenitore = ? WHERE id = ?");
 
         stmt.bindString(1, oggettoDao.getNome());
         stmt.bindString(2, oggettoDao.getDescrizione());
-        stmt.bindString(3, oggettoDao.getImmagine());
-        stmt.bindLong(4, oggettoDao.getId_categoria());
-        stmt.bindLong(5, oggettoDao.getId_stanza());
-        stmt.bindLong(6, oggettoDao.getId_mobile());
-        stmt.bindLong(7, oggettoDao.getId_contenitore());
-        stmt.bindLong(8, oggettoDao.getId());
+        stmt.bindLong(3, oggettoDao.getNumero_oggetti());
+        stmt.bindString(4, oggettoDao.getImmagine());
+        stmt.bindLong(5, oggettoDao.getId_categoria());
+        stmt.bindLong(6, oggettoDao.getId_stanza());
+        stmt.bindLong(7, oggettoDao.getId_mobile());
+        stmt.bindLong(8, oggettoDao.getId_contenitore());
+        stmt.bindLong(9, oggettoDao.getId());
 
         stmt.execute();
     }
@@ -1135,7 +1151,7 @@ public class DatabaseManager {
     {
         ArrayList<OggettoDao> result = new ArrayList<OggettoDao>();
 
-        String sql = "SELECT o.id, o.nome, o.descrizione, o.immagine, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
+        String sql = "SELECT o.id, o.nome, o.descrizione, o.numero_oggetti, o.immagine, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
                 "c.nome as nome_contenitore, m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
                 "FROM oggetti o " +
                 "LEFT JOIN contenitori c ON o.id_contenitore = c.id " +
@@ -1164,6 +1180,7 @@ public class DatabaseManager {
 
             String nome = c.getString(c.getColumnIndex("nome"));
             String descrizione = c.getString(c.getColumnIndex("descrizione"));
+            int numeroOggetti = c.getInt(c.getColumnIndex("numero_oggetti"));
             String immagine = c.getString(c.getColumnIndex("immagine"));
 
             String nomeContenitore = "";
@@ -1187,7 +1204,7 @@ public class DatabaseManager {
                 nomeCategoria = c.getString(nomeCategoriaIndex);
 
 
-            OggettoDao dao = new OggettoDao(id, nome, descrizione, immagine, idCategoria, nomeCategoria, idStanza, nomeStanza,
+            OggettoDao dao = new OggettoDao(id, nome, descrizione, numeroOggetti, immagine, idCategoria, nomeCategoria, idStanza, nomeStanza,
                 idMobile, nomeMobile, idContenitore, nomeContenitore);
 
             result.add(dao);
@@ -1215,7 +1232,7 @@ public class DatabaseManager {
         long id_contenitore = location.getId_contenitore();
 
 
-        String sql = "SELECT o.id, o.nome, o.descrizione, o.immagine, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
+        String sql = "SELECT o.id, o.nome, o.descrizione, o.numero_oggetti, o.immagine, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
                 "c.nome as nome_contenitore, m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
                 "FROM oggetti o " +
                 "LEFT JOIN contenitori c ON o.id_contenitore = c.id " +
@@ -1251,6 +1268,7 @@ public class DatabaseManager {
 
             String nome = c.getString(c.getColumnIndex("nome"));
             String descrizione = c.getString(c.getColumnIndex("descrizione"));
+            int numeroOggetti = c.getInt(c.getColumnIndex("numero_oggetti"));
             String immagine = c.getString(c.getColumnIndex("immagine"));
 
             String nomeContenitore = "";
@@ -1274,7 +1292,7 @@ public class DatabaseManager {
                 nomeCategoria = c.getString(nomeCategoriaIndex);
 
 
-            OggettoDao dao = new OggettoDao(id, nome, descrizione, immagine, idCategoria, nomeCategoria, idStanza, nomeStanza,
+            OggettoDao dao = new OggettoDao(id, nome, descrizione, numeroOggetti, immagine, idCategoria, nomeCategoria, idStanza, nomeStanza,
                     idMobile, nomeMobile, idContenitore, nomeContenitore);
 
             result.add(dao);
@@ -1296,7 +1314,7 @@ public class DatabaseManager {
     {
         OggettoDao result = null;
 
-        String sql = "SELECT o.id, o.nome, o.descrizione, o.immagine, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
+        String sql = "SELECT o.id, o.nome, o.descrizione, o.numero_oggetti, o.immagine, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
                 "c.nome as nome_contenitore, m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
                 "FROM oggetti o " +
                 "LEFT JOIN contenitori c ON o.id_contenitore = c.id " +
@@ -1327,6 +1345,7 @@ public class DatabaseManager {
 
             String nome = c.getString(c.getColumnIndex("nome"));
             String descrizione = c.getString(c.getColumnIndex("descrizione"));
+            int numeroOggetti = c.getInt(c.getColumnIndex("numero_oggetti"));
             String immagine = c.getString(c.getColumnIndex("immagine"));
 
             String nomeContenitore = "";
@@ -1350,7 +1369,7 @@ public class DatabaseManager {
                 nomeCategoria = c.getString(nomeCategoriaIndex);
 
 
-            result = new OggettoDao(id, nome, descrizione, immagine, idCategoria, nomeCategoria, idStanza, nomeStanza,
+            result = new OggettoDao(id, nome, descrizione, numeroOggetti, immagine, idCategoria, nomeCategoria, idStanza, nomeStanza,
                     idMobile, nomeMobile, idContenitore, nomeContenitore);
 
         }
