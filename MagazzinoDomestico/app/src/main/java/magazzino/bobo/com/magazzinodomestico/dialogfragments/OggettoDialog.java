@@ -83,6 +83,7 @@ public class OggettoDialog extends DialogFragment {
     private EditText nomeView;
     private EditText descrizioneView;
     private Spinner elencoStanzeView;
+    private Spinner numeroOggettiView;
     private Spinner elencoMobiliView;
     private Spinner elencoCategorieView;
     private Spinner elencoContenitoriView;
@@ -116,6 +117,7 @@ public class OggettoDialog extends DialogFragment {
         //Valorizzo le view del layout
         nomeView = view.findViewById(R.id.nome);
         descrizioneView = view.findViewById(R.id.descrizione);
+        numeroOggettiView = view.findViewById(R.id.numeroOggetti);
         elencoStanzeView = view.findViewById(R.id.elencoStanze);
         elencoMobiliView = view.findViewById(R.id.elencoMobili);
         elencoContenitoriView = view.findViewById(R.id.elencoContenitori);
@@ -130,6 +132,15 @@ public class OggettoDialog extends DialogFragment {
         /*
             Setto l'adapter per gli spinner
          */
+
+        //Mostro tutte le scelte per lo spinner che memorizza il numero di oggetti
+        int[] elencoValoriPossibili = getResources().getIntArray(R.array.numero_oggetti_value);
+
+
+        ArrayAdapter<CharSequence> oggettiAdapter =
+                ArrayAdapter.createFromResource(getActivity(), R.array.numero_oggetti_label, android.R.layout.simple_list_item_1);
+        numeroOggettiView.setAdapter(oggettiAdapter);
+
 
         //Mostro sempre tutte le categorie
         elencoCategorie = DatabaseManager.getAllCategorie(MainActivity.database, true);

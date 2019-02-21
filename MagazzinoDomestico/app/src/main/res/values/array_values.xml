@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Array NumeroOggetti -->
+    <string-array name="numero_oggetti_label">
+        <item>Seleziona numero oggetti</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>>10</item>
+        <item>>30</item>
+        <item>>50</item>
+    </string-array>
+
+    <integer-array name="numero_oggetti_value">
+        <item>-1</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>31</item>
+        <item>51</item>
+    </integer-array>
+</resources>

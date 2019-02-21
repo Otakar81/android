@@ -6,6 +6,7 @@ public class OggettoDao {
     private String nome;
     private String descrizione;
     private String immagine;
+    private int numeroOggetti;
 
     private long id_categoria;
     private String nome_categoria;
