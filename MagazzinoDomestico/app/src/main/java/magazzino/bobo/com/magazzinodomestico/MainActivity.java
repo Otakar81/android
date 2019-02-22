@@ -1,45 +1,34 @@
 package magazzino.bobo.com.magazzinodomestico;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBar;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 import magazzino.bobo.com.magazzinodomestico.adapters.OggettoAdapter;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseTools;
-import magazzino.bobo.com.magazzinodomestico.db.dao.LocationDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.OggettoDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
 import magazzino.bobo.com.magazzinodomestico.dialogfragments.ElencoFilesDialog;
@@ -51,6 +40,9 @@ public class MainActivity extends AppCompatActivity
     //Database
     public static SQLiteDatabase database;
     public static boolean haveRooms; //True se c'è almeno una stanza nel database
+
+    //Utilizzato per memorizzare gli update fatti sul database e non ripeterli inutilmente
+    public static SharedPreferences preferences;
 
     //Elementi della pagina
     ListView listaOggettiView;
@@ -92,6 +84,9 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Inizializzo le shared preferences
+        preferences = getSharedPreferences("magazzino.bobo.com.magazzinodomestico", Context.MODE_PRIVATE);
 
 
         //Creo il database

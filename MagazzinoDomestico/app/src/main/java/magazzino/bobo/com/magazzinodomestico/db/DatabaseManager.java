@@ -1,6 +1,7 @@
 package magazzino.bobo.com.magazzinodomestico.db;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -8,6 +9,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import magazzino.bobo.com.magazzinodomestico.MainActivity;
 import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.ContenitoreDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.LocationDao;
@@ -84,37 +86,54 @@ public class DatabaseManager {
      */
     private static void updateDatabase(SQLiteDatabase database)
     {
-        /* Primo update
-        try{
+        SharedPreferences preferences = MainActivity.preferences;
 
-            String sql = "ALTER TABLE stanze ADD COLUMN descrizione VARCHAR";
-            database.execSQL(sql);
-
-            sql = "ALTER TABLE mobili ADD COLUMN descrizione VARCHAR";
-            database.execSQL(sql);
-
-            sql = "ALTER TABLE contenitori ADD COLUMN descrizione VARCHAR";
-            database.execSQL(sql);
-
-            sql = "ALTER TABLE oggetti ADD COLUMN descrizione VARCHAR";
-            database.execSQL(sql);
-
-        }catch (Exception e)
+        //Primo update
+        if(!preferences.getBoolean("update_1", false)) //Non ho ancora fatto l'update
         {
-            Log.i("DEBUG", "Colonna già presente");
+            try{
+
+                String sql = "ALTER TABLE stanze ADD COLUMN descrizione VARCHAR";
+                database.execSQL(sql);
+
+                sql = "ALTER TABLE mobili ADD COLUMN descrizione VARCHAR";
+                database.execSQL(sql);
+
+                sql = "ALTER TABLE contenitori ADD COLUMN descrizione VARCHAR";
+                database.execSQL(sql);
+
+                sql = "ALTER TABLE oggetti ADD COLUMN descrizione VARCHAR";
+                database.execSQL(sql);
+
+            }catch (Exception e)
+            {
+                Log.i("DEBUG", "Colonna già presente");
+            }
+
+            //Memorizzo che ho proceduto con l'update
+            SharedPreferences.Editor editor = MainActivity.preferences.edit();
+            editor.putBoolean("update_1", true);
+            editor.commit();
         }
-        */
 
 
-        try{
-
-            String sql = "ALTER TABLE oggetti ADD COLUMN numero_oggetti INTEGER";
-            database.execSQL(sql);
-
-
-        }catch (Exception e)
+        //Secondo update
+        if(!preferences.getBoolean("update_2", false)) //Non ho ancora fatto l'update
         {
-            Log.i("DEBUG", "Colonna già presente");
+            try{
+
+                String sql = "ALTER TABLE oggetti ADD COLUMN numero_oggetti INTEGER";
+                database.execSQL(sql);
+
+            }catch (Exception e)
+            {
+                Log.i("DEBUG", "Colonna già presente");
+            }
+
+            //Memorizzo che ho proceduto con l'update
+            SharedPreferences.Editor editor = MainActivity.preferences.edit();
+            editor.putBoolean("update_2", true);
+            editor.commit();
         }
     }
 
