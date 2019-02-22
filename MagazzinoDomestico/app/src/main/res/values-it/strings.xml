@@ -73,6 +73,8 @@
     <string name="oggetto_nome">Nome dell\'Oggetto</string>
     <string name="oggetto_modifica">Modifica Oggetto</string>
     <string name="oggetto_nuovo">Nuovo Oggetto</string>
+    <string name="oggetto_quantita">(Quantità: XX)</string>
+    <string name="oggetto_seleziona_quantita">Seleziona la Quantità</string>
 
     <!-- Gestione database -->
     <string name="database_utility">Strumenti Database</string>

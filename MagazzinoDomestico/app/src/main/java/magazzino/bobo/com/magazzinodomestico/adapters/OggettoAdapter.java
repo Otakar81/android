@@ -54,11 +54,22 @@ public class OggettoAdapter extends ArrayAdapter {
         mobileView.setText(dao.getNome_mobile());
         contenitoreView.setText(dao.getNome_contenitore());
 
+
         //Valorizzo il campo numero oggetti, o lo nascondo se non specificato
         if(dao.getNumero_oggetti() > 0)
-            numeroOggettiView.setText("(Quantità: " + dao.getNumero_oggetti() + ")");
+        {
+            int[] values = this.getContext().getResources().getIntArray(R.array.numero_oggetti_value);
+            String[] labels = this.getContext().getResources().getStringArray(R.array.numero_oggetti_label);
+
+            String quantita = numeroOggettiView.getText().toString(); //Recupero il segnaposto dal file di layout e valorizzo il numero corretto
+            quantita = quantita.replaceAll("XX", getLabelFromValue(values, labels, dao.getNumero_oggetti()));
+
+            numeroOggettiView.setText(quantita);
+        }
         else
+        {
             numeroOggettiView.setVisibility(View.GONE);
+        }
 
         //Se la descrizione è vuota, nascondo il campo
         if(dao.getDescrizione() == null || dao.getDescrizione().trim().length() == 0)
@@ -66,4 +77,24 @@ public class OggettoAdapter extends ArrayAdapter {
 
         return view;
     }
+
+    /**
+     * Restituisce la label associata al valore numerico passato come argomento
+     * @param values
+     * @param labels
+     * @param value
+     * @return
+     */
+    private String getLabelFromValue(int[] values, String[] labels, int value)
+    {
+        for (int i = 0; i < values.length; i++)
+        {
+            if(value == values[i])
+                return labels[i];
+        }
+
+        return "-";
+    }
+
+
 }

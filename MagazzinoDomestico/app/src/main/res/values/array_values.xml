@@ -2,7 +2,7 @@
 <resources>
     <!-- Array NumeroOggetti -->
     <string-array name="numero_oggetti_label">
-        <item>Seleziona numero oggetti</item>
+        <item>@string/oggetto_seleziona_quantita</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
