@@ -1,9 +1,16 @@
 package magazzino.bobo.com.magazzinodomestico.dialogfragments;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -15,9 +22,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import magazzino.bobo.com.magazzinodomestico.Categorie_DettaglioActivity;
@@ -33,6 +42,7 @@ import magazzino.bobo.com.magazzinodomestico.db.dao.LocationDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.MobileDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.OggettoDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
+import magazzino.bobo.com.magazzinodomestico.utils.ImageUtils;
 
 
 /*
@@ -50,6 +60,9 @@ import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
 
 public class OggettoDialog extends DialogFragment {
 
+    //Request code per avere il permesso dell'uso della fotocamera
+    static final int REQUEST_IMAGE_CAPTURE = 2;
+
     //Specifica se il dialog da aprire sarà in modalità "edit" oppure "nuova istanza"
     boolean isEditMode;
 
@@ -64,6 +77,7 @@ public class OggettoDialog extends DialogFragment {
     private long id;
     private String nome;
     private String descrizione;
+    private String immagine;
     private int numeroOggetti;
     private long id_stanza;
     private long id_mobile;
@@ -89,6 +103,9 @@ public class OggettoDialog extends DialogFragment {
     private Spinner elencoMobiliView;
     private Spinner elencoCategorieView;
     private Spinner elencoContenitoriView;
+
+    private ImageView takePictureView;
+    private ImageView showImageView;
 
 
     //Dialog builder
@@ -124,6 +141,32 @@ public class OggettoDialog extends DialogFragment {
         elencoMobiliView = view.findViewById(R.id.elencoMobili);
         elencoContenitoriView = view.findViewById(R.id.elencoContenitori);
         elencoCategorieView = view.findViewById(R.id.elencoCategorie);
+
+        takePictureView = view.findViewById(R.id.takePicture);
+        showImageView = view.findViewById(R.id.showImage);
+
+        takePictureView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //Chiedo il permesso per l'accesso alla fotocamera
+                if (Build.VERSION.SDK_INT < 23) //Sulle vecchie versioni di android, non devo chiedere permessi
+                {
+                    dispatchTakePictureIntent();
+
+                } else {
+
+                    if (getActivity().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+                    {
+                        requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
+
+                    } else {
+                        dispatchTakePictureIntent();
+                    }
+
+                }
+            }
+        });
 
         //Di default, gli oggetti ArrayList saranno vuoti
         elencoStanze = new ArrayList<StanzaDao>();
@@ -565,5 +608,48 @@ public class OggettoDialog extends DialogFragment {
         }
     }
 
+
+    //METODI DI SERVIZIO PER OTTENERE I PERMESSI DI USO DELLE RISORSE
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode == REQUEST_IMAGE_CAPTURE)
+        {
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                dispatchTakePictureIntent();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK) {
+
+            Bundle extras = data.getExtras();
+
+            //Recupero l'immagine scelta dall'utente, ne mostro una anteprima nella view apposita e valorizzo la variabile da salvare su DB
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            //showImageView.setImageBitmap(imageBitmap);
+
+            immagine = ImageUtils.bitmapToBase64(imageBitmap);
+
+            //TODO Test
+            Bitmap decodedImage = ImageUtils.base64ToBitmap(immagine);
+            showImageView.setImageBitmap(decodedImage);
+
+        }
+
+    }
+
+    private void dispatchTakePictureIntent() {
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
 
 }
