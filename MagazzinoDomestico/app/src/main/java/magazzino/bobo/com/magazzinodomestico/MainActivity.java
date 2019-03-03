@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -33,6 +34,8 @@ import magazzino.bobo.com.magazzinodomestico.db.dao.OggettoDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
 import magazzino.bobo.com.magazzinodomestico.dialogfragments.ElencoFilesDialog;
 import magazzino.bobo.com.magazzinodomestico.dialogfragments.OggettoDialog;
+import magazzino.bobo.com.magazzinodomestico.dialogfragments.ShowImgDialog;
+import magazzino.bobo.com.magazzinodomestico.utils.ImageUtils;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -119,11 +122,30 @@ public class MainActivity extends AppCompatActivity
         //Popolo la lista
         aggiornaLista(elencoOggetti, true);
 
+        listaOggettiView.setOnItemClickListener(new AdapterView.OnItemClickListener() { //Mostra l'immagine dell'oggetto
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        listaOggettiView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                //Apre il dialog personalizzato, per mostrare l'immagine a schermo intero
+                OggettoDao dao = (OggettoDao) parent.getItemAtPosition(position);
+
+                String immagineBase64 = dao.getImmagine();
+
+                Bitmap immagine = ImageUtils.base64ToBitmap(immagineBase64);
+
+                if (immagine != null)
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    ShowImgDialog dialog = ShowImgDialog.newInstance(builder, immagine);
+                    dialog.show(getSupportFragmentManager(),"show_dialog");
+                }
+            }
+        });
+
+
+        listaOggettiView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() { //Vado in modifica/cancellazione
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-
 
                 //Apre il dialog personalizzato, per modifica e cancellazione
                 OggettoDao dao = (OggettoDao) parent.getItemAtPosition(position); // elencoContenitori.get(position);

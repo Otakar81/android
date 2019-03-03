@@ -105,8 +105,6 @@ public class OggettoDialog extends DialogFragment {
     private Spinner elencoContenitoriView;
 
     private ImageView takePictureView;
-    private ImageView showImageView;
-
 
     //Dialog builder
     private AlertDialog.Builder mBuilder;
@@ -143,8 +141,6 @@ public class OggettoDialog extends DialogFragment {
         elencoCategorieView = view.findViewById(R.id.elencoCategorie);
 
         takePictureView = view.findViewById(R.id.takePicture);
-        showImageView = view.findViewById(R.id.showImage);
-
         takePictureView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -335,7 +331,12 @@ public class OggettoDialog extends DialogFragment {
 
                             int numeroOggetti = elencoValoriNumeroOggetti[numeroOggettiView.getSelectedItemPosition()];
 
-                            OggettoDao dao = new OggettoDao(id, nome, descrizione, numeroOggetti, "", categoria.getId(), categoria.getNome(),
+                            String immagineDaSalvare = "";
+
+                            if(immagine != null)
+                                immagineDaSalvare = immagine;
+
+                            OggettoDao dao = new OggettoDao(id, nome, descrizione, numeroOggetti, immagineDaSalvare, categoria.getId(), categoria.getNome(),
                                     stanza.getId(), stanza.getNome(), mobile.getId(), mobile.getNome(), contenitore.getId(), contenitore.getNome());
 
                             //Modifico
@@ -399,7 +400,12 @@ public class OggettoDialog extends DialogFragment {
                             }else{
 
                                 //Creo e salvo il nuovo elemento
-                                OggettoDao dao = new OggettoDao(nome, descrizione, numeroOggetti,"", categoria.getId(), categoria.getNome(),
+                                String immagineDaSalvare = "";
+
+                                if(immagine != null)
+                                    immagineDaSalvare = immagine;
+
+                                OggettoDao dao = new OggettoDao(nome, descrizione, numeroOggetti,immagineDaSalvare, categoria.getId(), categoria.getNome(),
                                         stanza.getId(), stanza.getNome(), mobile.getId(), mobile.getNome(), contenitore.getId(), contenitore.getNome());
 
                                 DatabaseManager.insertOggetto(MainActivity.database, dao);
@@ -631,13 +637,13 @@ public class OggettoDialog extends DialogFragment {
 
             //Recupero l'immagine scelta dall'utente, ne mostro una anteprima nella view apposita e valorizzo la variabile da salvare su DB
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            //showImageView.setImageBitmap(imageBitmap);
+            takePictureView.setImageBitmap(imageBitmap);
 
             immagine = ImageUtils.bitmapToBase64(imageBitmap);
 
             //TODO Test
-            Bitmap decodedImage = ImageUtils.base64ToBitmap(immagine);
-            showImageView.setImageBitmap(decodedImage);
+            //Bitmap decodedImage = ImageUtils.base64ToBitmap(immagine);
+            //takePictureView.setImageBitmap(decodedImage);
 
         }
 
