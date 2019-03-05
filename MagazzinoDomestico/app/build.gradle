@@ -6,8 +6,8 @@ android {
         applicationId "magazzino.bobo.com.magazzinodomestico"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 13
-        versionName "0.4.4"
+        versionCode 14
+        versionName "0.4.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

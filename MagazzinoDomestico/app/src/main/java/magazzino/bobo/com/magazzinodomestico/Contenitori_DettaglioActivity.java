@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -34,6 +35,8 @@ import magazzino.bobo.com.magazzinodomestico.db.dao.OggettoDao;
 import magazzino.bobo.com.magazzinodomestico.dialogfragments.ContenitoreDialog;
 import magazzino.bobo.com.magazzinodomestico.dialogfragments.ElencoFilesDialog;
 import magazzino.bobo.com.magazzinodomestico.dialogfragments.OggettoDialog;
+import magazzino.bobo.com.magazzinodomestico.dialogfragments.ShowImgDialog;
+import magazzino.bobo.com.magazzinodomestico.utils.ImageUtils;
 
 public class Contenitori_DettaglioActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -108,6 +111,25 @@ public class Contenitori_DettaglioActivity extends AppCompatActivity
         //Popolo la lista
         aggiornaLista(elencoOggetti, true);
 
+        listaOggettiView.setOnItemClickListener(new AdapterView.OnItemClickListener() { //Mostra l'immagine dell'oggetto
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                //Apre il dialog personalizzato, per mostrare l'immagine a schermo intero
+                OggettoDao dao = (OggettoDao) parent.getItemAtPosition(position);
+
+                String immagineBase64 = dao.getImmagine();
+
+                Bitmap immagine = ImageUtils.base64ToBitmap(immagineBase64);
+
+                if (immagine != null)
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Contenitori_DettaglioActivity.this);
+                    ShowImgDialog dialog = ShowImgDialog.newInstance(builder, immagine);
+                    dialog.show(getSupportFragmentManager(),"show_dialog");
+                }
+            }
+        });
 
         listaOggettiView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
