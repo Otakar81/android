@@ -258,7 +258,7 @@ public class OggettoDialog extends DialogFragment {
 
                             if(numeroGiri < limiteGiri)//if(isCreazioneDialog)
                             {
-                                settaValoriIstanza(nome, descrizione, numeroOggetti, id_stanza, id_mobile, id_contenitore, id_categoria);
+                                settaValoriIstanza(nome, descrizione, immagine, numeroOggetti, id_stanza, id_mobile, id_contenitore, id_categoria);
                                 isCreazioneDialog = false;
 
                                 numeroGiri++;
@@ -277,7 +277,7 @@ public class OggettoDialog extends DialogFragment {
 
                             if(numeroGiri < limiteGiri)//if(isCreazioneDialog)
                             {
-                                settaValoriIstanza(null, null, -1, location.getId_stanza(), location.getId_mobile(), location.getId_contenitore(), location.getId_categoria());
+                                settaValoriIstanza(null, null, "",-1, location.getId_stanza(), location.getId_mobile(), location.getId_contenitore(), location.getId_categoria());
 
                                 //E disabilito gli spinner già valorizzati
                                 disabilitaSpinner();
@@ -434,12 +434,13 @@ public class OggettoDialog extends DialogFragment {
      * @param id
      * @param nome
      */
-    public void valorizzaDialog(long id, String nome, String descrizione, int numeroOggetti, long idStanza, long idMobile, long idContenitore, long idCategoria)
+    public void valorizzaDialog(long id, String nome, String descrizione, String immagine, int numeroOggetti, long idStanza, long idMobile, long idContenitore, long idCategoria)
     {
         //Valorizzo le variabili dell'oggetto
         this.id = id;
         this.nome = nome;
         this.descrizione = descrizione;
+        this.immagine = immagine;
         this.numeroOggetti = numeroOggetti;
         this.id_stanza = idStanza;
         this.id_mobile = idMobile;
@@ -448,7 +449,7 @@ public class OggettoDialog extends DialogFragment {
 
         //Se la view è stata crata, la valorizzo con i dati passati
         if(false && nomeView != null)
-            settaValoriIstanza(nome, descrizione, numeroOggetti, idStanza, idMobile, idContenitore, idCategoria);
+            settaValoriIstanza(nome, descrizione, immagine, numeroOggetti, idStanza, idMobile, idContenitore, idCategoria);
 
     }
 
@@ -461,13 +462,18 @@ public class OggettoDialog extends DialogFragment {
      * @param idMobile
      * @param idCategoria
      */
-    private void settaValoriIstanza(String nome, String descrizione, int numeroOggetti, long idStanza, long idMobile, long idContenitore, long idCategoria)
+    private void settaValoriIstanza(String nome, String descrizione, String immagine, int numeroOggetti, long idStanza, long idMobile, long idContenitore, long idCategoria)
     {
         if(nome != null)
             nomeView.setText(nome);
 
         if(descrizione != null)
             descrizioneView.setText(descrizione);
+
+        Bitmap bitmap = ImageUtils.base64ToBitmap(immagine);
+
+        if(bitmap != null)
+            takePictureView.setImageBitmap(bitmap);
 
         //Verifico quale elemento della lista è selezionato per tutti gli spinner
         int posizioneCorrenteInLista = 0;
@@ -631,6 +637,7 @@ public class OggettoDialog extends DialogFragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        //Chiamata al ritorno di startActivityForResult. Gestisco i vari comportamenti sulla base del request code
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK) {
 
             Bundle extras = data.getExtras();
@@ -640,15 +647,11 @@ public class OggettoDialog extends DialogFragment {
             takePictureView.setImageBitmap(imageBitmap);
 
             immagine = ImageUtils.bitmapToBase64(imageBitmap);
-
-            //TODO Test
-            //Bitmap decodedImage = ImageUtils.base64ToBitmap(immagine);
-            //takePictureView.setImageBitmap(decodedImage);
-
         }
 
     }
 
+    //Avvio l'intent della fotocamera
     private void dispatchTakePictureIntent() {
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

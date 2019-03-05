@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity
                 dialog.show(getSupportFragmentManager(),"oggetto_dialog");
 
                 //E lo valorizza con gli attributi dell'oggetto su cui abbiamo cliccato
-                dialog.valorizzaDialog(dao.getId(), dao.getNome(), dao.getDescrizione(), dao.getNumero_oggetti(), dao.getId_stanza(), dao.getId_mobile(), dao.getId_contenitore(), dao.getId_categoria());
+                dialog.valorizzaDialog(dao.getId(), dao.getNome(), dao.getDescrizione(), dao.getImmagine(), dao.getNumero_oggetti(), dao.getId_stanza(), dao.getId_mobile(), dao.getId_contenitore(), dao.getId_categoria());
 
                 return true;
             }

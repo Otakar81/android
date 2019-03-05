@@ -9,18 +9,35 @@ import java.io.ByteArrayOutputStream;
 
 public class ImageUtils {
 
+    /***
+     * Esegue la conversione in base 64 della bitmap passata come argomento
+     *
+     * @param bitmap
+     * @return
+     */
     public static String bitmapToBase64(Bitmap bitmap)
     {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+        String result = "";
 
-        byte[] bArray = bos.toByteArray();
+        if(bitmap != null)
+        {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
 
-        String result = Base64.encodeToString(bArray, Base64.DEFAULT);
+            byte[] bArray = bos.toByteArray();
+
+            result = Base64.encodeToString(bArray, Base64.DEFAULT);
+        }
 
         return result;
     }
 
+    /***
+     * Ottiene la Bitmap originale, partendo dalla sua conversione in Base64
+     *
+     * @param base64String
+     * @return
+     */
     public static Bitmap base64ToBitmap(String base64String)
     {
         try{

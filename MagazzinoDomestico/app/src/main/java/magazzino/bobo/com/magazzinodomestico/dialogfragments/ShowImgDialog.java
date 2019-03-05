@@ -6,8 +6,11 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -65,6 +68,19 @@ public class ShowImgDialog extends DialogFragment {
         mBuilder.setView(view);
 
         // Create the AlertDialog object and return it
-        return mBuilder.create();
+        Dialog dialog = mBuilder.create();
+
+        //Setto le dimensioni del dialog sulla base di quelle dello schermo
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        int displayWidth = outMetrics.widthPixels;
+        int displayHeigth = outMetrics.heightPixels;
+
+        imageView.setMinimumHeight((int)(displayHeigth * 0.8f));
+        imageView.setMinimumWidth((int)(displayWidth * 0.8f));
+
+        return dialog;
     }
 }
