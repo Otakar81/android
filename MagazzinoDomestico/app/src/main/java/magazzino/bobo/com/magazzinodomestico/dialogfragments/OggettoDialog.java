@@ -3,10 +3,12 @@ package magazzino.bobo.com.magazzinodomestico.dialogfragments;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -62,6 +64,7 @@ public class OggettoDialog extends DialogFragment {
 
     //Request code per avere il permesso dell'uso della fotocamera
     static final int REQUEST_IMAGE_CAPTURE = 2;
+    Uri imageUri;
 
     //Specifica se il dialog da aprire sarà in modalità "edit" oppure "nuova istanza"
     boolean isEditMode;
@@ -640,10 +643,28 @@ public class OggettoDialog extends DialogFragment {
         //Chiamata al ritorno di startActivityForResult. Gestisco i vari comportamenti sulla base del request code
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK) {
 
-            Bundle extras = data.getExtras();
-
             //Recupero l'immagine scelta dall'utente, ne mostro una anteprima nella view apposita e valorizzo la variabile da salvare su DB
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            Bitmap imageBitmap;
+
+            try {
+
+                //Recupero l'immagine full res
+                imageBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+
+                //Faccio resize della bitmap originale
+                int scaledWidth = (int) (imageBitmap.getWidth() * 0.7f);
+                int scaledHeight = (int) (imageBitmap.getHeight() * 0.7f);
+
+                imageBitmap = Bitmap.createScaledBitmap(imageBitmap, scaledWidth, scaledHeight, false);
+
+            } catch (IOException e) { //In caso di problemi, restituisco l'anteprima in bassa risoluzione
+                //e.printStackTrace();
+
+                Bundle extras = data.getExtras();
+                imageBitmap = (Bitmap) extras.get("data");
+            }
+
+
             takePictureView.setImageBitmap(imageBitmap);
 
             immagine = ImageUtils.bitmapToBase64(imageBitmap);
@@ -654,7 +675,16 @@ public class OggettoDialog extends DialogFragment {
     //Avvio l'intent della fotocamera
     private void dispatchTakePictureIntent() {
 
+        //Parametri per recuperare la foto in alta risoluzione, altrimenti restituisce solo l'anteprima
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "New Picture");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+        imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        //Avvio l'intent
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri); //Mi passo l'uri su cui sarà salvata l'immagine full res
+
 
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
