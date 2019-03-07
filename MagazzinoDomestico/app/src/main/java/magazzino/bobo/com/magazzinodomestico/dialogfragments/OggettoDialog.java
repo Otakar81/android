@@ -652,8 +652,8 @@ public class OggettoDialog extends DialogFragment {
                 imageBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
 
                 //Faccio resize della bitmap originale
-                int scaledWidth = (int) (imageBitmap.getWidth() * 0.7f);
-                int scaledHeight = (int) (imageBitmap.getHeight() * 0.7f);
+                int scaledWidth = (int) (imageBitmap.getWidth() * 0.2f);
+                int scaledHeight = (int) (imageBitmap.getHeight() * 0.2f);
 
                 imageBitmap = Bitmap.createScaledBitmap(imageBitmap, scaledWidth, scaledHeight, false);
 
