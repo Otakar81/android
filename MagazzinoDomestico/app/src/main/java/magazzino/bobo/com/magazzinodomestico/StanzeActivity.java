@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -33,6 +36,7 @@ import magazzino.bobo.com.magazzinodomestico.db.DatabaseTools;
 import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
 import magazzino.bobo.com.magazzinodomestico.dialogfragments.ElencoFilesDialog;
 import magazzino.bobo.com.magazzinodomestico.dialogfragments.StanzaDialog;
+import magazzino.bobo.com.magazzinodomestico.utils.PermissionUtils;
 
 public class StanzeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -236,7 +240,15 @@ public class StanzeActivity extends AppCompatActivity
 
         }else if (id == R.id.nav_database_export) {
 
-            DatabaseTools.backupDatabase(this, MainActivity.database, getResources().getString(R.string.app_name));
+            if (!PermissionUtils.checkSelfPermission_STORAGE(this)) { //Se non mi è stato dato, lo chiedo nuovamente
+
+                if(Build.VERSION.SDK_INT >= 23) //Non ho bisogno di chiedere il permesso per versioni precedenti
+                    requestPermissions(PermissionUtils.PERMISSIONS_STORAGE, PermissionUtils.REQUEST_IMAGE_CAPTURE);
+
+            } else { //Procedo
+
+                DatabaseTools.backupDatabase(this, MainActivity.database, getResources().getString(R.string.app_name));
+            }
 
         }else if (id == R.id.nav_database_import) {
 
@@ -322,5 +334,17 @@ public class StanzeActivity extends AppCompatActivity
 
         //Aggiorno la lista in visualizzazione
         aggiornaLista(elencoRistretto, false);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode == PermissionUtils.REQUEST_IMAGE_CAPTURE)
+        {
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                DatabaseTools.backupDatabase(this, MainActivity.database, getResources().getString(R.string.app_name));
+        }
     }
 }

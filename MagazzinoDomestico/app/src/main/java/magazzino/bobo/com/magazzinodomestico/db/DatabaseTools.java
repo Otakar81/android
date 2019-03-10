@@ -27,15 +27,9 @@ import java.util.Date;
 import magazzino.bobo.com.magazzinodomestico.CategorieActivity;
 import magazzino.bobo.com.magazzinodomestico.MainActivity;
 import magazzino.bobo.com.magazzinodomestico.R;
+import magazzino.bobo.com.magazzinodomestico.utils.PermissionUtils;
 
 public class DatabaseTools {
-
-    //Permessi necessari per le operazioni di backup e restore
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
 
     /**
      * Effettua il backup del database attuale sulla memoria esterna del dispositivo
@@ -49,18 +43,7 @@ public class DatabaseTools {
     {
         boolean esito = true;
 
-        //Chiedo il permesso di poter leggere e scrivere la memoria
-        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        if (permission != PackageManager.PERMISSION_GRANTED) { //Se non mi è stato dato, lo chiedo nuovamente
-
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
-
-        } else { //Altrimenti posso procedere con le operazioni
+        if (PermissionUtils.checkSelfPermission_STORAGE(activity)) { //Se ho il permesso di accedere al disco, procedo
 
             try {
 
@@ -130,15 +113,9 @@ public class DatabaseTools {
         boolean esito = true;
 
         //Chiedo il permesso di poter leggere e scrivere la memoria
-        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (!PermissionUtils.checkSelfPermission_STORAGE(activity)) { //Se non mi è stato dato, lo chiedo nuovamente
 
-        if (permission != PackageManager.PERMISSION_GRANTED) { //Se non mi è stato dato, lo chiedo nuovamente
-
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
+            PermissionUtils.requestPermissions(activity, PermissionUtils.PERMISSIONS_STORAGE, PermissionUtils.REQUEST_EXTERNAL_STORAGE);
 
         } else { //Altrimenti posso procedere con le operazioni
 
@@ -227,15 +204,9 @@ public class DatabaseTools {
         };
 
         //Chiedo il permesso di poter leggere e scrivere la memoria
-        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (!PermissionUtils.checkSelfPermission_STORAGE(activity)) { //Se non mi è stato dato, lo chiedo nuovamente
 
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
+            PermissionUtils.requestPermissions(activity, PermissionUtils.PERMISSIONS_STORAGE, PermissionUtils.REQUEST_EXTERNAL_STORAGE);
 
         } else {
 
@@ -291,15 +262,9 @@ public class DatabaseTools {
     public static void deleteListBackupFiles(Activity activity, String appName)
     {
         //Chiedo il permesso di poter leggere e scrivere la memoria
-        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (!PermissionUtils.checkSelfPermission_STORAGE(activity)) { //Se non mi è stato dato, lo chiedo nuovamente
 
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
+            PermissionUtils.requestPermissions(activity, PermissionUtils.PERMISSIONS_STORAGE, PermissionUtils.REQUEST_EXTERNAL_STORAGE);
 
         } else {
 

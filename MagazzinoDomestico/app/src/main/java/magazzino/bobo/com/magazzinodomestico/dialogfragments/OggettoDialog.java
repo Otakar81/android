@@ -1,6 +1,5 @@
 package magazzino.bobo.com.magazzinodomestico.dialogfragments;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
@@ -41,6 +40,7 @@ import magazzino.bobo.com.magazzinodomestico.db.dao.MobileDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.OggettoDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
 import magazzino.bobo.com.magazzinodomestico.utils.ImageUtils;
+import magazzino.bobo.com.magazzinodomestico.utils.PermissionUtils;
 
 
 /*
@@ -58,8 +58,6 @@ import magazzino.bobo.com.magazzinodomestico.utils.ImageUtils;
 
 public class OggettoDialog extends DialogFragment {
 
-    //Request code per avere il permesso dell'uso della fotocamera
-    static final int REQUEST_IMAGE_CAPTURE = 2;
     Uri imageUri;
 
     //Specifica se il dialog da aprire sarà in modalità "edit" oppure "nuova istanza"
@@ -144,22 +142,25 @@ public class OggettoDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
 
-                //Chiedo il permesso per l'accesso alla fotocamera
-                if (Build.VERSION.SDK_INT < 23) //Sulle vecchie versioni di android, non devo chiedere permessi
+                //Verifico che il dispositivo abbia una fotocamera utilizzabile
+                if(PermissionUtils.hasSystemFeature_CAMERA(getActivity()))
                 {
-                    dispatchTakePictureIntent();
-
-                } else {
-
-                    if (getActivity().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-                    {
-                        requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
+                    //Verifico che l'APP abbia i permessi per usare la fotocamera e la memoria esterna
+                    if(PermissionUtils.checkSelfPermission_CAMERA(getActivity()) && PermissionUtils.checkSelfPermission_STORAGE(getActivity())) {
+                        dispatchTakePictureIntent();
 
                     } else {
-                        dispatchTakePictureIntent();
-                    }
 
+                        String[] permessi_fotocamera = PermissionUtils.mergePermissions(PermissionUtils.PERMISSIONS_CAMERA, PermissionUtils.PERMISSIONS_STORAGE);
+
+                        if(Build.VERSION.SDK_INT >= 23) //Non ho bisogno di chiedere il permesso per versioni precedenti
+                            requestPermissions(permessi_fotocamera, PermissionUtils.REQUEST_IMAGE_CAPTURE);
+                    }
+                }else{
+                    Toast.makeText(getActivity(), R.string.errore, Toast.LENGTH_SHORT).show();
                 }
+
+
             }
         });
 
@@ -625,7 +626,7 @@ public class OggettoDialog extends DialogFragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if(requestCode == REQUEST_IMAGE_CAPTURE)
+        if(requestCode == PermissionUtils.REQUEST_IMAGE_CAPTURE)
         {
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 dispatchTakePictureIntent();
@@ -637,7 +638,7 @@ public class OggettoDialog extends DialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         //Chiamata al ritorno di startActivityForResult. Gestisco i vari comportamenti sulla base del request code
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK) {
+        if (requestCode == PermissionUtils.REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK) {
 
             //Recupero l'immagine scelta dall'utente, ne mostro una anteprima nella view apposita e valorizzo la variabile da salvare su DB
             Bitmap imageBitmap;
@@ -645,16 +646,6 @@ public class OggettoDialog extends DialogFragment {
             try {
 
                 //Recupero l'immagine full res
-                /*
-                imageBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-
-                //Faccio resize della bitmap originale
-                int scaledWidth = (int) (imageBitmap.getWidth() * 0.2f);
-                int scaledHeight = (int) (imageBitmap.getHeight() * 0.2f);
-
-                imageBitmap = Bitmap.createScaledBitmap(imageBitmap, scaledWidth, scaledHeight, false);
-                */
-
                 imageBitmap = ImageUtils.resizeAndRotateImage(getContext(), imageUri);
 
             } catch (IOException e) { //In caso di problemi, restituisco l'anteprima in bassa risoluzione
@@ -665,8 +656,8 @@ public class OggettoDialog extends DialogFragment {
             }
 
 
+            //Mostro l'immagine nella view del dialog e valorizzo la variabile "immagine" con la relativa codifica a Base64
             takePictureView.setImageBitmap(imageBitmap);
-
             immagine = ImageUtils.bitmapToBase64(imageBitmap);
         }
 
@@ -677,8 +668,12 @@ public class OggettoDialog extends DialogFragment {
 
         //Parametri per recuperare la foto in alta risoluzione, altrimenti restituisce solo l'anteprima
         ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, "New Picture");
-        values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+        values.put(MediaStore.Images.Media.TITLE, "Personal Warehouse");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Image from Personal Warehouse");
+        //values.put(MediaStore.Images.ImageColumns.BUCKET_ID, nomeApp.hashCode());
+        //values.put(MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME, nomeApp);
+
+
         imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
         //Avvio l'intent
@@ -687,7 +682,7 @@ public class OggettoDialog extends DialogFragment {
 
 
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            startActivityForResult(takePictureIntent, PermissionUtils.REQUEST_IMAGE_CAPTURE);
         }
     }
 
