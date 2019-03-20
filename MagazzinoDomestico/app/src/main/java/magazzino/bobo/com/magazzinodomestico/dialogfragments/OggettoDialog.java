@@ -1,5 +1,6 @@
 package magazzino.bobo.com.magazzinodomestico.dialogfragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
@@ -103,6 +104,8 @@ public class OggettoDialog extends DialogFragment {
 
     private ImageView takePictureView;
 
+    private EditText datePickerView;
+
     //Dialog builder
     private AlertDialog.Builder mBuilder;
 
@@ -136,6 +139,15 @@ public class OggettoDialog extends DialogFragment {
         elencoMobiliView = view.findViewById(R.id.elencoMobili);
         elencoContenitoriView = view.findViewById(R.id.elencoContenitori);
         elencoCategorieView = view.findViewById(R.id.elencoCategorie);
+
+        //Valorizzo il campo data e ne abilito l'evento "onClick". Facendolo da view, va in errore perchè se lo cerca nella activity chiamante
+        datePickerView = view.findViewById(R.id.datePicker);
+        datePickerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDatePickerDialog(view);
+            }
+        });
 
         takePictureView = view.findViewById(R.id.takePicture);
         takePictureView.setOnClickListener(new View.OnClickListener() {
@@ -685,5 +697,15 @@ public class OggettoDialog extends DialogFragment {
             startActivityForResult(takePictureIntent, PermissionUtils.REQUEST_IMAGE_CAPTURE);
         }
     }
+
+
+
+    public void showDatePickerDialog(View v) {
+        DatePickerFragment newFragment = new DatePickerFragment();
+        newFragment.setDateView(datePickerView);
+
+        newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+    }
+
 
 }
