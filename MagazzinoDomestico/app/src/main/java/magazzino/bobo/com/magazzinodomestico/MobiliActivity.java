@@ -208,7 +208,7 @@ public class MobiliActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
 
             //Creo un intent e vado sulla activity corrispondente
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent intent = new Intent(getApplicationContext(), OggettiActivity.class);
             startActivity(intent);
 
         } else if (id == R.id.nav_stanze) {
@@ -233,7 +233,13 @@ public class MobiliActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), CategorieActivity.class);
             startActivity(intent);
 
-        }else if (id == R.id.nav_database_export) {
+        } else if (id == R.id.nav_oggetti_scadenza) {
+
+            //Creo un intent e vado sulla activity corrispondente
+            Intent intent = new Intent(getApplicationContext(), OggettiScadenzaActivity.class);
+            startActivity(intent);
+
+        } else if (id == R.id.nav_database_export) {
 
             if (!PermissionUtils.checkSelfPermission_STORAGE(this)) { //Se non mi è stato dato, lo chiedo nuovamente
 

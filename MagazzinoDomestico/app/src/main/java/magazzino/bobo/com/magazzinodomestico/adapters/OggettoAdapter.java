@@ -8,9 +8,11 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import magazzino.bobo.com.magazzinodomestico.db.dao.OggettoDao;
 import magazzino.bobo.com.magazzinodomestico.R;
+import magazzino.bobo.com.magazzinodomestico.utils.DateUtils;
 
 
 public class OggettoAdapter extends ArrayAdapter {
@@ -18,11 +20,24 @@ public class OggettoAdapter extends ArrayAdapter {
     private ArrayList<OggettoDao> dataSet;
     Context mContext;
 
+    private boolean evidenziaDataScadenza;
+
     //Costruttore
     public OggettoAdapter(ArrayList<OggettoDao> data, Context context) {
         super(context, R.layout.row_oggetto, data);
         this.dataSet = data;
         this.mContext=context;
+
+        this.evidenziaDataScadenza = false;
+    }
+
+    /***
+     * Scelgo se evidenziare in visualizzazione la scadenza degli oggetti in funzione di quanto tempo manca da oggi
+     * @param evidenziaDataScadenza
+     */
+    public void setEvidenziaDataScadenza(boolean evidenziaDataScadenza)
+    {
+        this.evidenziaDataScadenza = evidenziaDataScadenza;
     }
 
     @Override
@@ -42,6 +57,7 @@ public class OggettoAdapter extends ArrayAdapter {
         TextView contenitoreView = (TextView) view.findViewById(R.id.contenitore);
         TextView numeroOggettiView = (TextView) view.findViewById(R.id.numeroOggetti);
 
+        TextView dataScadenzaView = (TextView) view.findViewById(R.id.dataScadenza);
 
         //Valorizzo i campi
 
@@ -54,15 +70,50 @@ public class OggettoAdapter extends ArrayAdapter {
         mobileView.setText(dao.getNome_mobile());
         contenitoreView.setText(dao.getNome_contenitore());
 
+        //Valorizzo il campo data di scadenza, o lo nascondo se non specificato
+        if(dao.getDataScadenza() != null)
+        {
+            String etichettaDataView = dataScadenzaView.getText().toString();
+
+            String dataScadenza = DateUtils.convertToDateView(dao.getDataScadenza(), Locale.getDefault());
+            dataScadenzaView.setText("("+ etichettaDataView + ": " + dataScadenza + ")");
+
+            if(this.evidenziaDataScadenza)
+            {
+
+                //Cambio colore alla scritta a seconda di quanto tempo manca alla scadenza
+                int giorniAllaScadenza = dao.giorniAllaScadenza();
+
+                int coloreScritta;
+
+                if(giorniAllaScadenza < 0) //Scaduto
+                    coloreScritta = -1; //Per ora lo lascio grigio standard
+                else if(giorniAllaScadenza < 1) //Oggi
+                    coloreScritta = R.color.colorStanzeDark;
+                else if(giorniAllaScadenza < 3) //Due o tre giorni
+                    coloreScritta = R.color.colorMobiliDark;
+                else //Molti giorni
+                    coloreScritta = R.color.colorCategorieDark;
+
+                if(coloreScritta != -1)
+                    dataScadenzaView.setTextColor(this.getContext().getResources().getColor(coloreScritta));
+
+            }
+
+        }else{
+            dataScadenzaView.setVisibility(View.GONE);
+        }
+
 
         //Valorizzo il campo numero oggetti, o lo nascondo se non specificato
-        if(dao.getNumero_oggetti() > 0)
+        if(dao.getNumero_oggetti() > -1)
         {
-            int[] values = this.getContext().getResources().getIntArray(R.array.numero_oggetti_value);
-            String[] labels = this.getContext().getResources().getStringArray(R.array.numero_oggetti_label);
+            //int[] values = this.getContext().getResources().getIntArray(R.array.numero_oggetti_value);
+            //String[] labels = this.getContext().getResources().getStringArray(R.array.numero_oggetti_label);
 
             String quantita = numeroOggettiView.getText().toString(); //Recupero il segnaposto dal file di layout e valorizzo il numero corretto
-            quantita = quantita.replaceAll("XX", getLabelFromValue(values, labels, dao.getNumero_oggetti()));
+            //quantita = quantita.replaceAll("XX", getLabelFromValue(values, labels, dao.getNumero_oggetti()));
+            quantita = quantita.replaceAll("XX", dao.getNumero_oggetti() + "");
 
             numeroOggettiView.setText(quantita);
         }

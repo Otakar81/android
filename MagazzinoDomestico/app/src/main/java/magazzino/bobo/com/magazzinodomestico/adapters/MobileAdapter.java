@@ -20,7 +20,7 @@ public class MobileAdapter extends ArrayAdapter {
 
     //Costruttore
     public MobileAdapter(ArrayList<MobileDao> data, Context context) {
-        super(context, R.layout.row_oggetto_bkp, data);
+        super(context, R.layout.row_mobile, data);
         this.dataSet = data;
         this.mContext=context;
     }

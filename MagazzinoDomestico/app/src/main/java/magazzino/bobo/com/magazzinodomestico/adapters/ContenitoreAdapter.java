@@ -20,7 +20,7 @@ public class ContenitoreAdapter extends ArrayAdapter {
 
     //Costruttore
     public ContenitoreAdapter(ArrayList<ContenitoreDao> data, Context context) {
-        super(context, R.layout.row_oggetto_bkp, data);
+        super(context, R.layout.row_contenitore, data);
         this.dataSet = data;
         this.mContext=context;
     }

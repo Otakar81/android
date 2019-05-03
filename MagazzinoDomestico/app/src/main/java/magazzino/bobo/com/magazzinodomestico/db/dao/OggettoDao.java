@@ -1,12 +1,19 @@
 package magazzino.bobo.com.magazzinodomestico.db.dao;
 
-public class OggettoDao {
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+import magazzino.bobo.com.magazzinodomestico.utils.DateUtils;
+
+public class OggettoDao implements Comparable {
 
     private long id;
     private String nome;
     private String descrizione;
     private String immagine;
     private int numero_oggetti;
+    private Date dataScadenza;
 
     private long id_categoria;
     private String nome_categoria;
@@ -192,6 +199,24 @@ public class OggettoDao {
         this.numero_oggetti = numero_oggetti;
     }
 
+    public Date getDataScadenza() {
+        return dataScadenza;
+    }
+
+    public void setDataScadenza(Date dataScadenza) {
+        this.dataScadenza = dataScadenza;
+    }
+
+    public String getDataScadenza_DbFormat()
+    {
+        return DateUtils.convertToDateDatabase(this.dataScadenza);
+    }
+
+    public void setDataScadenza_DbFormat(String date_db_format)
+    {
+        this.dataScadenza = DateUtils.convertToDateFromDatabase(date_db_format);
+    }
+
     /***
      * Restituisce true se la stringa passata come argomento "trova" l'oggetto
      *
@@ -216,6 +241,21 @@ public class OggettoDao {
             return false;
     }
 
+    public boolean searchItem(String searchString, boolean soloConScadenza)
+    {
+        if(soloConScadenza)
+        {
+            if(this.dataScadenza != null)
+                return searchItem(searchString);
+            else
+                return false;
+
+        } else {
+
+            return searchItem(searchString);
+        }
+    }
+
     @Override
     public String toString() {
 
@@ -233,5 +273,59 @@ public class OggettoDao {
         */
 
         return nome;
+    }
+
+    /***
+     * Restituisce il numero di giorni che mancano alla scadenza del prodotto
+     *
+     * @return
+     */
+    public int giorniAllaScadenza() {
+
+        int result = -1;
+
+        //Verifico quanto manca alla data di scadenza
+        if(this.dataScadenza != null)
+        {
+            //Data odierna, solo giorno senza ora
+            GregorianCalendar cal = new GregorianCalendar();
+            cal.setTime(new Date());
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+
+            long dataOdiernaMills = cal.getTimeInMillis();
+            long dataScadenzaMills = this.dataScadenza.getTime();
+
+            //Differenza ore
+            long differenzaMills = dataScadenzaMills - dataOdiernaMills;
+
+//            int ore = (int) (differenzaMills / 3600000 % 24);
+//            int ore_totali = (int) (differenzaMills / 3600000);
+            result = (int) (differenzaMills / 86400000); //Giorni
+        }
+
+        return result;
+    }
+
+
+    /***
+     * Ai fini dell'ordinamento via codice, uso la data di scadenza.
+     * I risultati restituiti dalle query invece sono ordinati per nome
+     */
+    @Override
+    public int compareTo(Object o) {
+
+        OggettoDao compare_object = (OggettoDao)o;
+
+        Date data_compare = compare_object.getDataScadenza();
+
+        if(this.dataScadenza != null && data_compare != null)
+        {
+            return this.dataScadenza.compareTo(data_compare);
+        }
+
+        return 0;
     }
 }

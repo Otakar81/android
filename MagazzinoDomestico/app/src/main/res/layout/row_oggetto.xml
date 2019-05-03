@@ -49,6 +49,15 @@
         app:layout_constraintTop_toBottomOf="@+id/nome" />
 
     <TextView
+        android:id="@+id/dataScadenza"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/oggetto_scadenza_breve"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nome" />
+
+    <TextView
         android:id="@+id/mobile"
         android:layout_width="wrap_content"
         android:layout_height="0dp"

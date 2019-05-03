@@ -26,11 +26,15 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import magazzino.bobo.com.magazzinodomestico.Categorie_DettaglioActivity;
 import magazzino.bobo.com.magazzinodomestico.Contenitori_DettaglioActivity;
 import magazzino.bobo.com.magazzinodomestico.MainActivity;
 import magazzino.bobo.com.magazzinodomestico.Mobili_DettaglioActivity;
+import magazzino.bobo.com.magazzinodomestico.OggettiActivity;
+import magazzino.bobo.com.magazzinodomestico.OggettiScadenzaActivity;
 import magazzino.bobo.com.magazzinodomestico.R;
 import magazzino.bobo.com.magazzinodomestico.Stanze_DettaglioActivity;
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
@@ -40,6 +44,7 @@ import magazzino.bobo.com.magazzinodomestico.db.dao.LocationDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.MobileDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.OggettoDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
+import magazzino.bobo.com.magazzinodomestico.utils.DateUtils;
 import magazzino.bobo.com.magazzinodomestico.utils.ImageUtils;
 import magazzino.bobo.com.magazzinodomestico.utils.PermissionUtils;
 
@@ -60,6 +65,7 @@ import magazzino.bobo.com.magazzinodomestico.utils.PermissionUtils;
 public class OggettoDialog extends DialogFragment {
 
     Uri imageUri;
+    Locale locale;
 
     //Specifica se il dialog da aprire sarà in modalità "edit" oppure "nuova istanza"
     boolean isEditMode;
@@ -76,6 +82,7 @@ public class OggettoDialog extends DialogFragment {
     private String nome;
     private String descrizione;
     private String immagine;
+    private Date data_scadenza;
     private int numeroOggetti;
     private long id_stanza;
     private long id_mobile;
@@ -90,21 +97,18 @@ public class OggettoDialog extends DialogFragment {
     private ArrayList<CategoriaDao> elencoCategorie;
     private ArrayList<ContenitoreDao> elencoContenitori;
 
-    private int[] elencoValoriNumeroOggetti;
-
-
     //Elementi view del dialog
     private EditText nomeView;
     private EditText descrizioneView;
     private Spinner elencoStanzeView;
-    private Spinner numeroOggettiView;
     private Spinner elencoMobiliView;
     private Spinner elencoCategorieView;
     private Spinner elencoContenitoriView;
 
     private ImageView takePictureView;
-
     private EditText datePickerView;
+    private EditText numeroOggettiView;
+
 
     //Dialog builder
     private AlertDialog.Builder mBuilder;
@@ -127,6 +131,9 @@ public class OggettoDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
+        //Get the Locale
+        locale = Locale.getDefault();
+
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_oggetto, null);
@@ -135,13 +142,14 @@ public class OggettoDialog extends DialogFragment {
         nomeView = view.findViewById(R.id.nome);
         descrizioneView = view.findViewById(R.id.descrizione);
         numeroOggettiView = view.findViewById(R.id.numeroOggetti);
+
         elencoStanzeView = view.findViewById(R.id.elencoStanze);
         elencoMobiliView = view.findViewById(R.id.elencoMobili);
         elencoContenitoriView = view.findViewById(R.id.elencoContenitori);
         elencoCategorieView = view.findViewById(R.id.elencoCategorie);
 
         //Valorizzo il campo data e ne abilito l'evento "onClick". Facendolo da view, va in errore perchè se lo cerca nella activity chiamante
-        datePickerView = view.findViewById(R.id.datePicker);
+        datePickerView = view.findViewById(R.id.dataScadenza);
         datePickerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -185,15 +193,6 @@ public class OggettoDialog extends DialogFragment {
         /*
             Setto l'adapter per gli spinner
          */
-
-        //Mostro tutte le scelte per lo spinner che memorizza il numero di oggetti
-        elencoValoriNumeroOggetti = getResources().getIntArray(R.array.numero_oggetti_value);
-
-        ArrayAdapter<CharSequence> oggettiAdapter =
-                ArrayAdapter.createFromResource(getActivity(), R.array.numero_oggetti_label, android.R.layout.simple_list_item_1);
-
-        numeroOggettiView.setAdapter(oggettiAdapter);
-
 
         //Mostro sempre tutte le categorie
         elencoCategorie = DatabaseManager.getAllCategorie(MainActivity.database, true);
@@ -270,7 +269,7 @@ public class OggettoDialog extends DialogFragment {
 
                             if(numeroGiri < limiteGiri)//if(isCreazioneDialog)
                             {
-                                settaValoriIstanza(nome, descrizione, immagine, numeroOggetti, id_stanza, id_mobile, id_contenitore, id_categoria);
+                                settaValoriIstanza(nome, descrizione, immagine, data_scadenza, numeroOggetti, id_stanza, id_mobile, id_contenitore, id_categoria);
                                 isCreazioneDialog = false;
 
                                 numeroGiri++;
@@ -289,7 +288,7 @@ public class OggettoDialog extends DialogFragment {
 
                             if(numeroGiri < limiteGiri)//if(isCreazioneDialog)
                             {
-                                settaValoriIstanza(null, null, "",-1, location.getId_stanza(), location.getId_mobile(), location.getId_contenitore(), location.getId_categoria());
+                                settaValoriIstanza(null, null, "", null,-1, location.getId_stanza(), location.getId_mobile(), location.getId_contenitore(), location.getId_categoria());
 
                                 //E disabilito gli spinner già valorizzati
                                 disabilitaSpinner();
@@ -341,7 +340,26 @@ public class OggettoDialog extends DialogFragment {
                             CategoriaDao categoria = (CategoriaDao) elencoCategorieView.getSelectedItem();
                             ContenitoreDao contenitore = (ContenitoreDao) elencoContenitoriView.getSelectedItem();
 
-                            int numeroOggetti = elencoValoriNumeroOggetti[numeroOggettiView.getSelectedItemPosition()];
+                            int numeroOggetti = -1;
+
+                            try {
+                                numeroOggetti = Integer.parseInt(numeroOggettiView.getText().toString().trim());
+                            }catch (Exception e)
+                            {
+                                //L'utente non ha inserito nulla per il campo, quindi lascio il valore di default -1
+                            }
+
+                            Date dataScadenza = null;
+
+                            try {
+
+                                String dataScadenzaStr = datePickerView.getText().toString().trim();
+                                dataScadenza = DateUtils.convertToDateFromView(dataScadenzaStr, locale);
+
+                            }catch (Exception e)
+                            {
+                                //L'utente non ha inserito nulla per il campo, quindi lascio il valore di default -1
+                            }
 
                             String immagineDaSalvare = "";
 
@@ -350,6 +368,8 @@ public class OggettoDialog extends DialogFragment {
 
                             OggettoDao dao = new OggettoDao(id, nome, descrizione, numeroOggetti, immagineDaSalvare, categoria.getId(), categoria.getNome(),
                                     stanza.getId(), stanza.getNome(), mobile.getId(), mobile.getNome(), contenitore.getId(), contenitore.getNome());
+
+                            dao.setDataScadenza(dataScadenza); //Setto la data di scadenza
 
                             //Modifico
                             DatabaseManager.updateOggetto(MainActivity.database, dao);
@@ -399,7 +419,6 @@ public class OggettoDialog extends DialogFragment {
                             CategoriaDao categoria = (CategoriaDao) elencoCategorieView.getSelectedItem();
                             ContenitoreDao contenitore = (ContenitoreDao) elencoContenitoriView.getSelectedItem();
 
-                            int numeroOggetti = elencoValoriNumeroOggetti[numeroOggettiView.getSelectedItemPosition()];
 
                             if(nome == null || nome.trim().equals(""))
                             {
@@ -417,9 +436,34 @@ public class OggettoDialog extends DialogFragment {
                                 if(immagine != null)
                                     immagineDaSalvare = immagine;
 
+
+                                int numeroOggetti = -1;
+
+                                try {
+                                    numeroOggetti = Integer.parseInt(numeroOggettiView.getText().toString().trim());
+                                }catch (Exception e)
+                                {
+                                    //L'utente non ha inserito nulla per il campo, quindi lascio il valore di default -1
+                                }
+
+                                Date dataScadenza = null;
+
+                                try {
+
+                                    String dataScadenzaStr = datePickerView.getText().toString().trim();
+                                    dataScadenza = DateUtils.convertToDateFromView(dataScadenzaStr, locale);
+
+                                }catch (Exception e)
+                                {
+                                    //L'utente non ha inserito nulla per il campo, quindi lascio il valore di default -1
+                                }
+
                                 OggettoDao dao = new OggettoDao(nome, descrizione, numeroOggetti,immagineDaSalvare, categoria.getId(), categoria.getNome(),
                                         stanza.getId(), stanza.getNome(), mobile.getId(), mobile.getNome(), contenitore.getId(), contenitore.getNome());
 
+                                dao.setDataScadenza(dataScadenza);
+
+                                //Salvo l'oggetto nuovo nel database
                                 DatabaseManager.insertOggetto(MainActivity.database, dao);
 
                                 //Avverto la lista che i dati sono cambiati
@@ -446,13 +490,14 @@ public class OggettoDialog extends DialogFragment {
      * @param id
      * @param nome
      */
-    public void valorizzaDialog(long id, String nome, String descrizione, String immagine, int numeroOggetti, long idStanza, long idMobile, long idContenitore, long idCategoria)
+    public void valorizzaDialog(long id, String nome, String descrizione, String immagine, Date data_scadenza, int numeroOggetti, long idStanza, long idMobile, long idContenitore, long idCategoria)
     {
         //Valorizzo le variabili dell'oggetto
         this.id = id;
         this.nome = nome;
         this.descrizione = descrizione;
         this.immagine = immagine;
+        this.data_scadenza = data_scadenza;
         this.numeroOggetti = numeroOggetti;
         this.id_stanza = idStanza;
         this.id_mobile = idMobile;
@@ -461,7 +506,7 @@ public class OggettoDialog extends DialogFragment {
 
         //Se la view è stata crata, la valorizzo con i dati passati
         if(false && nomeView != null)
-            settaValoriIstanza(nome, descrizione, immagine, numeroOggetti, idStanza, idMobile, idContenitore, idCategoria);
+            settaValoriIstanza(nome, descrizione, immagine, data_scadenza, numeroOggetti, idStanza, idMobile, idContenitore, idCategoria);
 
     }
 
@@ -474,7 +519,7 @@ public class OggettoDialog extends DialogFragment {
      * @param idMobile
      * @param idCategoria
      */
-    private void settaValoriIstanza(String nome, String descrizione, String immagine, int numeroOggetti, long idStanza, long idMobile, long idContenitore, long idCategoria)
+    private void settaValoriIstanza(String nome, String descrizione, String immagine, Date data_scadenza, int numeroOggetti, long idStanza, long idMobile, long idContenitore, long idCategoria)
     {
         if(nome != null)
             nomeView.setText(nome);
@@ -482,28 +527,19 @@ public class OggettoDialog extends DialogFragment {
         if(descrizione != null)
             descrizioneView.setText(descrizione);
 
+        if(numeroOggetti > -1)
+            numeroOggettiView.setText(Integer.toString(numeroOggetti));
+
         Bitmap bitmap = ImageUtils.base64ToBitmap(immagine);
 
         if(bitmap != null)
             takePictureView.setImageBitmap(bitmap);
 
+        if(data_scadenza != null)
+            datePickerView.setText(DateUtils.convertToDateView(data_scadenza, locale));
+
         //Verifico quale elemento della lista è selezionato per tutti gli spinner
         int posizioneCorrenteInLista = 0;
-
-        //Contenitori
-        if(numeroOggetti != -1) {
-
-            //Recupero la posizione nell'array dei valori possibili
-            for (int i = 0; i < elencoValoriNumeroOggetti.length; i++) {
-
-                if(numeroOggetti == elencoValoriNumeroOggetti[i]) {
-                    numeroOggettiView.setSelection(i);
-                    break;
-                }
-            }
-        }
-
-        posizioneCorrenteInLista = 0;
 
         //Stanze
         if(idStanza != -1) {
@@ -627,8 +663,13 @@ public class OggettoDialog extends DialogFragment {
             ((Contenitori_DettaglioActivity)getActivity()).aggiornaLista(
                     DatabaseManager.getAllOggettiByLocation(MainActivity.database, location), true);
 
-        }else{ //Main activity
-            ((MainActivity)getActivity()).aggiornaLista(DatabaseManager.getAllOggetti(MainActivity.database), true);
+        }else{ //Main activity oppure OggettiScadenza
+
+            if(getActivity().getClass().equals(OggettiActivity.class))
+                ((OggettiActivity)getActivity()).aggiornaLista(DatabaseManager.getAllOggetti(MainActivity.database, false), true);
+            else if(getActivity().getClass().equals(OggettiScadenzaActivity.class))
+                ((OggettiScadenzaActivity)getActivity()).aggiornaLista(DatabaseManager.getAllOggetti(MainActivity.database, true), true);
+
         }
     }
 

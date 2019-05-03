@@ -56,6 +56,14 @@
             android:name=".Contenitori_DettaglioActivity"
             android:label="@string/title_activity_contenitori__dettaglio"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".OggettiActivity"
+            android:label="@string/title_activity_oggetti"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".OggettiScadenzaActivity"
+            android:label="@string/title_activity_oggetti_scadenza"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

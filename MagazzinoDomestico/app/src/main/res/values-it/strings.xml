@@ -17,6 +17,8 @@
     <string name="title_activity_contenitori__dettaglio">Contenitori_DettaglioActivity</string>
     <string name="title_activity_mobili__dettaglio">Mobili_DettaglioActivity</string>
     <string name="title_activity_stanze__dettaglio">Mobili_DettaglioActivity</string>
+    <string name="title_activity_oggetti">I miei oggetti</string>
+    <string name="title_activity_oggetti_scadenza">Oggetti in Scadenza</string>
 
     <!-- Generale -->
     <string name="aggiungi">Aggiungi</string>
@@ -74,7 +76,10 @@
     <string name="oggetto_modifica">Modifica Oggetto</string>
     <string name="oggetto_nuovo">Nuovo Oggetto</string>
     <string name="oggetto_quantita">(Quantità: XX)</string>
-    <string name="oggetto_seleziona_quantita">Seleziona la Quantità</string>
+    <string name="oggetto_seleziona_quantita">Quantità</string>
+    <string name="oggetto_scadenza">Data Scadenza</string>
+    <string name="oggetto_scadenza_breve">Scadenza</string>
+
 
     <!-- Gestione database -->
     <string name="database_utility">Strumenti Database</string>

@@ -24,6 +24,16 @@
             android:id="@+id/nav_categorie"
             android:icon="@drawable/nav_categorie"
             android:title="@string/title_activity_categorie" />
+
+        <item android:title="@string/title_activity_oggetti_scadenza">
+            <menu>
+            <item
+                android:id="@+id/nav_oggetti_scadenza"
+                android:icon="@drawable/nav_database_backup"
+                android:title="@string/title_activity_main" />
+            </menu>
+        </item>
+
     </group>
 
     <item android:title="@string/database_utility">

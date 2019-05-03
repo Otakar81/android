@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import magazzino.bobo.com.magazzinodomestico.MainActivity;
 import magazzino.bobo.com.magazzinodomestico.db.dao.CategoriaDao;
@@ -16,6 +17,7 @@ import magazzino.bobo.com.magazzinodomestico.db.dao.LocationDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.MobileDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.OggettoDao;
 import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
+import magazzino.bobo.com.magazzinodomestico.utils.DateUtils;
 
 public class DatabaseManager {
 
@@ -135,6 +137,26 @@ public class DatabaseManager {
             editor.putBoolean("update_2", true);
             editor.commit();
         }
+
+        //Terzo update
+        if(!preferences.getBoolean("update_3", false)) //Non ho ancora fatto l'update
+        {
+            try{
+
+                String sql = "ALTER TABLE oggetti ADD COLUMN data_scadenza VARCHAR";
+                database.execSQL(sql);
+
+            }catch (Exception e)
+            {
+                Log.i("DEBUG", "Colonna già presente");
+            }
+
+            //Memorizzo che ho proceduto con l'update
+            SharedPreferences.Editor editor = MainActivity.preferences.edit();
+            editor.putBoolean("update_3", true);
+            editor.commit();
+        }
+
     }
 
 //endregion
@@ -1111,17 +1133,25 @@ public class DatabaseManager {
      */
     public static void insertOggetto(SQLiteDatabase database, OggettoDao oggettoDao)
     {
-        String sql = "INSERT INTO oggetti (nome, descrizione, numero_oggetti, immagine, id_categoria, id_stanza, id_mobile, id_contenitore) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO oggetti (nome, descrizione, numero_oggetti, immagine, data_scadenza, id_categoria, id_stanza, id_mobile, id_contenitore) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         SQLiteStatement stmt = database.compileStatement(sql);
         stmt.bindString(1, oggettoDao.getNome());
         stmt.bindString(2, oggettoDao.getDescrizione());
         stmt.bindLong(3, oggettoDao.getNumero_oggetti());
         stmt.bindString(4, oggettoDao.getImmagine());
-        stmt.bindLong(5, oggettoDao.getId_categoria());
-        stmt.bindLong(6, oggettoDao.getId_stanza());
-        stmt.bindLong(7, oggettoDao.getId_mobile());
-        stmt.bindLong(8, oggettoDao.getId_contenitore());
+
+        String databaseDate = oggettoDao.getDataScadenza_DbFormat();
+
+        if(databaseDate != null)
+            stmt.bindString(5, databaseDate);
+        else
+            stmt.bindNull(5);
+
+        stmt.bindLong(6, oggettoDao.getId_categoria());
+        stmt.bindLong(7, oggettoDao.getId_stanza());
+        stmt.bindLong(8, oggettoDao.getId_mobile());
+        stmt.bindLong(9, oggettoDao.getId_contenitore());
         stmt.execute();
     }
 
@@ -1134,17 +1164,27 @@ public class DatabaseManager {
     public static void updateOggetto(SQLiteDatabase database, OggettoDao oggettoDao)
     {
         SQLiteStatement stmt = database.compileStatement("UPDATE oggetti " +
-                "SET nome = ?, descrizione = ?, numero_oggetti = ?, immagine = ?, id_categoria = ?, id_stanza = ?, id_mobile = ?, id_contenitore = ? WHERE id = ?");
+                "SET nome = ?, descrizione = ?, numero_oggetti = ?, immagine = ?, data_scadenza = ?, id_categoria = ?, id_stanza = ?, id_mobile = ?, id_contenitore = ? WHERE id = ?");
 
         stmt.bindString(1, oggettoDao.getNome());
         stmt.bindString(2, oggettoDao.getDescrizione());
         stmt.bindLong(3, oggettoDao.getNumero_oggetti());
         stmt.bindString(4, oggettoDao.getImmagine());
-        stmt.bindLong(5, oggettoDao.getId_categoria());
-        stmt.bindLong(6, oggettoDao.getId_stanza());
-        stmt.bindLong(7, oggettoDao.getId_mobile());
-        stmt.bindLong(8, oggettoDao.getId_contenitore());
-        stmt.bindLong(9, oggettoDao.getId());
+
+
+        String databaseDate = oggettoDao.getDataScadenza_DbFormat();
+
+        if(databaseDate != null)
+            stmt.bindString(5, databaseDate);
+        else
+            stmt.bindNull(5);
+
+
+        stmt.bindLong(6, oggettoDao.getId_categoria());
+        stmt.bindLong(7, oggettoDao.getId_stanza());
+        stmt.bindLong(8, oggettoDao.getId_mobile());
+        stmt.bindLong(9, oggettoDao.getId_contenitore());
+        stmt.bindLong(10, oggettoDao.getId());
 
         stmt.execute();
     }
@@ -1166,18 +1206,28 @@ public class DatabaseManager {
      * @param database
      * @return
      */
-    public static ArrayList<OggettoDao> getAllOggetti(SQLiteDatabase database)
+    public static ArrayList<OggettoDao> getAllOggetti(SQLiteDatabase database, boolean soloInScadenza)
     {
         ArrayList<OggettoDao> result = new ArrayList<OggettoDao>();
 
-        String sql = "SELECT o.id, o.nome, o.descrizione, o.numero_oggetti, o.immagine, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
+        String sql = "SELECT o.id, o.nome, o.descrizione, o.numero_oggetti, o.immagine, o.data_scadenza, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
                 "c.nome as nome_contenitore, m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
                 "FROM oggetti o " +
                 "LEFT JOIN contenitori c ON o.id_contenitore = c.id " +
                 "LEFT JOIN mobili m ON o.id_mobile = m.id " +
                 "LEFT JOIN stanze s ON o.id_stanza = s.id " +
-                "LEFT JOIN categorie cat ON o.id_categoria = cat.id " +
-                "ORDER BY o.nome";
+                "LEFT JOIN categorie cat ON o.id_categoria = cat.id ";
+
+                if(soloInScadenza)
+                {
+                    sql += " WHERE o.data_scadenza IS NOT NULL " +
+                            " ORDER BY o.data_scadenza asc";
+
+                }else{
+                    sql += "ORDER BY o.nome";
+                }
+
+
 
         Cursor c = database.rawQuery(sql, null);
 
@@ -1226,6 +1276,15 @@ public class DatabaseManager {
             OggettoDao dao = new OggettoDao(id, nome, descrizione, numeroOggetti, immagine, idCategoria, nomeCategoria, idStanza, nomeStanza,
                 idMobile, nomeMobile, idContenitore, nomeContenitore);
 
+
+            if(!c.isNull(c.getColumnIndex("data_scadenza")))
+            {
+                Date dataScadenza = DateUtils.convertToDateFromDatabase(c.getString(c.getColumnIndex("data_scadenza")));
+
+                if(dataScadenza != null)
+                    dao.setDataScadenza(dataScadenza);
+            }
+
             result.add(dao);
         }
 
@@ -1251,7 +1310,7 @@ public class DatabaseManager {
         long id_contenitore = location.getId_contenitore();
 
 
-        String sql = "SELECT o.id, o.nome, o.descrizione, o.numero_oggetti, o.immagine, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
+        String sql = "SELECT o.id, o.nome, o.descrizione, o.numero_oggetti, o.immagine, o.data_scadenza, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
                 "c.nome as nome_contenitore, m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
                 "FROM oggetti o " +
                 "LEFT JOIN contenitori c ON o.id_contenitore = c.id " +
@@ -1314,6 +1373,16 @@ public class DatabaseManager {
             OggettoDao dao = new OggettoDao(id, nome, descrizione, numeroOggetti, immagine, idCategoria, nomeCategoria, idStanza, nomeStanza,
                     idMobile, nomeMobile, idContenitore, nomeContenitore);
 
+
+            if(!c.isNull(c.getColumnIndex("data_scadenza")))
+            {
+                Date dataScadenza = DateUtils.convertToDateFromDatabase(c.getString(c.getColumnIndex("data_scadenza")));
+
+                if(dataScadenza != null)
+                    dao.setDataScadenza(dataScadenza);
+            }
+
+
             result.add(dao);
         }
 
@@ -1333,7 +1402,7 @@ public class DatabaseManager {
     {
         OggettoDao result = null;
 
-        String sql = "SELECT o.id, o.nome, o.descrizione, o.numero_oggetti, o.immagine, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
+        String sql = "SELECT o.id, o.nome, o.descrizione, o.numero_oggetti, o.immagine, o.data_scadenza, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
                 "c.nome as nome_contenitore, m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
                 "FROM oggetti o " +
                 "LEFT JOIN contenitori c ON o.id_contenitore = c.id " +
@@ -1390,6 +1459,14 @@ public class DatabaseManager {
 
             result = new OggettoDao(id, nome, descrizione, numeroOggetti, immagine, idCategoria, nomeCategoria, idStanza, nomeStanza,
                     idMobile, nomeMobile, idContenitore, nomeContenitore);
+
+            if(!c.isNull(c.getColumnIndex("data_scadenza")))
+            {
+                Date dataScadenza = DateUtils.convertToDateFromDatabase(c.getString(c.getColumnIndex("data_scadenza")));
+
+                if(dataScadenza != null)
+                    result.setDataScadenza(dataScadenza);
+            }
 
         }
 
