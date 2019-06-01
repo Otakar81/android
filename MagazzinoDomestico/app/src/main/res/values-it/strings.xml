@@ -79,6 +79,7 @@
     <string name="oggetto_seleziona_quantita">Quantità</string>
     <string name="oggetto_scadenza">Data Scadenza</string>
     <string name="oggetto_scadenza_breve">Scadenza</string>
+    <string name="oggetto_in_scadenza">Hai dei prodotti in scadenza</string>
 
 
     <!-- Gestione database -->

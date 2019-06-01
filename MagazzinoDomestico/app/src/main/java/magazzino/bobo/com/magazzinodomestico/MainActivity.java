@@ -1,22 +1,30 @@
 package magazzino.bobo.com.magazzinodomestico;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import magazzino.bobo.com.magazzinodomestico.db.DatabaseManager;
 import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
+import magazzino.bobo.com.magazzinodomestico.scheduler.AlarmNotificationReceiver;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -27,6 +35,13 @@ public class MainActivity extends AppCompatActivity
 
     //Utilizzato per memorizzare gli update fatti sul database e non ripeterli inutilmente
     public static SharedPreferences preferences;
+
+    //Channel ID usato per le notifiche
+    public static final String CHANNEL_ID = "bobo_com_magazzinodomestico_01";
+
+    public static final int ORA_SCHEDULER = 9;
+    public static final int MINUTO_SCHEDULER = 9;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +62,12 @@ public class MainActivity extends AppCompatActivity
         //Se non esistono, creo le tabelle
         DatabaseManager.createTables(database);
 
+        //Creo il notification channel per la notifica di scadenza prodotti
+        createNotificationChannel(CHANNEL_ID);
+
+        //Creo lo scheduler per la notifica di scadenza prodotti
+        startNotificationScheduler();
+
         //Se non ci sono ancora stanze su database, faccio redirect sull'activity relativa
         ArrayList<StanzaDao> elencoStanze = DatabaseManager.getAllStanze(database);
 
@@ -63,6 +84,19 @@ public class MainActivity extends AppCompatActivity
 
             Intent intent = new Intent(getApplicationContext(), OggettiActivity.class);
             startActivity(intent);
+        }
+
+        //Se vengo chiamato da fuori (da una notifica di sistema) stabilisco su quale activity fare il redirect
+        Intent intent = getIntent();
+        String activity_destinazione = intent.getStringExtra("destination_activity");
+
+        if(activity_destinazione != null)
+        {
+            if(activity_destinazione.equalsIgnoreCase("oggetti_scadenza"))
+            {
+                Intent outIntent = new Intent(getApplicationContext(), OggettiScadenzaActivity.class);
+                startActivity(outIntent);
+            }
         }
     }
 
@@ -103,4 +137,47 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+    //Creo il Channel ID con relativa priorità (necessario per android 8.0 e superiore
+    private void createNotificationChannel(String channel_ID)
+    {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            CharSequence name = "bobo_magazzinodomestico_channel"; //getString(R.string.channel_name);
+            String description = "Magazzino domestico Channel";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel channel = new NotificationChannel(channel_ID, name, importance);
+            channel.setDescription(description);
+
+            //Registro il canale nel sistema
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void startNotificationScheduler() {
+        AlarmManager manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+
+        //Setto l'orario giornaliero in cui sarà necessario effettuare la verifica degli oggetti in scadenza
+        Calendar calendar= Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, ORA_SCHEDULER);
+        calendar.set(Calendar.MINUTE, MINUTO_SCHEDULER);
+
+        Intent myIntent = new Intent(this, AlarmNotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,0, myIntent,0);
+
+        //Verifico che l'alarm non esista già
+        boolean alarmIsActive = (PendingIntent.getBroadcast(this, 0, myIntent, PendingIntent.FLAG_NO_CREATE) != null);
+
+        if(!alarmIsActive) //Se non è già attivo, procedo a crearlo
+        {
+            manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY,pendingIntent);
+            Log.i("MagazzinoDomestico", "Ho creato l'allarme");
+        }
+    }
+
 }

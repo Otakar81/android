@@ -1221,7 +1221,7 @@ public class DatabaseManager {
                 if(soloInScadenza)
                 {
                     sql += " WHERE o.data_scadenza IS NOT NULL " +
-                            " ORDER BY o.data_scadenza asc";
+                            " ORDER BY o.data_scadenza desc";
 
                 }else{
                     sql += "ORDER BY o.nome";

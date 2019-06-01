@@ -80,6 +80,8 @@
     <string name="oggetto_seleziona_quantita">Quantity</string>
     <string name="oggetto_scadenza">Expiration Date</string>
     <string name="oggetto_scadenza_breve">Exp. Date</string>
+    <string name="oggetto_in_scadenza">Do you have any expiring items</string>
+
 
 
     <!-- Gestione database -->
