@@ -18,7 +18,7 @@
     <string name="title_activity_mobili__dettaglio">Mobili_DettaglioActivity</string>
     <string name="title_activity_stanze__dettaglio">Mobili_DettaglioActivity</string>
     <string name="title_activity_oggetti">I miei oggetti</string>
-    <string name="title_activity_oggetti_scadenza">Oggetti in Scadenza</string>
+    <string name="title_activity_oggetti_scadenza">Oggetti in scadenza</string>
 
     <!-- Generale -->
     <string name="aggiungi">Aggiungi</string>

@@ -18,7 +18,7 @@
     <string name="title_activity_mobili__dettaglio">Furniture_ActivityDetail</string>
     <string name="title_activity_stanze__dettaglio">Rooms_ActivityDetail</string>
     <string name="title_activity_oggetti">My Items</string>
-    <string name="title_activity_oggetti_scadenza">Expiring Items</string>
+    <string name="title_activity_oggetti_scadenza">My Expiring Items</string>
 
 
     <!-- Generale -->

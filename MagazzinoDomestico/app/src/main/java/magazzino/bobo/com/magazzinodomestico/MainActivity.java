@@ -15,7 +15,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -174,10 +173,7 @@ public class MainActivity extends AppCompatActivity
         boolean alarmIsActive = (PendingIntent.getBroadcast(this, 0, myIntent, PendingIntent.FLAG_NO_CREATE) != null);
 
         if(!alarmIsActive) //Se non è già attivo, procedo a crearlo
-        {
             manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY,pendingIntent);
-            Log.i("MagazzinoDomestico", "Ho creato l'allarme");
-        }
     }
 
 }

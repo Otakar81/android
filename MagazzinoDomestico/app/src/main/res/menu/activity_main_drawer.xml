@@ -29,8 +29,8 @@
             <menu>
             <item
                 android:id="@+id/nav_oggetti_scadenza"
-                android:icon="@drawable/nav_database_backup"
-                android:title="@string/title_activity_main" />
+                android:icon="@drawable/nav_oggetti_scadenza"
+                android:title="@string/title_activity_oggetti_scadenza" />
             </menu>
         </item>
 
