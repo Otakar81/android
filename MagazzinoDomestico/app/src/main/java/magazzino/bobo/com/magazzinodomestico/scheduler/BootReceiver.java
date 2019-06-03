@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 /***
  * Il Receiver configurato nel manifest per partire al reboot del cellulare.
@@ -18,7 +19,7 @@ public class BootReceiver extends BroadcastReceiver {
 
     public void onReceive(Context context, Intent intent)
     {
-        //Log.i("MagazzinoDomestico", "Sono in BootReceiver");
+        Log.i("MagazzinoDomestico", "Sono in BootReceiver");
 
         //Avvio un JobService al riavvio del dispositivo
         ComponentName componentName = new ComponentName(context, BootService.class);
@@ -27,7 +28,7 @@ public class BootReceiver extends BroadcastReceiver {
         JobScheduler jScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         jScheduler.schedule(jInfo); //Schedulo il servizio
 
-        //Log.i("MagazzinoDomestico", "Scheduler lanciato");
+        Log.i("MagazzinoDomestico", "Scheduler lanciato");
     }
 }
 

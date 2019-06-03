@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity
     public static final String CHANNEL_ID = "bobo_com_magazzinodomestico_01";
 
     public static final int ORA_SCHEDULER = 9;
-    public static final int MINUTO_SCHEDULER = 9;
+    public static final int MINUTO_SCHEDULER = 0;
 
 
     @Override
@@ -173,7 +174,10 @@ public class MainActivity extends AppCompatActivity
         boolean alarmIsActive = (PendingIntent.getBroadcast(this, 0, myIntent, PendingIntent.FLAG_NO_CREATE) != null);
 
         if(!alarmIsActive) //Se non è già attivo, procedo a crearlo
-            manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY,pendingIntent);
+            manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        //else
+        //    manager.set(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()+3000, pendingIntent);
+
     }
 
 }
