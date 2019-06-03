@@ -25,7 +25,7 @@ public class BootService extends JobService {
         //Appoggio i parametri nella variabile di isanza, per usarli eventualmente negli altri metodi
         this.jParameters = params;
 
-        Log.i("MagazzinoDomestico", "Il servizio è stato startato");
+        //Log.i("MagazzinoDomestico", "Il servizio è stato startato");
 
         //Lancio il task asincrono
         doIt = new DoItTask();
@@ -61,15 +61,15 @@ public class BootService extends JobService {
         Intent myIntent = new Intent(this, AlarmNotificationReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this,0, myIntent,0);
 
-
+/*
         int numeroSecondi = 1000 * 60;
 
         if(true) //Metto true solo per testarlo subito, in questo modo manderà una notifica non appena riavvio il dispositivo
             manager.set(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()+numeroSecondi,pendingIntent);
-        else
+        else */
             manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
-        Log.i("MagazzinoDomestico", "Sono nello startAlarm ed ho fatto il mio lavoro");
+        //Log.i("MagazzinoDomestico", "Sono nello startAlarm ed ho fatto il mio lavoro");
     }
 
 

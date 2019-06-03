@@ -44,7 +44,7 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
             builder.setDefaults(Notification.DEFAULT_ALL)
                     .setWhen(System.currentTimeMillis())
                     //.setSmallIcon(android.R.drawable.stat_notify_sync_noanim)
-                    .setSmallIcon(R.drawable.nav_oggetti_scadenza)
+                    .setSmallIcon(R.drawable.nav_oggetti_scadenza_white)
                     .setContentTitle(appName)
                     .setContentText(prodottiScadenza)
                     .setContentIntent(pendingIntent)

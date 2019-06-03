@@ -171,10 +171,11 @@ public class MainActivity extends AppCompatActivity
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this,0, myIntent,0);
 
         //Verifico che l'alarm non esista già
-        boolean alarmIsActive = (PendingIntent.getBroadcast(this, 0, myIntent, PendingIntent.FLAG_NO_CREATE) != null);
+        //boolean alarmIsActive = (PendingIntent.getBroadcast(this, 0, myIntent, PendingIntent.FLAG_NO_CREATE) != null);
 
-        if(!alarmIsActive) //Se non è già attivo, procedo a crearlo
-            manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        //TODO Provare a commentare questo IF, in modo da essere sicuri che ad ogni avvio venga registrato lo scheduler (non dovesse funzionare al boot)
+        //if(!alarmIsActive) //Se non è già attivo, procedo a crearlo
+            manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
         //else
         //    manager.set(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()+3000, pendingIntent);
 

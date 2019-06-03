@@ -69,11 +69,13 @@
 
 
         <receiver android:name="magazzino.bobo.com.magazzinodomestico.scheduler.BootReceiver"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.HOME" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
             </intent-filter>
         </receiver>
 
@@ -84,7 +86,7 @@
             android:enabled="true"
             android:description="@string/app_name"
             android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="false"></service>
+            android:exported="true"></service>
 
     </application>
 
