@@ -715,7 +715,7 @@ public class DatabaseManager {
     {
         MobileDao result = null;
 
-        Cursor c = database.rawQuery("SELECT * FROM mobili m LEFT JOIN stanze s ON m.id_stanza = s.id where m.id = " + id, null);
+        Cursor c = database.rawQuery("SELECT m.*, s.nome as nome_stanza FROM mobili m LEFT JOIN stanze s ON m.id_stanza = s.id where m.id = " + id, null);
 
         int nomeStanzaIndex = c.getColumnIndex("nome_stanza");
 

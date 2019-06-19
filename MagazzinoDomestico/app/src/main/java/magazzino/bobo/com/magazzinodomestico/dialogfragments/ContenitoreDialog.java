@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -44,7 +45,7 @@ import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
  */
 
 
-public class ContenitoreDialog extends DialogFragment {
+public class ContenitoreDialog extends DialogFragment implements UpdateFieldDialog {
 
     //Specifica se il dialog da aprire sarà in modalità "edit" oppure "nuova istanza"
     boolean isEditMode;
@@ -112,6 +113,70 @@ public class ContenitoreDialog extends DialogFragment {
         elencoMobiliView = view.findViewById(R.id.elencoMobili);
         elencoCategorieView = view.findViewById(R.id.elencoCategorie);
         propagaCategoriaCheck = view.findViewById(R.id.checkEstendiCategoria);
+
+        /*
+            Bottoni "add" accanto agli spinner
+         */
+        final ContenitoreDialog thisDialog = this;
+
+        //Dialog addStanza
+        ImageView addStanzaButton = view.findViewById(R.id.addStanzaButton);
+        addStanzaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Creo il dialog per l'inserimento
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                GenericDialog dialog = GenericDialog.newInstance(builder);
+
+                dialog.setElencoView(elencoStanzeView);
+                dialog.setTipoCampo(GenericDialog.TIPO_CAMPO_STANZA);
+                dialog.setDialogChiamante(thisDialog);
+
+                dialog.show(getActivity().getSupportFragmentManager(),"stanza_dialog");
+            }
+        });
+
+        //Dialog addMobile
+        ImageView addMobileButton = view.findViewById(R.id.addMobileButton);
+        addMobileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //Creo un oggetto "location" con le coordinate già selezionate nel dialog chiamante
+                StanzaDao stanza = (StanzaDao) elencoStanzeView.getSelectedItem();
+
+                LocationDao locationDao = new LocationDao(-1, stanza.getId(), -1, -1);
+
+                //Creo il dialog per l'inserimento
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                GenericDialog dialog = GenericDialog.newInstance(builder);
+
+                dialog.setElencoView(elencoStanzeView);
+                dialog.setTipoCampo(GenericDialog.TIPO_CAMPO_MOBILE);
+                dialog.setDialogChiamante(thisDialog);
+                dialog.setLocationDao(locationDao);
+
+                dialog.show(getActivity().getSupportFragmentManager(),"mobile_dialog");
+            }
+        });
+
+        //Dialog addCategoira
+        ImageView addCategoriaButton = view.findViewById(R.id.addCategoriaButton);
+        addCategoriaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //Creo il dialog per l'inserimento
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                GenericDialog dialog = GenericDialog.newInstance(builder);
+
+                dialog.setElencoView(elencoStanzeView);
+                dialog.setTipoCampo(GenericDialog.TIPO_CAMPO_CATEGORIA);
+                dialog.setDialogChiamante(thisDialog);
+
+                dialog.show(getActivity().getSupportFragmentManager(),"categoria_dialog");
+            }
+        });
 
 
         //Setto l'adapter per gli spinner
@@ -435,6 +500,78 @@ public class ContenitoreDialog extends DialogFragment {
         {
             ((ContenitoriActivity)activityChiamante).aggiornaLista(
                     DatabaseManager.getAllContenitori(MainActivity.database), true);
+        }
+    }
+
+    @Override
+    public void updateSpinner(ArrayList elencoElementi, String nomeElemento, int tipoField) {
+        if(tipoField == GenericDialog.TIPO_CAMPO_STANZA)
+        {
+            //Aggiorno l'ArrayList delle stanze
+            this.elencoStanze = (ArrayList<StanzaDao>) elencoElementi;
+
+            //Aggiorno il relativo spinner
+            ArrayAdapter<StanzaDao> valoriStanze = new ArrayAdapter<StanzaDao>(getActivity(), android.R.layout.simple_list_item_1, elencoStanze);
+            elencoStanzeView.setAdapter(valoriStanze);
+
+            //Setto sullo spinner il record appena inserito
+            int posizioneCorrenteInLista = 0;
+
+            for (StanzaDao stanza: elencoStanze)
+            {
+                if (stanza.getNome().equalsIgnoreCase(nomeElemento)) {
+                    elencoStanzeView.setSelection(posizioneCorrenteInLista);
+                    break;
+                } else {
+                    posizioneCorrenteInLista++;
+                }
+            }
+
+            //Mobili
+        } else if(tipoField == GenericDialog.TIPO_CAMPO_MOBILE)
+        {
+            //Aggiorno l'ArrayList dei mobili
+            this.elencoMobili = (ArrayList<MobileDao>) elencoElementi;
+
+            //Aggiorno il relativo spinner
+            ArrayAdapter<MobileDao> valoriMobili = new ArrayAdapter<MobileDao>(getActivity(), android.R.layout.simple_list_item_1, elencoMobili);
+            elencoMobiliView.setAdapter(valoriMobili);
+
+            //Setto sullo spinner il record appena inserito
+            int posizioneCorrenteInLista = 0;
+
+            for (MobileDao mobile: elencoMobili)
+            {
+                if (mobile.getNome().equalsIgnoreCase(nomeElemento)) {
+                    elencoMobiliView.setSelection(posizioneCorrenteInLista);
+                    break;
+                } else {
+                    posizioneCorrenteInLista++;
+                }
+            }
+
+            //Categorie
+        } else if(tipoField == GenericDialog.TIPO_CAMPO_CATEGORIA)
+        {
+            //Aggiorno l'ArrayList dei contenitori
+            this.elencoCategorie = (ArrayList<CategoriaDao>) elencoElementi;
+
+            //Aggiorno il relativo spinner
+            ArrayAdapter<CategoriaDao> valoriCategorie = new ArrayAdapter<CategoriaDao>(getActivity(), android.R.layout.simple_list_item_1, elencoCategorie);
+            elencoCategorieView.setAdapter(valoriCategorie);
+
+            //Setto sullo spinner il record appena inserito
+            int posizioneCorrenteInLista = 0;
+
+            for (CategoriaDao categoria: elencoCategorie)
+            {
+                if (categoria.getNome().equalsIgnoreCase(nomeElemento)) {
+                    elencoCategorieView.setSelection(posizioneCorrenteInLista);
+                    break;
+                } else {
+                    posizioneCorrenteInLista++;
+                }
+            }
         }
     }
 }
