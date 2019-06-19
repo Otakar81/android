@@ -9,8 +9,8 @@
         android:id="@+id/topLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toStartOf="@+id/descrizione"
         app:layout_constraintHorizontal_bias="0.5"
@@ -21,9 +21,9 @@
             android:id="@+id/nome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
             android:layout_weight="1"
             android:contentDescription="@string/categoria_nome"
             android:ems="10"
@@ -48,9 +48,9 @@
         android:id="@+id/descrizione"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:ems="10"
         android:hint="@string/descrizione"
         android:inputType="textMultiLine"
@@ -97,9 +97,9 @@
             android:layout_marginEnd="16dp"
             android:layout_weight="1"
             android:ems="10"
+            android:focusableInTouchMode="false"
             android:hint="@string/oggetto_scadenza"
-            android:inputType="date"
-            android:focusableInTouchMode="false"/>
+            android:inputType="date" />
 
     </LinearLayout>
 
@@ -113,44 +113,120 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/centerLayout" />
 
-    <Spinner
-        android:id="@+id/elencoStanze"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/separator" />
 
-    <Spinner
-        android:id="@+id/elencoMobili"
+    <TableLayout
+        android:id="@+id/bottomLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/elencoStanze" />
+        app:layout_constraintTop_toBottomOf="@+id/separator">
 
-    <Spinner
-        android:id="@+id/elencoContenitori"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/elencoMobili" />
 
-    <Spinner
-        android:id="@+id/elencoCategorie"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/elencoContenitori" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="6">
+
+            <Spinner
+                android:id="@+id/elencoStanze"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="5" />
+
+
+            <ImageView
+                android:id="@+id/addStanzaButton"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/stanza_nuovo"
+                app:srcCompat="@drawable/ic_menu_send" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="6">
+
+            <Spinner
+                android:id="@+id/elencoMobili"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="5" />
+
+
+            <ImageView
+                android:id="@+id/addMobileButton"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/stanza_nuovo"
+                app:srcCompat="@drawable/ic_menu_send" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="6">
+
+            <Spinner
+                android:id="@+id/elencoContenitori"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="5" />
+
+
+            <ImageView
+                android:id="@+id/addContenitoreButton"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/stanza_nuovo"
+                app:srcCompat="@drawable/ic_menu_send" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="6">
+
+            <Spinner
+                android:id="@+id/elencoCategorie"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="5" />
+
+
+            <ImageView
+                android:id="@+id/addCategoriaButton"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/stanza_nuovo"
+                app:srcCompat="@drawable/ic_menu_send" />
+
+        </TableRow>
+
+    </TableLayout>
 
 </android.support.constraint.ConstraintLayout>

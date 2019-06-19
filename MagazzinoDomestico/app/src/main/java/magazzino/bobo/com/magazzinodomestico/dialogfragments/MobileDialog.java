@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -38,7 +39,7 @@ import magazzino.bobo.com.magazzinodomestico.db.dao.StanzaDao;
  */
 
 
-public class MobileDialog extends DialogFragment {
+public class MobileDialog extends DialogFragment implements UpdateFieldDialog {
 
     //Specifica se il dialog da aprire sarà in modalità "edit" oppure "nuova istanza"
     boolean isEditMode;
@@ -97,6 +98,28 @@ public class MobileDialog extends DialogFragment {
 
         ArrayAdapter<StanzaDao> valori = new ArrayAdapter<StanzaDao>(getActivity(), android.R.layout.simple_list_item_1, elencoStanze);
         elencoStanzeView.setAdapter(valori);
+
+        /*
+            Bottoni "add" accanto agli spinner
+         */
+        final MobileDialog thisDialog = this;
+
+        //Dialog addStanza
+        ImageView addStanzaButton = view.findViewById(R.id.addStanzaButton);
+        addStanzaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Creo il dialog per l'inserimento
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                GenericDialog dialog = GenericDialog.newInstance(builder);
+
+                dialog.setElencoView(elencoStanzeView);
+                dialog.setTipoCampo(GenericDialog.TIPO_CAMPO_STANZA);
+                dialog.setDialogChiamante(thisDialog);
+
+                dialog.show(getActivity().getSupportFragmentManager(),"stanza_dialog");
+            }
+        });
 
         //E costruisco il builder
         if(isEditMode) //Finestra per edit di un elemento esistente
@@ -304,4 +327,29 @@ public class MobileDialog extends DialogFragment {
         }
     }
 
+    @Override
+    public void updateSpinner(ArrayList elencoElementi, String nomeElemento, int tipoField) {
+        if(tipoField == GenericDialog.TIPO_CAMPO_STANZA)
+        {
+            //Aggiorno l'ArrayList delle stanze
+            this.elencoStanze = (ArrayList<StanzaDao>) elencoElementi;
+
+            //Aggiorno il relativo spinner
+            ArrayAdapter<StanzaDao> valoriStanze = new ArrayAdapter<StanzaDao>(getActivity(), android.R.layout.simple_list_item_1, elencoStanze);
+            elencoStanzeView.setAdapter(valoriStanze);
+
+            //Setto sullo spinner il record appena inserito
+            int posizioneCorrenteInLista = 0;
+
+            for (StanzaDao stanza: elencoStanze)
+            {
+                if (stanza.getNome().equalsIgnoreCase(nomeElemento)) {
+                    elencoStanzeView.setSelection(posizioneCorrenteInLista);
+                    break;
+                } else {
+                    posizioneCorrenteInLista++;
+                }
+            }
+        }
+    }
 }
