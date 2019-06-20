@@ -936,9 +936,21 @@ public class DatabaseManager {
                 "LEFT JOIN categorie cat ON c.id_categoria = cat.id " +
                 "WHERE " +
                 "(" + id_categoria + " = -1 OR c.id_categoria = " + id_categoria + " ) AND " +
-                "(" + id_stanza + " = -1 OR c.id_stanza = " + id_stanza + " ) AND " +
-                "(" + id_mobile + " = -1 OR c.id_mobile = " + id_mobile + " ) " +
-                "ORDER BY c.nome";
+                "(" + id_stanza + " = -1 OR c.id_stanza = " + id_stanza + " ) AND ";
+
+        /*
+            Di base, il valore -1 nel location vuol dire semplicemente "ignora quel parametro"
+            Nel caso in cui però la chiamata stia arrivando per popolare uno spinner, allora l'id del è da considerare in maniera diversa.
+            La stanza sarà sempre valorizzata, se però non lo è il mobile (id = -1) allora non dovrà restituire tutti i contenitori
+            presenti nella stanza, ma solo quelli che effettivamente non sono dentro un mobile.
+            Quindi quelli per cui id_mobile su DB è effettivamente -1
+         */
+        if(showDefaultElement)
+            sql += "(c.id_mobile = " + id_mobile + " ) ";
+        else
+            sql += "(" + id_mobile + " = -1 OR c.id_mobile = " + id_mobile + " ) ";
+
+        sql += "ORDER BY c.nome";
 
 
         if(showDefaultElement) //Se true, inserisco il record di default

@@ -311,7 +311,7 @@ public class OggettoDialog extends DialogFragment implements UpdateFieldDialog {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
 
-                StanzaDao stanzaSelezionata = elencoStanze.get(position);
+                final StanzaDao stanzaSelezionata = elencoStanze.get(position);
 
                 //Log.i("TEST", "Stanza: " + stanzaSelezionata.getNome());
 
@@ -329,7 +329,7 @@ public class OggettoDialog extends DialogFragment implements UpdateFieldDialog {
                   //      Log.i("TEST", "Mobile: " + mobileSelezionato.getNome());
 
                         //Mostro i contenitori presenti nel mobile
-                        LocationDao locationMobile = new LocationDao(-1, mobileSelezionato.getId_stanza(), mobileSelezionato.getId(), -1);
+                        LocationDao locationMobile = new LocationDao(-1, stanzaSelezionata.getId(), mobileSelezionato.getId(), -1);
 
                         elencoContenitori = DatabaseManager.getAllContenitoriByLocation(MainActivity.database, locationMobile, true);
                         ArrayAdapter<ContenitoreDao> valoriContenitori = new ArrayAdapter<ContenitoreDao>(getActivity(), android.R.layout.simple_list_item_1, elencoContenitori);
