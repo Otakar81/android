@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -111,7 +112,6 @@ public class OggettoDialog extends DialogFragment implements UpdateFieldDialog {
     private EditText datePickerView;
     private EditText numeroOggettiView;
 
-
     //Dialog builder
     private AlertDialog.Builder mBuilder;
 
@@ -138,12 +138,11 @@ public class OggettoDialog extends DialogFragment implements UpdateFieldDialog {
 
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_oggetto, null);
+        final View view = inflater.inflate(R.layout.dialog_oggetto, null);
 
         //Valorizzo le view del layout
         nomeView = view.findViewById(R.id.nome);
         descrizioneView = view.findViewById(R.id.descrizione);
-        numeroOggettiView = view.findViewById(R.id.numeroOggetti);
 
         elencoStanzeView = view.findViewById(R.id.elencoStanze);
         elencoMobiliView = view.findViewById(R.id.elencoMobili);
@@ -156,6 +155,15 @@ public class OggettoDialog extends DialogFragment implements UpdateFieldDialog {
             @Override
             public void onClick(View view) {
                 showDatePickerDialog(view);
+            }
+        });
+
+        //Valorizzo il campo "numero oggetti" e ne abilito l'evento "onClick"
+        numeroOggettiView = view.findViewById(R.id.numeroOggetti);
+        numeroOggettiView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showNumberPickerDialog(view);
             }
         });
 
@@ -842,7 +850,13 @@ public class OggettoDialog extends DialogFragment implements UpdateFieldDialog {
     }
 
 
-    //TODO TEST
+    private void showNumberPickerDialog(View v) {
+
+        //Creo il dialog per l'inserimento
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        NumberPickerDialog dialog = NumberPickerDialog.newInstance(builder, numeroOggettiView);
+        dialog.show(getActivity().getSupportFragmentManager(),"number_dialog");
+    }
 
 
     public void setElencoStanze(ArrayList<StanzaDao> elencoStanze) {
