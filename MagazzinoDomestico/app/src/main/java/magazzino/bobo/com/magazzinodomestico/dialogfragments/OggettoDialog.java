@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -198,18 +199,26 @@ public class OggettoDialog extends DialogFragment implements UpdateFieldDialog {
                 //Creo un oggetto "location" con le coordinate già selezionate nel dialog chiamante
                 StanzaDao stanza = (StanzaDao) elencoStanzeView.getSelectedItem();
 
-                LocationDao locationDao = new LocationDao(-1, stanza.getId(), -1, -1);
+                if(stanza != null)
+                {
+                    LocationDao locationDao = new LocationDao(-1, stanza.getId(), -1, -1);
 
-                //Creo il dialog per l'inserimento
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                GenericDialog dialog = GenericDialog.newInstance(builder);
+                    //Creo il dialog per l'inserimento
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    GenericDialog dialog = GenericDialog.newInstance(builder);
 
-                dialog.setElencoView(elencoStanzeView);
-                dialog.setTipoCampo(GenericDialog.TIPO_CAMPO_MOBILE);
-                dialog.setDialogChiamante(thisDialog);
-                dialog.setLocationDao(locationDao);
+                    dialog.setElencoView(elencoStanzeView);
+                    dialog.setTipoCampo(GenericDialog.TIPO_CAMPO_MOBILE);
+                    dialog.setDialogChiamante(thisDialog);
+                    dialog.setLocationDao(locationDao);
 
-                dialog.show(getActivity().getSupportFragmentManager(),"mobile_dialog");
+                    dialog.show(getActivity().getSupportFragmentManager(),"mobile_dialog");
+
+                }else{
+
+                    Snackbar.make(view, R.string.stanza_devi_creare_prima, Snackbar.LENGTH_LONG).show();
+                }
+
             }
         });
 
@@ -223,18 +232,26 @@ public class OggettoDialog extends DialogFragment implements UpdateFieldDialog {
                 StanzaDao stanza = (StanzaDao) elencoStanzeView.getSelectedItem();
                 MobileDao mobile = (MobileDao) elencoMobiliView.getSelectedItem();
 
-                LocationDao locationDao = new LocationDao(-1, stanza.getId(), mobile.getId(), -1);
+                if(stanza != null)
+                {
 
-                //Creo il dialog per l'inserimento
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                GenericDialog dialog = GenericDialog.newInstance(builder);
+                    LocationDao locationDao = new LocationDao(-1, stanza.getId(), mobile.getId(), -1);
 
-                dialog.setElencoView(elencoStanzeView);
-                dialog.setTipoCampo(GenericDialog.TIPO_CAMPO_CONTENITORE);
-                dialog.setDialogChiamante(thisDialog);
-                dialog.setLocationDao(locationDao);
+                    //Creo il dialog per l'inserimento
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    GenericDialog dialog = GenericDialog.newInstance(builder);
 
-                dialog.show(getActivity().getSupportFragmentManager(),"contenitore_dialog");
+                    dialog.setElencoView(elencoStanzeView);
+                    dialog.setTipoCampo(GenericDialog.TIPO_CAMPO_CONTENITORE);
+                    dialog.setDialogChiamante(thisDialog);
+                    dialog.setLocationDao(locationDao);
+
+                    dialog.show(getActivity().getSupportFragmentManager(),"contenitore_dialog");
+
+                }else{
+
+                    Snackbar.make(view, R.string.stanza_devi_creare_prima, Snackbar.LENGTH_LONG).show();
+                }
 
             }
         });

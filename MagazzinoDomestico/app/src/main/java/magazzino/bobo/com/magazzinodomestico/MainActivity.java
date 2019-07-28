@@ -67,6 +67,12 @@ public class MainActivity extends AppCompatActivity
 
         //Creo lo scheduler per la notifica di scadenza prodotti
         startNotificationScheduler();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
 
         //Se non ci sono ancora stanze su database, faccio redirect sull'activity relativa
         ArrayList<StanzaDao> elencoStanze = DatabaseManager.getAllStanze(database);

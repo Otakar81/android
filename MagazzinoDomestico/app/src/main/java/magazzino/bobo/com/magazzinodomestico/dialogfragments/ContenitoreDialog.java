@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -145,18 +146,28 @@ public class ContenitoreDialog extends DialogFragment implements UpdateFieldDial
                 //Creo un oggetto "location" con le coordinate già selezionate nel dialog chiamante
                 StanzaDao stanza = (StanzaDao) elencoStanzeView.getSelectedItem();
 
-                LocationDao locationDao = new LocationDao(-1, stanza.getId(), -1, -1);
+                if(stanza != null)
+                {
+                    LocationDao locationDao = new LocationDao(-1, stanza.getId(), -1, -1);
 
-                //Creo il dialog per l'inserimento
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                GenericDialog dialog = GenericDialog.newInstance(builder);
+                    //Creo il dialog per l'inserimento
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    GenericDialog dialog = GenericDialog.newInstance(builder);
 
-                dialog.setElencoView(elencoStanzeView);
-                dialog.setTipoCampo(GenericDialog.TIPO_CAMPO_MOBILE);
-                dialog.setDialogChiamante(thisDialog);
-                dialog.setLocationDao(locationDao);
+                    dialog.setElencoView(elencoStanzeView);
+                    dialog.setTipoCampo(GenericDialog.TIPO_CAMPO_MOBILE);
+                    dialog.setDialogChiamante(thisDialog);
+                    dialog.setLocationDao(locationDao);
 
-                dialog.show(getActivity().getSupportFragmentManager(),"mobile_dialog");
+                    dialog.show(getActivity().getSupportFragmentManager(),"mobile_dialog");
+
+                }else{
+
+                    Snackbar.make(view, R.string.stanza_devi_creare_prima, Snackbar.LENGTH_LONG).show();
+
+                }
+
+
             }
         });
 
