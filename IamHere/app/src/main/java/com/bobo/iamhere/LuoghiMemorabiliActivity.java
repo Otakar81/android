@@ -82,7 +82,7 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                LocationDao locationDao = elencoPostiMemorabili.get(position);
+                LocationDao locationDao = (LocationDao) parent.getItemAtPosition(position); //elencoPostiMemorabili.get(position);
 
                 //Creo un intent e vado sulla mappa
                 Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
@@ -97,7 +97,7 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
                 //Apre il dialog personalizzato, per modifica e cancellazione del luogo
-                LocationDao locationDao = elencoPostiMemorabili.get(position);
+                LocationDao locationDao = (LocationDao) parent.getItemAtPosition(position); //elencoPostiMemorabili.get(position);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(LuoghiMemorabiliActivity.this);
                 LuoghiMemorabiliDialog luoghiMemorabiliDialog = LuoghiMemorabiliDialog.newInstance(builder);

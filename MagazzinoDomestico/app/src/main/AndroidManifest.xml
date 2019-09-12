@@ -28,42 +28,52 @@
         <activity
             android:name=".CategorieActivity"
             android:label="@string/title_activity_categorie"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Categorie_DettaglioActivity"
             android:label="@string/title_activity_mobili__dettaglio"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".StanzeActivity"
             android:label="@string/title_activity_stanze"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Stanze_DettaglioActivity"
             android:label="@string/title_activity_stanze__dettaglio"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MobiliActivity"
             android:label="@string/title_activity_mobili"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Mobili_DettaglioActivity"
             android:label="@string/title_activity_mobili__dettaglio"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ContenitoriActivity"
             android:label="@string/title_activity_contenitori"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Contenitori_DettaglioActivity"
             android:label="@string/title_activity_contenitori__dettaglio"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".OggettiActivity"
             android:label="@string/title_activity_oggetti"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".OggettiScadenzaActivity"
             android:label="@string/title_activity_oggetti_scadenza"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
 
