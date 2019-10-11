@@ -66,8 +66,8 @@ public class LuoghiMemorabiliDialog extends DialogFragment {
         //E costruisco il builder
         mBuilder.setView(view)
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .setTitle("Modifica luogo")
-                .setPositiveButton("Modifica", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.location_edit)
+                .setPositiveButton(R.string.edit, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -81,12 +81,12 @@ public class LuoghiMemorabiliDialog extends DialogFragment {
                         DatabaseManager.updateLuogoPreferito(MainActivity.database, idLuogo, alias, isPreferito);
 
                         //Avverto la lista che i dati sono cambiati
-                        ((LuoghiMemorabiliActivity)getActivity()).aggiornaLista(DatabaseManager.getAllLocation(MainActivity.database, false));
+                        ((LuoghiMemorabiliActivity)getActivity()).aggiornaListaFromDialog();
 
-                        Toast.makeText(getActivity(), "Luogo modificato", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("Elimina luogo", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -94,12 +94,12 @@ public class LuoghiMemorabiliDialog extends DialogFragment {
                         DatabaseManager.deleteLocation(MainActivity.database, idLuogo);
 
                         //Avverto la lista che i dati sono cambiati
-                        ((LuoghiMemorabiliActivity)getActivity()).aggiornaLista(DatabaseManager.getAllLocation(MainActivity.database, false));
+                        ((LuoghiMemorabiliActivity)getActivity()).aggiornaListaFromDialog();
 
-                        Toast.makeText(getActivity(), "Luogo eliminato", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.eliminazione_successo, Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNeutralButton("Cancella", null);
+                .setNeutralButton(R.string.cancel, null);
 
         //Se le variabili sono già state valorizzate, le uso per riempire la finestra
         if(this.alias != null && !this.alias.isEmpty()) {

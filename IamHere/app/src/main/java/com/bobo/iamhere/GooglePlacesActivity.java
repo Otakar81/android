@@ -93,9 +93,9 @@ public class GooglePlacesActivity extends AppCompatActivity
                 //Chiedo se l'utente vuole aggiungere il luogo a quelli preferiti
                 new AlertDialog.Builder(GooglePlacesActivity.this)
                         .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle("Salva luogo")
-                        .setMessage("Vuoi salvare questo luogo?")
-                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                        .setTitle(R.string.google_place_save_title)
+                        .setMessage(R.string.google_place_save_message)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
@@ -126,7 +126,7 @@ public class GooglePlacesActivity extends AppCompatActivity
                                         locationDao.setAlias(placeDao.getName());
                                         DatabaseManager.insertLocation(MainActivity.database, locationDao);
 
-                                        Toast.makeText(getApplicationContext(), "Luogo salvato", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), R.string.operazione_successo, Toast.LENGTH_SHORT).show();
                                     }
 
 
@@ -137,7 +137,7 @@ public class GooglePlacesActivity extends AppCompatActivity
                                 }
                             }
                         })
-                        .setNegativeButton("No", null)
+                        .setNegativeButton(R.string.cancel, null)
                         .show();
 
                 return true;
@@ -299,7 +299,7 @@ public class GooglePlacesActivity extends AppCompatActivity
                     startActivity(intent);
 
                 }else{
-                    Toast.makeText(GooglePlacesActivity.this, "La lista dei luoghi di interesse è vuota. Effettuare una nuova ricerca", Toast.LENGTH_LONG).show();
+                    Toast.makeText(GooglePlacesActivity.this, R.string.google_place_list_empty, Toast.LENGTH_LONG).show();
                 }
 
             }else
@@ -324,7 +324,7 @@ public class GooglePlacesActivity extends AppCompatActivity
 
 
                     TextView googlePlacesListTitle = findViewById(R.id.googlePlacesListTitle);
-                    googlePlacesListTitle.setText("Tipologia: " + nomeDescrittivo);
+                    googlePlacesListTitle.setText(getResources().getString(R.string.tipologia) + ": " + nomeDescrittivo);
 
                     //Valorizzo la lista a video
                     Location lastKnowLocation = getLastKnownLocation();// MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
@@ -561,7 +561,7 @@ public class GooglePlacesActivity extends AppCompatActivity
                     if(status.equalsIgnoreCase("ZERO_RESULTS"))
                     {
                         listaLuoghiInteressantiView.setAdapter(null);
-                        Toast.makeText(GooglePlacesActivity.this, "Nessun risultato trovato", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(GooglePlacesActivity.this, R.string.no_results, Toast.LENGTH_SHORT).show();
                     }
 
                     //TODO

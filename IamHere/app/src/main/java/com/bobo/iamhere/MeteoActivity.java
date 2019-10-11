@@ -52,7 +52,7 @@ public class MeteoActivity extends AppCompatActivity
 
     ArrayList<GiornataMeteoDao> elencoPrevisioni;
 
-    String LANGUAGE_CODE = "it"; //TODO VA preso dal sistema
+    String LANGUAGE_CODE = "en"; //Default, poi viene preso dal sistema
     Locale LOCALE;
 
     @Override
@@ -105,7 +105,9 @@ public class MeteoActivity extends AppCompatActivity
         } catch (Exception e) {
             e.printStackTrace();
 
-            Toast.makeText(this, "ERRORE: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            String genericError = getResources().getString(R.string.error_generic);
+
+            Toast.makeText(this, genericError + ": " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 

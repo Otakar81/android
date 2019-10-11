@@ -25,6 +25,41 @@
     <!-- MainActivity -->
     <string name="abilita_geolocalizzazione">Abilita la geolocalizzazione per avere una maggiore precisione</string>
     <string name="no_info">Nessuna info presente</string>
+    <string name="no_quick_place">Non hai ancora salvato un \'luogo veloce\'</string>
+    <string name="luogo_aggiunto">Luogo aggiunto</string>
+
+    <string name="elenco_info01">Sei in</string>
+    <string name="elenco_info02">Nel comune di</string>
+    <string name="elenco_info03">Coordinate GPS:</string>
+    <string name="elenco_info04">Altitudine sul livello del mare:</string>
+
+    <string name="info_distanze_header">Distanze dai luoghi memorizzati:</string>
+    <string name="info_distanze_header_preferiti">Distanze dai luoghi memorizzati (preferiti):</string>
+    <string name="info_distanze_no_preferiti">Non ci sono luoghi memorizzati</string>
+
+    <string name="nuovo_luogo_title">Aggiunta luogo</string>
+    <string name="nuovo_luogo_message">Specificare un alias per il luogo (opzionale)</string>
+    <string name="nuovo_luogo_yes">Aggiungi</string>
+    <string name="nuovo_luogo_no">Cancella</string>
+
+    <!-- LuoghiMemorabiliActivity -->
+    <string name="location_edit">Modifica luogo</string>
+    <string name="location_preferita">Luogo Preferito</string>
+
+    <!-- GooglePlacesActivity -->
+    <string name="google_place_save_title">Salva luogo</string>
+    <string name="google_place_save_message">Vuoi salvare questo luogo?</string>
+    <string name="google_place_list_empty">La lista dei luoghi di interesse è vuota. Effettuare una nuova ricerca</string>
+    <string name="tipologia">Tipologia</string>
+    <string name="google_place_select_type">Selezionare una tipologia</string>
+    <string name="google_places_aperto">(Aperto)</string>
+    <string name="google_places_chiuso">(Chiuso)</string>
+
+    <!-- NoteActivity -->
+    <string name="note_delete">Eliminare la nota?</string>
+    <string name="note_delete_subtitle">Sei sicuro di voler eliminare la nota?</string>
+    <string name="titolo">Titolo</string>
+
 
     <!-- SettingsActivity -->
     <string name="settings_aggiornamento_posizione_header">Aggiornamento della posizione</string>
@@ -56,6 +91,14 @@
 
     <!-- Messaggi generici -->
     <string name="location_null">Non è stato possibile risalire alla tua posizione. Abilita i servizi di geolocalizzazione</string>
+    <string name="error_generic">Si è verificato un errore</string>
+    <string name="yes">Si</string>
+    <string name="edit">Modifica</string>
+    <string name="delete">Elimina</string>
+    <string name="cancel">Annulla</string>
+    <string name="operazione_successo">Operazione effettuata con successo</string>
+    <string name="eliminazione_successo">Eliminazione effettuata con successo</string>
+    <string name="no_results">Nessun risultato trovato</string>
 
     <!-- Tipologie di Google Places -->
     <string name="accounting">Contabilità</string>

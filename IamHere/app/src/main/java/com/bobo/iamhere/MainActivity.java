@@ -194,10 +194,10 @@ public class MainActivity extends AppCompatActivity
                     //final EditText taskEditText = new EditText(this);
 
             AlertDialog dialog = new AlertDialog.Builder(this)
-                    .setTitle("Aggiunta luogo")
-                    .setMessage("Specificare un alias per il luogo (opzionale)")
+                    .setTitle(R.string.nuovo_luogo_title)
+                    .setMessage(R.string.nuovo_luogo_message)
                     .setView(dialoglayout)
-                    .setPositiveButton("Aggiungi", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.nuovo_luogo_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity
 
                         }
                     })
-                    .setNegativeButton("Cancella", null)
+                    .setNegativeButton(R.string.nuovo_luogo_no, null)
                     .create();
 
             dialog.show();
@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
 
             } else {
-                Toast.makeText(getApplicationContext(), "Non hai ancora salvato un 'luogo veloce'", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.no_quick_place, Toast.LENGTH_SHORT).show();
             }
 
         } else if (id == R.id.action_mostra_preferiti) {
@@ -475,6 +475,13 @@ public class MainActivity extends AppCompatActivity
 
                 if(indirizzi != null && indirizzi.size() > 0)
                 {
+                    //Recupero la traduzione delle parole chiave usate per comporre la infoBox
+                    String str_info_seiIn = getResources().getString(R.string.elenco_info01);
+                    String str_info_nelComuneDi = getResources().getString(R.string.elenco_info02);
+                    String str_info_coordinateGPS = getResources().getString(R.string.elenco_info03);
+                    String str_info_altitudine = getResources().getString(R.string.elenco_info04);
+
+                    //Recupero le info sul luogo attuale
                     Address address = indirizzi.get(0);
 
                     String latitudine = location.getLatitude() + "";
@@ -499,7 +506,7 @@ public class MainActivity extends AppCompatActivity
                             isPrimaRiga = false;
                         }
 
-                        elencoInfo += "Sei in " + regione;
+                        elencoInfo += str_info_seiIn + " " + regione;
 
                         if(nazione != null && nazione.trim().length() > 0)
                             elencoInfo += " (" + nazione + ")";
@@ -515,7 +522,7 @@ public class MainActivity extends AppCompatActivity
                             isPrimaRiga = false;
                         }
 
-                        elencoInfo += "Nel comune di " + citta;
+                        elencoInfo += str_info_nelComuneDi + " " + citta;
 
                         if(provincia != null && provincia.trim().length() > 0)
                             elencoInfo += " (" + provincia + ") ";
@@ -543,7 +550,7 @@ public class MainActivity extends AppCompatActivity
                         isPrimaRiga = false;
                     }
 
-                    elencoInfo += "Coordinate GPS: (" + latitudine + ", " + longitudine + ")";
+                    elencoInfo += str_info_coordinateGPS + " (" + latitudine + ", " + longitudine + ")";
 
                     //Altitudine
                     if(altitudine.trim().length() > 0) {
@@ -551,7 +558,7 @@ public class MainActivity extends AppCompatActivity
                         double altitudineDouble = Double.parseDouble(altitudine);
                         altitudineDouble = (double) (Math.round( altitudineDouble * Math.pow( 10, 2 ) )/Math.pow( 10, 2 ));
 
-                        elencoInfo += "\nAltitudine sul livello del mare: " + altitudineDouble + "m";
+                        elencoInfo += "\n" + str_info_altitudine + " " + altitudineDouble + "m";
                     }
                 }
 
@@ -573,18 +580,27 @@ public class MainActivity extends AppCompatActivity
             //E stampo le distanze dai luoghi memorizzati
             try{
 
+                //Recupero la traduzione delle parole chiave usate per comporre la infoBox
+                String str_distanze_header = getResources().getString(R.string.elenco_info01);
+
                 //Recupero la lista del luoghi "preferiti" salvati sul database
                 ArrayList<LocationDao> elencoLuoghi = DatabaseManager.getAllLocation(MainActivity.database, mostraSoloPreferiti);
 
-                String mostraSoloPreferitiString = "";
-
-                if(mostraSoloPreferiti)
-                    mostraSoloPreferitiString = " (preferiti)";
-
-                String infoDistanze = "Distanze dai luoghi memorizzati" + mostraSoloPreferitiString + ": \n";
+                //Inizializzo la stringa che mostrerà le info sulle distanze dai luoghi preferiti, se presenti
+                String infoDistanze = "";
 
                 if(elencoLuoghi.size() == 0)
-                    infoDistanze += "\nNon ci sono luoghi memorizzati";
+                {
+                    infoDistanze += "\n" + getResources().getString(R.string.info_distanze_no_preferiti);
+
+                }else{
+
+                    if(mostraSoloPreferiti)
+                        infoDistanze = getResources().getString(R.string.info_distanze_header_preferiti) + " \n";
+                    else
+                        infoDistanze = getResources().getString(R.string.info_distanze_header) + " \n";
+                }
+
 
                 //Valorizzo le distanze
                 for (LocationDao luogo:elencoLuoghi)
@@ -706,7 +722,7 @@ public class MainActivity extends AppCompatActivity
 
                 DatabaseManager.insertLocation(MainActivity.database, locationDao);
 
-                Toast.makeText(getApplicationContext(), "Luogo aggiunto", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.luogo_aggiunto, Toast.LENGTH_SHORT).show();
             }
 
 

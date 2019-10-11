@@ -87,9 +87,9 @@ public class NoteActivity extends AppCompatActivity
                 //Apro una dialog per confermare l'eliminazione
                 new AlertDialog.Builder(NoteActivity.this)
                         .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle("Eliminare la nota?")
-                        .setMessage("Sei sicuro di voler eliminare la nota?")
-                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                        .setTitle(R.string.note_delete)
+                        .setMessage(R.string.note_delete_subtitle)
+                        .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
@@ -99,10 +99,10 @@ public class NoteActivity extends AppCompatActivity
                                 elencoNote = DatabaseManager.getAllNote(MainActivity.database);
                                 aggiornaLista();
 
-                                Toast.makeText(NoteActivity.this, "Nota eliminata", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(NoteActivity.this, R.string.eliminazione_successo, Toast.LENGTH_SHORT).show();
                             }
                         })
-                        .setNegativeButton("No", null)
+                        .setNegativeButton(R.string.cancel, null)
                         .show();
 
                 return true;
@@ -138,12 +138,11 @@ public class NoteActivity extends AppCompatActivity
         {
             case R.id.action_aggiungi_nota:
 
-
                 Intent intent = new Intent(getApplicationContext(), Note_DettaglioActivity.class);
                 startActivity(intent);
 
+                //Toast.makeText(getApplicationContext(), "Aggiungo nota", Toast.LENGTH_SHORT).show();
 
-                Toast.makeText(getApplicationContext(), "Aggiungo nota", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return false;

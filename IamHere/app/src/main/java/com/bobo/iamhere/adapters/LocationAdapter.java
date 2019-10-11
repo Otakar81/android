@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -36,16 +37,21 @@ public class LocationAdapter extends ArrayAdapter {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View view = inflater.inflate(R.layout.row_google_places, null);
 
-        TextView nome = (TextView) view.findViewById(R.id.giornoMeteo);
-        TextView indirizzo = (TextView) view.findViewById(R.id.oraPrevisione);
+        TextView nome = (TextView) view.findViewById(R.id.locationName);
+        TextView indirizzo = (TextView) view.findViewById(R.id.locationAddress);
         TextView stato = (TextView) view.findViewById(R.id.statoGooglePlace);
         TextView distanza = (TextView) view.findViewById(R.id.distanzaGooglePlace);
         RatingBar rating = (RatingBar) view.findViewById(R.id.ratingGooglePlace);
+        ImageView isPreferitoImg = (ImageView) view.findViewById(R.id.isPreferitoImg);
 
         //Valorizzo i campi
         nome.setText(placeDao.getAlias());
         indirizzo.setText(placeDao.getIndirizzo());
         stato.setText(placeDao.getComune());
+
+        //Verifico se occorre mostrare l'immagine "is preferito"
+        if(placeDao.getLuogoPreferito() > 0)
+            isPreferitoImg.setVisibility(View.VISIBLE);
 
         //E nascondo quelli che non uso
         distanza.setVisibility(View.INVISIBLE);

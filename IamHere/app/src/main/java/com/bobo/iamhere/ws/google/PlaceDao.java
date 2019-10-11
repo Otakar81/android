@@ -71,6 +71,7 @@ public class PlaceDao implements Comparable {
         return isOpenNow;
     }
 
+    /*
     public String getIsOpenString()
     {
         //Formatto isOpen
@@ -83,6 +84,7 @@ public class PlaceDao implements Comparable {
 
         return isOpen;
     }
+    */
 
     public String getFormattedDistanzaDaMe()
     {

@@ -25,6 +25,40 @@
     <!-- MainActivity -->
     <string name="abilita_geolocalizzazione">Enable geolocation to ensure greater accuracy</string>
     <string name="no_info">No info available</string>
+    <string name="no_quick_place">You haven\'t saved a \'quick position\' yet</string>
+    <string name="luogo_aggiunto">Place added</string>
+
+    <string name="elenco_info01">You are in</string>
+    <string name="elenco_info02">In the city of</string>
+    <string name="elenco_info03">GPS coordinates:</string>
+    <string name="elenco_info04">Altitude:</string>
+
+    <string name="info_distanze_header">Distances from saved locations:</string>
+    <string name="info_distanze_header_preferiti">Distances from stored locations (favorite):</string>
+    <string name="info_distanze_no_preferiti">There are no stored locations</string>
+
+    <string name="nuovo_luogo_title">Location added</string>
+    <string name="nuovo_luogo_message">Specify an alias for the location (optional)</string>
+    <string name="nuovo_luogo_yes">Add</string>
+    <string name="nuovo_luogo_no">Cancel</string>
+
+    <!-- LuoghiMemorabiliActivity -->
+    <string name="location_edit">Edit location</string>
+    <string name="location_preferita">Favorite location</string>
+
+    <!-- GooglePlacesActivity -->
+    <string name="google_place_save_title">Save location</string>
+    <string name="google_place_save_message">Do you want to save this location?</string>
+    <string name="google_place_list_empty">The list of places of interest is empty. Make a new search</string>
+    <string name="tipologia">Type</string>
+    <string name="google_place_select_type">Select a type</string>
+    <string name="google_places_aperto">(Open)</string>
+    <string name="google_places_chiuso">(Closed)</string>
+
+    <!-- NoteActivity -->
+    <string name="note_delete">Delete the note?</string>
+    <string name="note_delete_subtitle">Are you sure you want to delete the note?</string>
+    <string name="titolo">Title</string>
 
     <!-- SettingsActivity -->
     <string name="settings_aggiornamento_posizione_header">Position update</string>
@@ -56,6 +90,14 @@
 
     <!-- Messaggi generici -->
     <string name="location_null">It wasn\'t possible to establish your position. Enable your geolocation services</string>
+    <string name="error_generic">An error has occurred</string>
+    <string name="yes">Yes</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="operazione_successo">Operation performed correctly</string>
+    <string name="eliminazione_successo">Elimination performed correctly</string>
+    <string name="no_results">No results found</string>
 
     <!-- Tipologie di Google Places -->
     <string name="accounting">Accounting</string>

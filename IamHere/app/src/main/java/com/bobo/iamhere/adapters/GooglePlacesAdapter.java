@@ -33,11 +33,14 @@ public class GooglePlacesAdapter extends ArrayAdapter {
         // Get the data item for this position
         PlaceDao placeDao = dataSet.get(position);
 
+        String localeApertoString = parent.getResources().getString(R.string.google_places_aperto);
+        String localeChiusoString = parent.getResources().getString(R.string.google_places_chiuso);
+
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View view = inflater.inflate(R.layout.row_google_places, null);
 
-        TextView nome = (TextView) view.findViewById(R.id.giornoMeteo);
-        TextView indirizzo = (TextView) view.findViewById(R.id.oraPrevisione);
+        TextView nome = (TextView) view.findViewById(R.id.locationName);
+        TextView indirizzo = (TextView) view.findViewById(R.id.locationAddress);
         TextView stato = (TextView) view.findViewById(R.id.statoGooglePlace);
         TextView distanza = (TextView) view.findViewById(R.id.distanzaGooglePlace);
         RatingBar rating = (RatingBar) view.findViewById(R.id.ratingGooglePlace);
@@ -45,7 +48,6 @@ public class GooglePlacesAdapter extends ArrayAdapter {
         //Valorizzo i campi
         nome.setText(placeDao.getName());
         indirizzo.setText(placeDao.getFormattedAddress());
-        stato.setText(placeDao.getIsOpenString());
         distanza.setText(placeDao.getFormattedDistanzaDaMe());
 
         if(placeDao.getRating() > 0) //Ho un rating
@@ -53,9 +55,21 @@ public class GooglePlacesAdapter extends ArrayAdapter {
         else
             rating.setVisibility(View.INVISIBLE);
 
-        //Cambio colore allo stato
-        if(placeDao.isOpenNow() == 1)
+        //Valorizzo il testo e cambio colore allo stato
+        if(placeDao.isOpenNow() == 1) //Aperto
+        {
+            stato.setText(localeApertoString);
             stato.setTextColor(Color.parseColor("#ff669900"));
+
+        }else if(placeDao.isOpenNow() == 0){ //Chiuso
+
+            stato.setText(localeChiusoString);
+
+        }else{ //Nessuna info
+
+            stato.setText("");
+        }
+
 
         return view;
     }

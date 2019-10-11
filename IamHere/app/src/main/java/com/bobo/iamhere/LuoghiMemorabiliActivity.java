@@ -261,9 +261,18 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
      * Aggiorna la lista delle località
      * @param elencoPostiMemorabili
      */
-    public void aggiornaLista(ArrayList<LocationDao> elencoPostiMemorabili)
+    private void aggiornaLista(ArrayList<LocationDao> elencoPostiMemorabili)
     {
         ArrayAdapter<LocationDao> adapter = new LocationAdapter(elencoPostiMemorabili, this);
         listaPostiView.setAdapter(adapter);
+    }
+
+    /***
+     * Aggiorna la lista delle località, da dialog
+     *
+     */
+    public void aggiornaListaFromDialog()
+    {
+        aggiornaLista(DatabaseManager.getAllLocation(MainActivity.database, mostraSoloPreferiti));
     }
 }
