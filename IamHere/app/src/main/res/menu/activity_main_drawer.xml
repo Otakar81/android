@@ -30,7 +30,7 @@
             android:title="@string/title_activity_note" />
     </group>
 
-    <item android:title="Utility">
+    <item android:title="@string/nav_utility">
         <menu>
             <item
                 android:id="@+id/nav_share"
@@ -40,10 +40,23 @@
                 android:id="@+id/nav_settings"
                 android:icon="@drawable/nav_settings"
                 android:title="@string/title_activity_settings" />
+        </menu>
+    </item>
+
+    <item android:title="@string/database_utility">
+        <menu>
             <item
-                android:id="@+id/nav_database"
-                android:icon="@drawable/nav_database"
-                android:title="Database Utility" />
+                android:id="@+id/nav_database_export"
+                android:icon="@drawable/nav_database_backup"
+                android:title="@string/database_backup" />
+            <item
+                android:id="@+id/nav_database_import"
+                android:icon="@drawable/nav_database_restore"
+                android:title="@string/database_restore" />
+            <item
+                android:id="@+id/nav_database_delete"
+                android:icon="@drawable/nav_database_erase"
+                android:title="@string/database_delete" />
         </menu>
     </item>
 

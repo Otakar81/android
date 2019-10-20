@@ -1,35 +1,34 @@
 package com.bobo.iamhere;
 
-import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.bobo.iamhere.adapters.LocationAdapter;
 import com.bobo.iamhere.db.DatabaseManager;
+import com.bobo.iamhere.db.DatabaseTools;
 import com.bobo.iamhere.db.LocationDao;
+import com.bobo.iamhere.dialogfragments.ElencoFilesDialog;
 import com.bobo.iamhere.dialogfragments.LuoghiMemorabiliDialog;
+import com.bobo.iamhere.utils.PermissionUtils;
 
 import java.util.ArrayList;
 
@@ -136,7 +135,7 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
 
         if (id == R.id.action_mostra_preferiti) {
 
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            if (PermissionUtils.checkSelfPermission_LOCATION(this))
             {
                 if(mostraSoloPreferiti) //Stavo mostrando solo i preferiti, l'utente mi ha chiesto di visualizzarli tutti
                     item.setIcon(R.drawable.action_preferiti_no);
@@ -192,9 +191,9 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_share) {
 
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            if (PermissionUtils.checkSelfPermission_LOCATION(this))
             {
-                Location lastKnowLocation = getLastKnownLocation(); //MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
+                Location lastKnowLocation = MainActivity.getLastKnownLocation(this); //MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
 
                 if(lastKnowLocation != null)
                 {
@@ -228,9 +227,45 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
             startActivity(intent);
 
-        } else if (id == R.id.nav_database)
-        {
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_database_export) {
+
+            if (!PermissionUtils.checkSelfPermission_STORAGE(this)) { //Se non mi è stato dato, lo chiedo nuovamente
+
+                if(Build.VERSION.SDK_INT >= 23) //Non ho bisogno di chiedere il permesso per versioni precedenti
+                    requestPermissions(PermissionUtils.PERMISSIONS_STORAGE, PermissionUtils.REQUEST_EXTERNAL_STORAGE);
+
+            } else { //Procedo
+
+                DatabaseTools.backupDatabase(this, MainActivity.database, getResources().getString(R.string.app_name));
+            }
+
+
+        } else if (id == R.id.nav_database_import) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            ElencoFilesDialog dialog = ElencoFilesDialog.newInstance(builder, MainActivity.database, getResources().getString(R.string.app_name));
+            dialog.show(getSupportFragmentManager(),"files_dialog");
+
+        } else if (id == R.id.nav_database_delete) {
+
+            final Activity appoggio = this;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle(R.string.database_delete_conferma)
+            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    DatabaseTools.deleteListBackupFiles(appoggio, getResources().getString(R.string.app_name));
+                }
+            })
+            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            })
+            .show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -241,7 +276,7 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
     /**
      * Ottiene l'ultima posizione conosciuta
      * @return
-     */
+
     private Location getLastKnownLocation()
     {
         Location lastKnowLocation = null;
@@ -256,6 +291,7 @@ public class LuoghiMemorabiliActivity extends AppCompatActivity
 
         return lastKnowLocation;
     }
+    */
 
     /***
      * Aggiorna la lista delle località

@@ -14,6 +14,7 @@
     <string name="title_activity_note">Travel notes</string>
     <string name="title_activity_google_places">Places of interest</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="nav_utility">Utility</string>
 
     <string name="action_settings">Settings</string>
     <string name="action_salva_quick">Save quick position</string>
@@ -87,6 +88,17 @@
     <string name="metri_3000">3000 meters</string>
     <string name="metri_4000">4000 meters</string>
     <string name="metri_5000">5000 meters</string>
+
+    <!-- Gestione database -->
+    <string name="database_utility">Database Tools</string>
+    <string name="database_backup">Create a Backup File</string>
+    <string name="database_restore">Restore from the Backup File</string>
+    <string name="database_delete">Delete old Backup Files</string>
+    <string name="database_delete_conferma">Warning: all backup files will be deleted. Proceed?</string>
+    <string name="database_seleziona_file">Select the Backup File</string>
+    <string name="database_seleziona_file_conferma">Do you want to restore this file?</string>
+    <string name="database_restore_no_file">There are no backup files to restore</string>
+    <string name="errore_memoria_esterna">External memory is not available</string>
 
     <!-- Messaggi generici -->
     <string name="location_null">It wasn\'t possible to establish your position. Enable your geolocation services</string>

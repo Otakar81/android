@@ -1,5 +1,6 @@
 package com.bobo.iamhere.db;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -13,6 +14,17 @@ public class DatabaseManager {
     public static String NOME_LOCATION_VELOCE = "Luogo veloce";
 
 //region SEZIONE COMUNE
+
+    /**
+     * Crea la connessione al database
+     *
+     * @param context
+     * @return
+     */
+    public static SQLiteDatabase openOrCreateDatabase(Context context)
+    {
+        return context.openOrCreateDatabase("location_db", Context.MODE_PRIVATE, null);
+    }
 
     /***
      * Crea le tabelle utilizzate dall'applicazione

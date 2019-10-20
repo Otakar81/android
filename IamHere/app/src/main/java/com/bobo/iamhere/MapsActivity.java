@@ -8,16 +8,14 @@ import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
-import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.bobo.iamhere.db.DatabaseManager;
 import com.bobo.iamhere.db.LocationDao;
+import com.bobo.iamhere.utils.PermissionUtils;
 import com.bobo.iamhere.ws.google.PlaceDao;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -32,9 +30,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -107,9 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         //E centro la mappa nell'ultima posizione nota
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-
+        if (PermissionUtils.checkSelfPermission_LOCATION(this)) {
 
             if(latitudine != -1 && longitudine != -1)
             {
@@ -128,7 +121,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }else{ //Altrimenti centro la posizione sull'utente
 
-                Location lastKnowLocation = getLastKnownLocation(); //MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
+                Location lastKnowLocation = MainActivity.getLastKnownLocation(this); //MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
 
                 if(lastKnowLocation != null)
                 {
@@ -152,7 +145,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Ottiene l'ultima posizione conosciuta
      * @return
-     */
+
     private Location getLastKnownLocation()
     {
         Location lastKnowLocation = null;
@@ -167,6 +160,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         return lastKnowLocation;
     }
+
+    */
 
     /***
      * Aggiunge i listener alla mappa
@@ -192,9 +187,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 try {
 
-
                     List<Address> listaIndirizzi = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1); //Voglio un solo risultato
-
 
                     if(listaIndirizzi != null && listaIndirizzi.size() > 0)
                     {

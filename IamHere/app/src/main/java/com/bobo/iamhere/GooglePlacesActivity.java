@@ -1,6 +1,7 @@
 package com.bobo.iamhere;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,7 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
+import android.os.Build;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -31,8 +32,11 @@ import android.widget.Toast;
 
 import com.bobo.iamhere.adapters.GooglePlacesAdapter;
 import com.bobo.iamhere.db.DatabaseManager;
+import com.bobo.iamhere.db.DatabaseTools;
 import com.bobo.iamhere.db.GooglePlacesTypeDao;
 import com.bobo.iamhere.db.LocationDao;
+import com.bobo.iamhere.dialogfragments.ElencoFilesDialog;
+import com.bobo.iamhere.utils.PermissionUtils;
 import com.bobo.iamhere.ws.google.GooglePlacesService;
 import com.bobo.iamhere.ws.google.PlaceDao;
 import com.google.gson.JsonArray;
@@ -327,7 +331,7 @@ public class GooglePlacesActivity extends AppCompatActivity
                     googlePlacesListTitle.setText(getResources().getString(R.string.tipologia) + ": " + nomeDescrittivo);
 
                     //Valorizzo la lista a video
-                    Location lastKnowLocation = getLastKnownLocation();// MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
+                    Location lastKnowLocation = MainActivity.getLastKnownLocation(this);// MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
 
                     if(lastKnowLocation != null)
                         callRestApi(lastKnowLocation);
@@ -384,9 +388,9 @@ public class GooglePlacesActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_share) {
 
-            if (ContextCompat.checkSelfPermission(GooglePlacesActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            if (PermissionUtils.checkSelfPermission_LOCATION(this))
             {
-                Location lastKnowLocation = getLastKnownLocation(); // MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
+                Location lastKnowLocation = MainActivity.getLastKnownLocation(this); // MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
 
                 if(lastKnowLocation != null)
                 {
@@ -406,8 +410,6 @@ public class GooglePlacesActivity extends AppCompatActivity
                 }else {
                     Toast.makeText(this, R.string.location_null, Toast.LENGTH_LONG).show();
                 }
-
-
             }
 
         } else if (id == R.id.nav_settings)
@@ -416,9 +418,45 @@ public class GooglePlacesActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
             startActivity(intent);
 
-        } else if (id == R.id.nav_database)
-        {
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_database_export) {
+
+            if (!PermissionUtils.checkSelfPermission_STORAGE(this)) { //Se non mi è stato dato, lo chiedo nuovamente
+
+                if(Build.VERSION.SDK_INT >= 23) //Non ho bisogno di chiedere il permesso per versioni precedenti
+                    requestPermissions(PermissionUtils.PERMISSIONS_STORAGE, PermissionUtils.REQUEST_EXTERNAL_STORAGE);
+
+            } else { //Procedo
+
+                DatabaseTools.backupDatabase(this, MainActivity.database, getResources().getString(R.string.app_name));
+            }
+
+
+        } else if (id == R.id.nav_database_import) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            ElencoFilesDialog dialog = ElencoFilesDialog.newInstance(builder, MainActivity.database, getResources().getString(R.string.app_name));
+            dialog.show(getSupportFragmentManager(),"files_dialog");
+
+        } else if (id == R.id.nav_database_delete) {
+
+            final Activity appoggio = this;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle(R.string.database_delete_conferma)
+            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    DatabaseTools.deleteListBackupFiles(appoggio, getResources().getString(R.string.app_name));
+                }
+            })
+            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            })
+            .show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -430,7 +468,7 @@ public class GooglePlacesActivity extends AppCompatActivity
     /**
      * Ottiene l'ultima posizione conosciuta
      * @return
-     */
+
     private Location getLastKnownLocation()
     {
         Location lastKnowLocation = null;
@@ -445,7 +483,7 @@ public class GooglePlacesActivity extends AppCompatActivity
 
         return lastKnowLocation;
     }
-
+     */
 
     /***
      * Chiamata alle Api Rest

@@ -1,13 +1,14 @@
 package com.bobo.iamhere;
 
-import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
+import android.os.Build;
 import android.support.design.widget.NavigationView;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,23 +18,19 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bobo.iamhere.adapters.MeteoAdapter;
-import com.bobo.iamhere.meteo.DownloadTask;
+import com.bobo.iamhere.db.DatabaseTools;
+import com.bobo.iamhere.dialogfragments.ElencoFilesDialog;
+import com.bobo.iamhere.utils.PermissionUtils;
 import com.bobo.iamhere.ws.openweathermap.GiornataMeteoDao;
 import com.bobo.iamhere.ws.openweathermap.MeteoDao;
 import com.bobo.iamhere.ws.openweathermap.OpenWeatherMapService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -93,8 +90,8 @@ public class MeteoActivity extends AppCompatActivity
 
 
             //Recupero le coordinate correnti
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                Location lastKnowLocation = getLastKnownLocation(); //MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
+            if (PermissionUtils.checkSelfPermission_LOCATION(this)) {
+                Location lastKnowLocation = MainActivity.getLastKnownLocation(this); //MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
 
                 if(lastKnowLocation != null)
                     callRestApi(lastKnowLocation.getLatitude(), lastKnowLocation.getLongitude(), URI_SERVICE, API_KEY);
@@ -158,9 +155,9 @@ public class MeteoActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_share) {
 
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            if (PermissionUtils.checkSelfPermission_LOCATION(this))
             {
-                Location lastKnowLocation = getLastKnownLocation(); //MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
+                Location lastKnowLocation = MainActivity.getLastKnownLocation(this); //MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
 
                 if(lastKnowLocation != null)
                 {
@@ -196,9 +193,45 @@ public class MeteoActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
             startActivity(intent);
 
-        } else if (id == R.id.nav_database)
-        {
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_database_export) {
+
+            if (!PermissionUtils.checkSelfPermission_STORAGE(this)) { //Se non mi è stato dato, lo chiedo nuovamente
+
+                if(Build.VERSION.SDK_INT >= 23) //Non ho bisogno di chiedere il permesso per versioni precedenti
+                    requestPermissions(PermissionUtils.PERMISSIONS_STORAGE, PermissionUtils.REQUEST_EXTERNAL_STORAGE);
+
+            } else { //Procedo
+
+                DatabaseTools.backupDatabase(this, MainActivity.database, getResources().getString(R.string.app_name));
+            }
+
+
+        } else if (id == R.id.nav_database_import) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            ElencoFilesDialog dialog = ElencoFilesDialog.newInstance(builder, MainActivity.database, getResources().getString(R.string.app_name));
+            dialog.show(getSupportFragmentManager(),"files_dialog");
+
+        } else if (id == R.id.nav_database_delete) {
+
+            final Activity appoggio = this;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle(R.string.database_delete_conferma)
+            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    DatabaseTools.deleteListBackupFiles(appoggio, getResources().getString(R.string.app_name));
+                }
+            })
+            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            })
+            .show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -209,7 +242,7 @@ public class MeteoActivity extends AppCompatActivity
     /**
      * Ottiene l'ultima posizione conosciuta
      * @return
-     */
+
     private Location getLastKnownLocation()
     {
         Location lastKnowLocation = null;
@@ -224,6 +257,7 @@ public class MeteoActivity extends AppCompatActivity
 
         return lastKnowLocation;
     }
+    */
 
     /***
      * Chiamata alle Api Rest

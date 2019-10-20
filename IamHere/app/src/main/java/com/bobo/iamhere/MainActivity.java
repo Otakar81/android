@@ -1,6 +1,7 @@
 package com.bobo.iamhere;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +15,8 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,7 +39,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bobo.iamhere.db.DatabaseManager;
+import com.bobo.iamhere.db.DatabaseTools;
 import com.bobo.iamhere.db.LocationDao;
+import com.bobo.iamhere.dialogfragments.ElencoFilesDialog;
+import com.bobo.iamhere.utils.PermissionUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -67,7 +73,7 @@ public class MainActivity extends AppCompatActivity
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
 
-        if(requestCode == 1) //Gestisco la richiesta fatta sopra. Nel caso ne avessi di più, in questo modo potrei distinguerle
+        if(requestCode == PermissionUtils.REQUEST_FINE_LOCATION) //Gestisco la richiesta fatta sopra. Nel caso ne avessi di più, in questo modo potrei distinguerle
         {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)//Ho il permesso per la richiesta n. requestCode
             {
@@ -107,7 +113,9 @@ public class MainActivity extends AppCompatActivity
         locationListener = createLocationListener();
 
         //Creo il database
-        database = this.openOrCreateDatabase("location_db", Context.MODE_PRIVATE, null);
+        //database = this.openOrCreateDatabase("location_db", Context.MODE_PRIVATE, null);
+        database = DatabaseManager.openOrCreateDatabase(getApplicationContext());
+
 
         //Se non esistono, creo le tabelle
         DatabaseManager.createTables(database);
@@ -135,24 +143,24 @@ public class MainActivity extends AppCompatActivity
 
         } else {
             //Sulle versione di android superiori alla 23, devo esplicitamente chiedere il permesso all'utente
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) //Non ho il permesso
+            if (PermissionUtils.checkSelfPermission_LOCATION(this)) //Non ho il permesso
             {
                 //Lo chiedo esplicitamente
-                String[] permessiRichiesti = {Manifest.permission.ACCESS_FINE_LOCATION}; //Potrebbero essere molti, li chiedo tutti insieme nel caso
+                //String[] permessiRichiesti = {Manifest.permission.ACCESS_FINE_LOCATION}; //Potrebbero essere molti, li chiedo tutti insieme nel caso
 
             /*
                 Il requestCode viene usato per avere un id di riferimento su questa richiesta.
                 Viene usato ad esempio nel onRequestPermissionsResult, che è il metodo chiamato quando si chiede il permesso
                 Nota. 1 è un numero qualsiasi, avrei potuto usare altro
              */
-                ActivityCompat.requestPermissions(this, permessiRichiesti, 1);
+                ActivityCompat.requestPermissions(this, PermissionUtils.PERMISSIONS_LOCATION, PermissionUtils.REQUEST_FINE_LOCATION);
 
             } else { //Ho già il permesso, chiamo direttamente l'update
 
                 startListening();
 
                 //Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
-                Location lastKnowLocation = getLastKnownLocation();
+                Location lastKnowLocation = MainActivity.getLastKnownLocation(this);
 
                 //Stampo a video le info, visto che già ho i permessi
                 valorizzaDatiVideo(lastKnowLocation);
@@ -213,10 +221,10 @@ public class MainActivity extends AppCompatActivity
                             if(alias == null || alias.trim().equals(""))
                                 alias = "";
 
-                            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+                            if (PermissionUtils.checkSelfPermission_LOCATION(MainActivity.this))
                             {
                                 //Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
-                                Location lastKnowLocation = getLastKnownLocation();
+                                Location lastKnowLocation = MainActivity.getLastKnownLocation(MainActivity.this);
                                 salvaLocation(lastKnowLocation, alias, isChecked);
 
                                 //Refresh dell'elenco dei luoghi
@@ -234,10 +242,10 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.action_salva_quick) {
 
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            if (PermissionUtils.checkSelfPermission_LOCATION(this))
             {
                 //Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
-                Location lastKnowLocation = getLastKnownLocation();
+                Location lastKnowLocation = MainActivity.getLastKnownLocation(this);
                 salvaLocation(lastKnowLocation, DatabaseManager.NOME_LOCATION_VELOCE, 1);
 
                 //Refresh dell'elenco dei luoghi
@@ -264,7 +272,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.action_mostra_preferiti) {
 
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            if (PermissionUtils.checkSelfPermission_LOCATION(this))
             {
                 if(mostraSoloPreferiti) //Stavo mostrando solo i preferiti, l'utente mi ha chiesto di visualizzarli tutti
                     item.setIcon(R.drawable.action_preferiti_no);
@@ -275,7 +283,7 @@ public class MainActivity extends AppCompatActivity
                 mostraSoloPreferiti = !mostraSoloPreferiti;
 
                 //Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
-                Location lastKnowLocation = getLastKnownLocation();
+                Location lastKnowLocation = MainActivity.getLastKnownLocation(this);
 
                 //Refresh dell'elenco dei luoghi
                 valorizzaDatiVideo(lastKnowLocation);
@@ -330,10 +338,10 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_share) {
 
-            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            if (PermissionUtils.checkSelfPermission_LOCATION(this))
             {
                 //Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
-                Location lastKnowLocation = getLastKnownLocation();
+                Location lastKnowLocation = MainActivity.getLastKnownLocation(this);
 
                 Double latitude = lastKnowLocation.getLatitude();
                 Double longitude = lastKnowLocation.getLongitude();
@@ -355,9 +363,45 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
             startActivity(intent);
 
-        } else if (id == R.id.nav_database)
-        {
-            Toast.makeText(this, "Funzione in lavorazione", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_database_export) {
+
+            if (!PermissionUtils.checkSelfPermission_STORAGE(this)) { //Se non mi è stato dato, lo chiedo nuovamente
+
+                if(Build.VERSION.SDK_INT >= 23) //Non ho bisogno di chiedere il permesso per versioni precedenti
+                    requestPermissions(PermissionUtils.PERMISSIONS_STORAGE, PermissionUtils.REQUEST_EXTERNAL_STORAGE);
+
+            } else { //Procedo
+
+                DatabaseTools.backupDatabase(this, MainActivity.database, getResources().getString(R.string.app_name));
+            }
+
+
+        } else if (id == R.id.nav_database_import) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            ElencoFilesDialog dialog = ElencoFilesDialog.newInstance(builder, MainActivity.database, getResources().getString(R.string.app_name));
+            dialog.show(getSupportFragmentManager(),"files_dialog");
+
+        } else if (id == R.id.nav_database_delete) {
+
+            final Activity appoggio = this;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle(R.string.database_delete_conferma)
+            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    DatabaseTools.deleteListBackupFiles(appoggio, getResources().getString(R.string.app_name));
+                }
+            })
+            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            })
+            .show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -427,12 +471,28 @@ public class MainActivity extends AppCompatActivity
     /**
      * Ottiene l'ultima posizione conosciuta
      * @return
-     */
+     *
     private Location getLastKnownLocation()
     {
         Location lastKnowLocation = null;
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        {
+            lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
+
+            if(lastKnowLocation == null)
+                lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        }
+
+        return lastKnowLocation;
+    }
+    */
+
+    public static Location getLastKnownLocation(Activity contex)
+    {
+        Location lastKnowLocation = null;
+
+        if (ContextCompat.checkSelfPermission(contex, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
         {
             lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
 
@@ -466,122 +526,141 @@ public class MainActivity extends AppCompatActivity
 
         } else {
 
-            //Utilizzo il Geocoder per ottenere info sulla mia posizione
-            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+            //Variabili per le info aggiuntive
+            String nazione = null;
+            String regione = null;
+            String provincia = null;
+            String citta = null;
+            String indirizzoPostale = null;
+            String cap = null;
 
-            try {
 
-                List<Address> indirizzi = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            //Verifico se ho connessione internet: ne ho bisogno per ottenere le info sulla mia posizione attuale
+            ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
-                if(indirizzi != null && indirizzi.size() > 0)
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+            if(isConnected) //Provo a recuperare le info aggiuntive solo se sono loggato su internet
+            {
+                //Utilizzo il Geocoder per ottenere info sulla mia posizione
+                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
+                try {
+
+                    List<Address> indirizzi = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+
+                    if(indirizzi != null && indirizzi.size() > 0)
+                    {
+                        //Recupero le info sul luogo attuale
+                        Address address = indirizzi.get(0);
+
+                        nazione = address.getCountryName();
+                        regione = address.getAdminArea();
+                        provincia = address.getSubAdminArea();
+                        citta = address.getLocality();
+                        indirizzoPostale = address.getThoroughfare();
+                        cap = address.getPostalCode();
+                    }
+
+                } catch (IOException e) {
+
+                    e.printStackTrace();
+
+                } catch (Exception e)
                 {
-                    //Recupero la traduzione delle parole chiave usate per comporre la infoBox
-                    String str_info_seiIn = getResources().getString(R.string.elenco_info01);
-                    String str_info_nelComuneDi = getResources().getString(R.string.elenco_info02);
-                    String str_info_coordinateGPS = getResources().getString(R.string.elenco_info03);
-                    String str_info_altitudine = getResources().getString(R.string.elenco_info04);
-
-                    //Recupero le info sul luogo attuale
-                    Address address = indirizzi.get(0);
-
-                    String latitudine = location.getLatitude() + "";
-                    String longitudine = location.getLongitude() + "";
-                    String accuracy = location.getAccuracy() + "";
-                    String altitudine = location.getAltitude() + "";
-                    String nazione = address.getCountryName();
-                    String regione = address.getAdminArea();
-                    String provincia = address.getSubAdminArea();
-                    String citta = address.getLocality();
-                    String indirizzoPostale = address.getThoroughfare();
-                    String cap = address.getPostalCode();
-
-                    boolean isPrimaRiga = true;
-
-                    //Nazione e regione
-                    if(regione != null && regione.trim().length() > 0) {
-
-                        if(!isPrimaRiga) {
-                            elencoInfo += "\n";
-                        }else{
-                            isPrimaRiga = false;
-                        }
-
-                        elencoInfo += str_info_seiIn + " " + regione;
-
-                        if(nazione != null && nazione.trim().length() > 0)
-                            elencoInfo += " (" + nazione + ")";
-
-                    }
-
-                    //Comune e provincia
-                    if(citta != null && citta.trim().length() > 0) {
-
-                        if(!isPrimaRiga) {
-                            elencoInfo += "\n";
-                        }else{
-                            isPrimaRiga = false;
-                        }
-
-                        elencoInfo += str_info_nelComuneDi + " " + citta;
-
-                        if(provincia != null && provincia.trim().length() > 0)
-                            elencoInfo += " (" + provincia + ") ";
-                    }
-
-                    //Via e CAP
-                    if(indirizzoPostale != null && indirizzoPostale.trim().length() > 0) {
-
-                        if(!isPrimaRiga) {
-                            elencoInfo += "\n";
-                        }else{
-                            isPrimaRiga = false;
-                        }
-
-                        elencoInfo += indirizzoPostale;
-
-                        if(cap != null && cap.trim().length() > 0)
-                            elencoInfo += " (" + cap + ")";
-                    }
-
-                    //Coordinate
-                    if(!isPrimaRiga) {
-                        elencoInfo += "\n";
-                    }else{
-                        isPrimaRiga = false;
-                    }
-
-                    elencoInfo += str_info_coordinateGPS + " (" + latitudine + ", " + longitudine + ")";
-
-                    //Altitudine
-                    if(altitudine.trim().length() > 0) {
-
-                        double altitudineDouble = Double.parseDouble(altitudine);
-                        altitudineDouble = (double) (Math.round( altitudineDouble * Math.pow( 10, 2 ) )/Math.pow( 10, 2 ));
-
-                        elencoInfo += "\n" + str_info_altitudine + " " + altitudineDouble + "m";
-                    }
+                    e.printStackTrace();
                 }
 
-            } catch (IOException e) {
-                e.printStackTrace();
-
-                elencoInfo = getResources().getString(R.string.no_info);
-            } catch (Exception e)
-            {
-                e.printStackTrace();
-
-                elencoInfo = getResources().getString(R.string.no_info);
             }
+
+            //Stampo le info
+            //Recupero la traduzione delle parole chiave usate per comporre la infoBox
+            String str_info_seiIn = getResources().getString(R.string.elenco_info01);
+            String str_info_nelComuneDi = getResources().getString(R.string.elenco_info02);
+            String str_info_coordinateGPS = getResources().getString(R.string.elenco_info03);
+            String str_info_altitudine = getResources().getString(R.string.elenco_info04);
+
+            String latitudine = location.getLatitude() + "";
+            String longitudine = location.getLongitude() + "";
+            String accuracy = location.getAccuracy() + "";
+            String altitudine = location.getAltitude() + "";
+
+            boolean isPrimaRiga = true;
+
+            //Nazione e regione
+            if(regione != null && regione.trim().length() > 0) {
+
+                if(!isPrimaRiga) {
+                    elencoInfo += "\n";
+                }else{
+                    isPrimaRiga = false;
+                }
+
+                elencoInfo += str_info_seiIn + " " + regione;
+
+                if(nazione != null && nazione.trim().length() > 0)
+                    elencoInfo += " (" + nazione + ")";
+
+            }
+
+            //Comune e provincia
+            if(citta != null && citta.trim().length() > 0) {
+
+                if(!isPrimaRiga) {
+                    elencoInfo += "\n";
+                }else{
+                    isPrimaRiga = false;
+                }
+
+                elencoInfo += str_info_nelComuneDi + " " + citta;
+
+                if(provincia != null && provincia.trim().length() > 0)
+                    elencoInfo += " (" + provincia + ") ";
+            }
+
+            //Via e CAP
+            if(indirizzoPostale != null && indirizzoPostale.trim().length() > 0) {
+
+                if(!isPrimaRiga) {
+                    elencoInfo += "\n";
+                }else{
+                    isPrimaRiga = false;
+                }
+
+                elencoInfo += indirizzoPostale;
+
+                if(cap != null && cap.trim().length() > 0)
+                    elencoInfo += " (" + cap + ")";
+            }
+
+            //Coordinate
+            if(!isPrimaRiga) {
+                elencoInfo += "\n";
+            }else{
+                isPrimaRiga = false;
+            }
+
+            elencoInfo += str_info_coordinateGPS + " (" + latitudine + ", " + longitudine + ")";
+
+            //Altitudine
+            if(altitudine.trim().length() > 0) {
+
+                double altitudineDouble = Double.parseDouble(altitudine);
+                altitudineDouble = (double) (Math.round( altitudineDouble * Math.pow( 10, 2 ) )/Math.pow( 10, 2 ));
+
+                elencoInfo += "\n" + str_info_altitudine + " " + altitudineDouble + "m";
+            }
+
+
 
             //Stampo le info generiche
             TextView listaInfoText = findViewById(R.id.elencoInfoText);
             listaInfoText.setText(elencoInfo);
 
+
             //E stampo le distanze dai luoghi memorizzati
             try{
-
-                //Recupero la traduzione delle parole chiave usate per comporre la infoBox
-                String str_distanze_header = getResources().getString(R.string.elenco_info01);
 
                 //Recupero la lista del luoghi "preferiti" salvati sul database
                 ArrayList<LocationDao> elencoLuoghi = DatabaseManager.getAllLocation(MainActivity.database, mostraSoloPreferiti);
