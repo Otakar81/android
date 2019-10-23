@@ -19,6 +19,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
@@ -130,6 +131,16 @@ public class MainActivity extends AppCompatActivity
         ConstraintLayout layoutPagina = findViewById(R.id.layoutHome);
         layoutPagina.setBackground(getDrawableSfondo());
 
+
+
+        //Abilito l'app ad aprire connessioni anche nel main thread (lo uso per recuperare le icone dei luoghi suggeriti da GooglePlaces nella mappa
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
+
+
     }
 
     @Override
@@ -143,7 +154,7 @@ public class MainActivity extends AppCompatActivity
 
         } else {
             //Sulle versione di android superiori alla 23, devo esplicitamente chiedere il permesso all'utente
-            if (PermissionUtils.checkSelfPermission_LOCATION(this)) //Non ho il permesso
+            if (!PermissionUtils.checkSelfPermission_LOCATION(this)) //Non ho il permesso
             {
                 //Lo chiedo esplicitamente
                 //String[] permessiRichiesti = {Manifest.permission.ACCESS_FINE_LOCATION}; //Potrebbero essere molti, li chiedo tutti insieme nel caso

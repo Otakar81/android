@@ -30,6 +30,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -270,7 +273,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 {
                     LatLng latLng = new LatLng(place.getLatitudine(), place.getLongitudine());
                     String uriIcon = place.getIcon();
-                    Bitmap icon = null;// getBitmapFromURL(uriIcon); //TODO Verificare se si può prendere la bitmat dall'url, altrimenti scaricare delle icone
+                    Bitmap icon = getBitmapFromURL(uriIcon); //Recupero la bitmat dall'url
 
                     if(icon != null)
                         mMap.addMarker(new MarkerOptions().position(latLng).title(place.getName()).icon(BitmapDescriptorFactory.fromBitmap(icon)));
@@ -281,7 +284,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-/*
+
     private Bitmap getBitmapFromURL(String imageUrl) {
         try {
             URL url = new URL(imageUrl);
@@ -290,11 +293,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             connection.connect();
             InputStream input = connection.getInputStream();
             Bitmap myBitmap = BitmapFactory.decodeStream(input);
+
+            //Faccio resize della bitmap, che è troppo grossa
+            myBitmap = Bitmap.createScaledBitmap(myBitmap, 50, 50, false);
+
             return myBitmap;
+
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
-    */
 }
