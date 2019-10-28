@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.Build;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -105,7 +106,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         //E centro la mappa nell'ultima posizione nota
-        if (PermissionUtils.checkSelfPermission_LOCATION(this)) {
+        if ((Build.VERSION.SDK_INT < 23) || //Sulle vecchie versioni non si deve chiedere il permesso
+                (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
 
             if(latitudine != -1 && longitudine != -1)
             {
@@ -286,6 +288,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     private Bitmap getBitmapFromURL(String imageUrl) {
+
+        try{
+
+            //Faccio il parsing dell'url in modo da estrarne il nome file
+            String nomeFile = "google_place_" + imageUrl.substring(imageUrl.lastIndexOf("/") + 1, imageUrl.lastIndexOf("."));
+            nomeFile = nomeFile.replaceAll("-", "_");
+
+            //Recupero l'ID dell'immagine
+            int resID = getResources().getIdentifier(nomeFile, "drawable",  getPackageName());
+
+            //Se il resID = 0, vuol dire che non ho trovato l'immagine. In quel caso userò l'icona di default
+            if(resID == 0)
+                resID = getResources().getIdentifier("google_place_generic_business_71", "drawable",  getPackageName());
+
+            //Recupero la bitmap e la restituisco
+            Bitmap icon = BitmapFactory.decodeResource(getResources(), resID); //Recupero la bitmap dell'icona
+            icon = Bitmap.createScaledBitmap(icon, 40, 40, false); //La rimpicciolisco
+
+            return icon; //La restituisco
+
+        }catch (Exception e)
+        {
+            return null;
+        }
+
+
+        /*
         try {
             URL url = new URL(imageUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -303,5 +332,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             e.printStackTrace();
             return null;
         }
+        */
     }
 }

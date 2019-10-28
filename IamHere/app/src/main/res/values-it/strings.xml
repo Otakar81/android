@@ -1,0 +1,214 @@
+<resources>
+    <string name="app_name">Intorno a Te</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">G.Claudio</string>
+    <string name="nav_header_subtitle">g.claudio.dc@gmail.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+
+    <string name="title_activity_main">I am here</string>
+    <string name="title_activity_maps">Mappa</string>
+    <string name="title_activity_luoghi_memorabili">Luoghi salvati</string>
+    <string name="title_activity_meteo">Meteo</string>
+    <string name="title_activity_note">Appunti di viaggio</string>
+    <string name="title_activity_google_places">Luoghi di interesse</string>
+    <string name="title_activity_settings">Impostazioni</string>
+    <string name="nav_utility">Utilità</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_salva_quick">Salva posizione veloce</string>
+    <string name="action_carica_quick">Carica posizione veloce</string>
+    <string name="action_salva_corrente">Salva posizione corrente</string>
+    <string name="action_share">Condividi</string>
+
+
+    <!-- MainActivity -->
+    <string name="abilita_geolocalizzazione">Abilita la geolocalizzazione per avere una maggiore precisione</string>
+    <string name="no_info">Nessuna info presente</string>
+    <string name="no_quick_place">Non hai ancora salvato un \'luogo veloce\'</string>
+    <string name="luogo_aggiunto">Luogo aggiunto</string>
+
+    <string name="elenco_info01">Sei in</string>
+    <string name="elenco_info02">Nel comune di</string>
+    <string name="elenco_info03">Coordinate GPS:</string>
+    <string name="elenco_info04">Altitudine sul livello del mare:</string>
+
+    <string name="info_distanze_header">Distanze dai luoghi memorizzati:</string>
+    <string name="info_distanze_header_preferiti">Distanze dai luoghi memorizzati (preferiti):</string>
+    <string name="info_distanze_no_preferiti">Non ci sono luoghi memorizzati</string>
+
+    <string name="nuovo_luogo_title">Aggiunta luogo</string>
+    <string name="nuovo_luogo_message">Specificare un alias per il luogo (opzionale)</string>
+    <string name="nuovo_luogo_yes">Aggiungi</string>
+    <string name="nuovo_luogo_no">Cancella</string>
+
+    <!-- LuoghiMemorabiliActivity -->
+    <string name="location_edit">Modifica luogo</string>
+    <string name="location_preferita">Luogo Preferito</string>
+
+    <!-- GooglePlacesActivity -->
+    <string name="google_place_save_title">Salva luogo</string>
+    <string name="google_place_save_message">Vuoi salvare questo luogo?</string>
+    <string name="google_place_list_empty">La lista dei luoghi di interesse è vuota. Effettuare una nuova ricerca</string>
+    <string name="tipologia">Tipologia</string>
+    <string name="google_place_select_type">Selezionare una tipologia</string>
+    <string name="google_places_aperto">(Aperto)</string>
+    <string name="google_places_chiuso">(Chiuso)</string>
+
+    <!-- NoteActivity -->
+    <string name="note_delete">Eliminare la nota?</string>
+    <string name="note_delete_subtitle">Sei sicuro di voler eliminare la nota?</string>
+    <string name="titolo">Titolo</string>
+
+
+    <!-- SettingsActivity -->
+    <string name="settings_aggiornamento_posizione_header">Aggiornamento della posizione</string>
+    <string name="settings_aggiornamento_posizione_mintime_description">Tempo minimo di aggiornamento. \n(Un tempo più lungo aiuta a preservare la batteria)</string>
+    <string name="settings_aggiornamento_posizione_mindistance_description">Distanza minima di aggiornamento</string>
+    <string name="google_places_radius_description">Raggio entro cui cercare i luoghi nei dintorni</string>
+
+    <string name="secondi_1">1 secondo</string>
+    <string name="secondi_10">10 secondi</string>
+    <string name="secondi_30">30 secondi</string>
+    <string name="minuti_1">1 minuto</string>
+    <string name="minuti_3">3 minuti</string>
+    <string name="minuti_5">5 minuti</string>
+    <string name="minuti_10">10 minuti</string>
+
+    <string name="metri_1">1 metro</string>
+    <string name="metri_5">5 metri</string>
+    <string name="metri_10">10 metri</string>
+    <string name="metri_30">30 metri</string>
+    <string name="metri_50">50 metri</string>
+
+    <string name="metri_500">500 metri</string>
+    <string name="metri_1000">1000 metri</string>
+    <string name="metri_1500">1500 metri</string>
+    <string name="metri_2000">2000 metri</string>
+    <string name="metri_3000">3000 metri</string>
+    <string name="metri_4000">4000 metri</string>
+    <string name="metri_5000">5000 metri</string>
+
+    <!-- Gestione database -->
+    <string name="database_utility">Strumenti Database</string>
+    <string name="database_backup">Crea un File di Backup</string>
+    <string name="database_restore">Ripristina dal File di Backup</string>
+    <string name="database_delete">Elimina i vecchi File di Backup</string>
+    <string name="database_delete_conferma">Attenzione: tutti i file di backup saranno eliminati. Procedere?</string>
+    <string name="database_seleziona_file">Seleziona il File di Backup</string>
+    <string name="database_seleziona_file_conferma">Vuoi ripristinare questo file?</string>
+    <string name="database_restore_no_file">Non ci sono file di backup da ripristinare</string>
+    <string name="errore_memoria_esterna">Memoria esterna non disponibile</string>
+
+    <!-- Messaggi generici -->
+    <string name="location_null">Non è stato possibile risalire alla tua posizione. Abilita i servizi di geolocalizzazione</string>
+    <string name="error_generic">Si è verificato un errore</string>
+    <string name="yes">Si</string>
+    <string name="edit">Modifica</string>
+    <string name="delete">Elimina</string>
+    <string name="cancel">Annulla</string>
+    <string name="operazione_successo">Operazione effettuata con successo</string>
+    <string name="eliminazione_successo">Eliminazione effettuata con successo</string>
+    <string name="no_results">Nessun risultato trovato</string>
+
+    <!-- Tipologie di Google Places -->
+    <string name="accounting">Contabilità</string>
+    <string name="airport">Aeroporto</string>
+    <string name="amusement_park">Parco divertimenti</string>
+    <string name="aquarium">Acquario</string>
+    <string name="art_gallery">Galleria d\'arte</string>
+    <string name="atm">Bancomat</string>
+    <string name="bakery">Forno</string>
+    <string name="bank">Banca</string>
+    <string name="bar">Bar</string>
+    <string name="beauty_salon">Salone di bellezza</string>
+    <string name="bicycle_store">Negozio di biciclette</string>
+    <string name="book_store">Negozio di libri</string>
+    <string name="bowling_alley">Sala da bowling</string>
+    <string name="bus_station">Stazione dei Bus</string>
+    <string name="cafe">Caffetteria</string>
+    <string name="campground">Campeggio</string>
+    <string name="car_dealer">Vendita auto</string>
+    <string name="car_rental">Noleggio auto</string>
+    <string name="car_repair">Officina auto</string>
+    <string name="car_wash">Lavaggio auto</string>
+    <string name="casino">Casinò</string>
+    <string name="cemetery">Cimitero</string>
+    <string name="church">Chiesa</string>
+    <string name="city_hall">Municipio</string>
+    <string name="clothing_store">Negozio di abbigliamento</string>
+    <string name="convenience_store">Minimarket</string>
+    <string name="courthouse">Palazzo di giustizia</string>
+    <string name="dentist">Dentista</string>
+    <string name="department_store">Grande magazzino</string>
+    <string name="doctor">Medico</string>
+    <string name="electrician">Elettricista</string>
+    <string name="electronics_store">Negozio di elettronica</string>
+    <string name="embassy">Ambasciata</string>
+    <string name="fire_station">Vigili del fuoco</string>
+    <string name="florist">Fioraio</string>
+    <string name="funeral_home">Onoranze funebri</string>
+    <string name="furniture_store">Negozio di mobili</string>
+    <string name="gas_station">Benzinaio</string>
+    <string name="gym">Palestra</string>
+    <string name="hair_care">Parrucchiere</string>
+    <string name="hardware_store">Negozio di informatica</string>
+    <string name="hindu_temple">Tempio Hindu</string>
+    <string name="home_goods_store">Negozio articoli per la casa</string>
+    <string name="hospital">Ospedale</string>
+    <string name="insurance_agency">Agenzia di assicurazioni</string>
+    <string name="jewelry_store">Gioielleria</string>
+    <string name="laundry">Lavanderia</string>
+    <string name="lawyer">Avvocato</string>
+    <string name="library">Biblioteca</string>
+    <string name="liquor_store">Negozio di liquori</string>
+    <string name="local_government_office">Ufficio del governo locale</string>
+    <string name="locksmith">Fabbro</string>
+    <string name="lodging">Alloggio</string>
+    <string name="meal_delivery">Food delivery</string>
+    <string name="meal_takeaway">Ristorante takeaway</string>
+    <string name="mosque">Moschea</string>
+    <string name="movie_rental">Noleggio film</string>
+    <string name="movie_theater">Cinema</string>
+    <string name="moving_company">Traslochi</string>
+    <string name="museum">Museo</string>
+    <string name="night_club">Discoteca</string>
+    <string name="painter">Pittore</string>
+    <string name="park">Parco</string>
+    <string name="parking">Parcheggio</string>
+    <string name="pet_store">Negozio di animali</string>
+    <string name="pharmacy">Farmacia</string>
+    <string name="physiotherapist">Fisioterapista</string>
+    <string name="plumber">Idraulico</string>
+    <string name="police">Polizia</string>
+    <string name="post_office">Poste</string>
+    <string name="real_estate_agency">Agenzia immobiliare</string>
+    <string name="restaurant">Ristorante</string>
+    <string name="roofing_contractor">Riparazione tetti</string>
+    <string name="rv_park">Parcheggio camper</string>
+    <string name="school">Scuola</string>
+    <string name="shoe_store">Negozio di scarpe</string>
+    <string name="shopping_mall">Centro commerciale</string>
+    <string name="spa">SPA</string>
+    <string name="stadium">Stadio</string>
+    <string name="storage">Magazzino</string>
+    <string name="store">Negozio</string>
+    <string name="subway_station">Metropolitana</string>
+    <string name="supermarket">Supermercato</string>
+    <string name="synagogue">Sinagoga</string>
+    <string name="taxi_stand">Taxi</string>
+    <string name="train_station">Stazione dei Treni</string>
+    <string name="transit_station">Stazione di transito</string>
+    <string name="travel_agency">Agenzia di viaggi</string>
+    <string name="veterinary_care">Veterinario</string>
+    <string name="zoo">Zoo</string>
+
+    <!-- Gruppi Tipologie di Google Places -->
+    <string name="servizi">Servizi</string>
+    <string name="trasporti">Trasporti</string>
+    <string name="cibi_bevande">Cibi e Bevande</string>
+    <string name="cose_da_fare">Cose da Fare</string>
+    <string name="shopping">Shopping</string>
+    <string name="luoghi_servizi_religiosi">Luoghi e Servizi Religiosi</string>
+</resources>

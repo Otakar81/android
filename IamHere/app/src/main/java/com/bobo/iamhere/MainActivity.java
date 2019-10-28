@@ -133,11 +133,12 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        //Abilito l'app ad aprire connessioni anche nel main thread (lo uso per recuperare le icone dei luoghi suggeriti da GooglePlaces nella mappa
+        /* Abilito l'app ad aprire connessioni anche nel main thread (lo uso per recuperare le icone dei luoghi suggeriti da GooglePlaces nella mappa
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
+        */
 
 
 
