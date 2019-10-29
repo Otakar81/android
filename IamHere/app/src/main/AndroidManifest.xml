@@ -16,9 +16,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:largeHeap="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.AppCompat.Light">
 
         <!--
+            Parametri per GOOGLE MAPS
+
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
              Note that the API key is linked to the encryption key used to sign the APK.
@@ -26,22 +29,37 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <!-- Parametri necessari per il meteo -->
         <meta-data
             android:name="openweathermap.API_KEY"
             android:value="fcb9f7b9adc7dc425cb5dc6b8e5b8236" />
-        <meta-data
-            android:name="com.google.places.API_KEY"
-            android:value="AIzaSyCxDmTmRy_XCJ-GMXqwPtogYb0bG0m-Hac" />
+
         <meta-data
             android:name="openweathermap.URI_SERVICE"
             android:value="http://api.openweathermap.org/" />
+
+        <!-- Parametri per Google Places -->
+        <meta-data
+            android:name="com.google.places.API_KEY"
+            android:value="AIzaSyCxDmTmRy_XCJ-GMXqwPtogYb0bG0m-Hac" />
+
         <meta-data
             android:name="com.google.places.URI_SERVICE"
             android:value="https://maps.googleapis.com/" />
 
+        <!-- Elenco Activity -->
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
