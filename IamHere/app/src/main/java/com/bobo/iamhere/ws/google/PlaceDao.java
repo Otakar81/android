@@ -1,6 +1,6 @@
 package com.bobo.iamhere.ws.google;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class PlaceDao implements Comparable {
 

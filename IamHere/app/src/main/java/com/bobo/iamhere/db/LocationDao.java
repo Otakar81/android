@@ -1,6 +1,6 @@
 package com.bobo.iamhere.db;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class LocationDao implements Comparable {
 

@@ -9,14 +9,13 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.widget.Toast;
 
 import com.bobo.iamhere.db.DatabaseManager;
 import com.bobo.iamhere.db.LocationDao;
-import com.bobo.iamhere.utils.PermissionUtils;
 import com.bobo.iamhere.ws.google.PlaceDao;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -31,9 +30,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
