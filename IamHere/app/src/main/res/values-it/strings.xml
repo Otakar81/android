@@ -4,7 +4,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">G.Claudio</string>
-    <string name="nav_header_subtitle">g.claudio.dc@gmail.com</string>
+    <string name="nav_header_subtitle">gc.decapp@gmail.com</string>
     <string name="nav_header_desc">Navigation header</string>
 
     <string name="title_activity_main">I am here</string>
@@ -21,6 +21,12 @@
     <string name="action_carica_quick">Carica posizione veloce</string>
     <string name="action_salva_corrente">Salva posizione corrente</string>
     <string name="action_share">Condividi</string>
+    <string name="action_play_store">Prova le nostre App</string>
+
+    <string name="go_to_play_store">Vai sul Play Store</string>
+
+    <string name="share_message">Posizione condivisa attraverso "Intorno a te"</string>
+    <string name="share_subject">Mi trovo qui</string>
 
 
     <!-- MainActivity -->

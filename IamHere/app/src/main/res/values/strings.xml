@@ -21,6 +21,12 @@
     <string name="action_carica_quick">Load quick position</string>
     <string name="action_salva_corrente">Save current position</string>
     <string name="action_share">Share position</string>
+    <string name="action_play_store">Try our apps</string>
+
+    <string name="go_to_play_store">Go to Play Store</string>
+
+    <string name="share_message">Position shared via "Around You"</string>
+    <string name="share_subject">Here is my location</string>
 
 
     <!-- MainActivity -->

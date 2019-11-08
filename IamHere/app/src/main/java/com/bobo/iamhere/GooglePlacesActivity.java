@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import com.google.android.material.navigation.NavigationView;
 import androidx.core.content.ContextCompat;
@@ -390,10 +391,13 @@ public class GooglePlacesActivity extends AppCompatActivity
 
             if (PermissionUtils.checkSelfPermission_LOCATION(this))
             {
-                Location lastKnowLocation = MainActivity.getLastKnownLocation(this); // MainActivity.locationManager.getLastKnownLocation(MainActivity.getLocationProviderName());
+                Location lastKnowLocation = MainActivity.getLastKnownLocation(this);
 
                 if(lastKnowLocation != null)
                 {
+                    String share_message = getResources().getString(R.string.share_message);
+                    String share_subject = getResources().getString(R.string.share_subject);
+
                     Double latitude = lastKnowLocation.getLatitude();
                     Double longitude = lastKnowLocation.getLongitude();
 
@@ -402,12 +406,12 @@ public class GooglePlacesActivity extends AppCompatActivity
 
                     Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                     sharingIntent.setType("text/plain");
-                    String ShareSub = "Here is my location";
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, ShareSub);
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, uri);
-                    startActivity(Intent.createChooser(sharingIntent, "Share via"));
 
-                }else {
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, share_subject);
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, share_message + ":  " + uri);
+                    startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.action_share)));
+
+                }else{
                     Toast.makeText(this, R.string.location_null, Toast.LENGTH_LONG).show();
                 }
             }
@@ -457,6 +461,12 @@ public class GooglePlacesActivity extends AppCompatActivity
                 }
             })
             .show();
+
+        } else if(id == R.id.nav_play_store)
+        {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/developer?id=G.Claudio+De+Caro"));
+            startActivity(browserIntent);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

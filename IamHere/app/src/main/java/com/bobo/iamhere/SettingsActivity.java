@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import com.google.android.material.navigation.NavigationView;
 import androidx.core.view.GravityCompat;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.bobo.iamhere.db.DatabaseTools;
 import com.bobo.iamhere.dialogfragments.ElencoFilesDialog;
@@ -195,21 +197,29 @@ public class SettingsActivity extends AppCompatActivity
 
             if (PermissionUtils.checkSelfPermission_LOCATION(this))
             {
-                //Location lastKnowLocation = locationManager.getLastKnownLocation(getLocationProviderName());
                 Location lastKnowLocation = MainActivity.getLastKnownLocation(this);
 
-                Double latitude = lastKnowLocation.getLatitude();
-                Double longitude = lastKnowLocation.getLongitude();
+                if(lastKnowLocation != null)
+                {
+                    String share_message = getResources().getString(R.string.share_message);
+                    String share_subject = getResources().getString(R.string.share_subject);
 
-                String uri = "https://www.google.com/maps/search/?api=1&query=" +latitude+","+longitude; //Apre la mappa e la centra sulle coordinate con un marker
-                //String uri = "https://maps.google.com/maps?daddr=" +latitude+","+longitude; //Apre direttamente il "calcola percorso" fino alle coordinate passate
+                    Double latitude = lastKnowLocation.getLatitude();
+                    Double longitude = lastKnowLocation.getLongitude();
 
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-                String ShareSub = "Here is my location";
-                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, ShareSub);
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, uri);
-                startActivity(Intent.createChooser(sharingIntent, "Share via"));
+                    String uri = "https://www.google.com/maps/search/?api=1&query=" +latitude+","+longitude; //Apre la mappa e la centra sulle coordinate con un marker
+                    //String uri = "https://maps.google.com/maps?daddr=" +latitude+","+longitude; //Apre direttamente il "calcola percorso" fino alle coordinate passate
+
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, share_subject);
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, share_message + ":  " + uri);
+                    startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.action_share)));
+
+                }else{
+                    Toast.makeText(this, R.string.location_null, Toast.LENGTH_LONG).show();
+                }
             }
 
         } else if (id == R.id.nav_settings)
@@ -259,6 +269,12 @@ public class SettingsActivity extends AppCompatActivity
                 }
             })
             .show();
+
+        } else if(id == R.id.nav_play_store)
+        {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/developer?id=G.Claudio+De+Caro"));
+            startActivity(browserIntent);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
