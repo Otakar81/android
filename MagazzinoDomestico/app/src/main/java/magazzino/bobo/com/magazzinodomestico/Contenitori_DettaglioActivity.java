@@ -122,7 +122,8 @@ public class Contenitori_DettaglioActivity extends AppCompatActivity
                 //Apre il dialog personalizzato, per mostrare l'immagine a schermo intero
                 OggettoDao dao = (OggettoDao) parent.getItemAtPosition(position);
 
-                String immagineBase64 = dao.getImmagine();
+                //Recupero l'immagine richiesta (Non è più precaricata nell'oggetto)
+                String immagineBase64 = DatabaseManager.getImmagineOggetto(MainActivity.database, dao.getId());
 
                 Bitmap immagine = ImageUtils.base64ToBitmap(immagineBase64);
 
@@ -143,12 +144,15 @@ public class Contenitori_DettaglioActivity extends AppCompatActivity
                 //Apre il dialog personalizzato, per modifica e cancellazione
                 OggettoDao dao = (OggettoDao) parent.getItemAtPosition(position); // elencoContenitori.get(position);
 
+                //Recupero l'immagine richiesta (Non è più precaricata nell'oggetto)
+                String immagineBase64 = DatabaseManager.getImmagineOggetto(MainActivity.database, dao.getId());
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(Contenitori_DettaglioActivity.this);
                 OggettoDialog dialog = OggettoDialog.newInstance(builder, true, location, idCategoriaContenitoreSelezionato);
                 dialog.show(getSupportFragmentManager(),"oggetto_dialog");
 
                 //E lo valorizza con gli attributi dell'oggetto su cui abbiamo cliccato
-                dialog.valorizzaDialog(dao.getId(), dao.getNome(), dao.getDescrizione(), dao.getImmagine(), dao.getDataScadenza(), dao.getNumero_oggetti(), dao.getId_stanza(), dao.getId_mobile(), dao.getId_contenitore(), dao.getId_categoria());
+                dialog.valorizzaDialog(dao.getId(), dao.getNome(), dao.getDescrizione(), immagineBase64, dao.getDataScadenza(), dao.getNumero_oggetti(), dao.getId_stanza(), dao.getId_mobile(), dao.getId_contenitore(), dao.getId_categoria());
 
                 return true;
             }

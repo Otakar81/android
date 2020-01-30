@@ -1222,7 +1222,7 @@ public class DatabaseManager {
     {
         ArrayList<OggettoDao> result = new ArrayList<OggettoDao>();
 
-        String sql = "SELECT o.id, o.nome, o.descrizione, o.numero_oggetti, o.immagine, o.data_scadenza, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
+        String sql = "SELECT o.id, o.nome, o.descrizione, o.numero_oggetti, length(o.immagine) as immagine, o.data_scadenza, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
                 "c.nome as nome_contenitore, m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
                 "FROM oggetti o " +
                 "LEFT JOIN contenitori c ON o.id_contenitore = c.id " +
@@ -1322,7 +1322,7 @@ public class DatabaseManager {
         long id_contenitore = location.getId_contenitore();
 
 
-        String sql = "SELECT o.id, o.nome, o.descrizione, o.numero_oggetti, o.immagine, o.data_scadenza, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
+        String sql = "SELECT o.id, o.nome, o.descrizione, o.numero_oggetti, length(o.immagine) as immagine, o.data_scadenza, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
                 "c.nome as nome_contenitore, m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
                 "FROM oggetti o " +
                 "LEFT JOIN contenitori c ON o.id_contenitore = c.id " +
@@ -1414,7 +1414,7 @@ public class DatabaseManager {
     {
         OggettoDao result = null;
 
-        String sql = "SELECT o.id, o.nome, o.descrizione, o.numero_oggetti, o.immagine, o.data_scadenza, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
+        String sql = "SELECT o.id, o.nome, o.descrizione, o.numero_oggetti, length(o.immagine) as immagine, o.data_scadenza, o.id_categoria, o.id_stanza, o.id_mobile, o.id_contenitore, " +
                 "c.nome as nome_contenitore, m.nome as nome_mobile, s.nome as nome_stanza, cat.nome as nome_categoria " +
                 "FROM oggetti o " +
                 "LEFT JOIN contenitori c ON o.id_contenitore = c.id " +
@@ -1483,6 +1483,40 @@ public class DatabaseManager {
         }
 
         c.close();
+
+        return result;
+    }
+
+
+    /***
+     * Restituisce l'immagine legata all'oggetto passato come argomento
+     *
+     * @param database
+     * @param id
+     * @return
+     */
+    public static String getImmagineOggetto(SQLiteDatabase database, long id)
+    {
+        String result = "";
+
+        String sql = "SELECT o.immagine " +
+                "FROM oggetti o " +
+                "WHERE o.id = " + id;
+
+        Cursor c = database.rawQuery(sql, null);
+
+        try {
+
+            if (c.moveToNext())
+                result = c.getString(c.getColumnIndex("immagine"));
+
+        }catch (Exception e)
+        {
+            //Probabilmente l'immagine è troppo grossa per il cursor
+
+        }finally {
+            c.close();
+        }
 
         return result;
     }

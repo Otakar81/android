@@ -67,8 +67,8 @@ public class ImageUtils {
 
     public static Bitmap resizeAndRotateImage(Context context, Uri selectedImage) throws IOException {
 
-        int MAX_HEIGHT = 720;
-        int MAX_WIDTH = 720;
+        int MAX_HEIGHT = 640;
+        int MAX_WIDTH = 640;
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -85,9 +85,15 @@ public class ImageUtils {
         options.inJustDecodeBounds = false;
         imageStream = context.getContentResolver().openInputStream(selectedImage);
         Bitmap img = BitmapFactory.decodeStream(imageStream, null, options);
-
         img = rotateImageIfRequired(context, img, selectedImage);
-        return img;
+
+        //Comprimo l'immagine, per occupare ancora meno spazio
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        img.compress(Bitmap.CompressFormat.JPEG,50, stream);
+        byte[] byteArray = stream.toByteArray();
+        Bitmap compressedBitmap = BitmapFactory.decodeByteArray(byteArray,0,byteArray.length);
+
+        return compressedBitmap; //compressedBitmap; //return img;
     }
 
     /**
